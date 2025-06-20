@@ -5,10 +5,11 @@
   "scripts": {
     "start": "expo start",
     "build:plugins": "tsc -p tsconfig.plugins.json",
+    "pre:build":"npm run build:plugins",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "prebuild:android": "expo prebuild -p android --clean",
-    "build:android": "npm run prebuild:android && npm run android",
+    "build:android": "npm run build:plugins && npm run prebuild:android && npm run android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "./plugins",
+    "rootDir": "./plugins",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmitOnError": true,
+    "moduleResolution": "node",
+    "allowJs": true
+  },
+  "include": ["plugins/**/*.ts"],
+  "exclude": ["node_modules"]
+}

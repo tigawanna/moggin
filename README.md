@@ -1,50 +1,32 @@
-# Welcome to your Expo app 👋
+# Setting Up Expo Glance Widget Project
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 1. Create a New Expo Project
 
-## Get started
+```sh
+npx create-expo-app@latest
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 2. Add Development Client
 
-## Learn more
+```sh
+npx expo install expo-dev-client
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## 3. Build to Test Configuration
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```sh
+npm run build:android
+```
 
-## Join the community
+## 4. Add Native Module
 
-Join our community of developers creating universal apps.
+Follow the [native module integration guide](https://docs.expo.dev/modules/get-started/#add-a-new-module-to-an-existing-application)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```sh
+pnpx create-expo-module@latest expo-glance-widget --local
+```
+
+```sh
+npm run build:android
+```

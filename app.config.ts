@@ -1,0 +1,50 @@
+import { ConfigContext, ExpoConfig } from "expo/config";
+
+
+
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  name: "moggin",
+  slug: "moggin",
+  version: "1.0.0",
+  orientation: "portrait",
+  icon: "./assets/images/icon.png",
+  scheme: "moggin",
+  userInterfaceStyle: "automatic",
+  newArchEnabled: true,
+  ios: {
+    supportsTablet: true,
+  },
+  android: {
+    adaptiveIcon: {
+      foregroundImage: "./assets/images/adaptive-icon.png",
+      backgroundColor: "#ffffff",
+    },
+    edgeToEdgeEnabled: true,
+    package: "com.anonymous.moggin",
+  },
+  web: {
+    bundler: "metro",
+    output: "static",
+    favicon: "./assets/images/favicon.png",
+  },
+  plugins: [
+
+
+    "expo-router",
+    [
+      "expo-splash-screen",
+      {
+        image: "./assets/images/splash-icon.png",
+        imageWidth: 200,
+        resizeMode: "contain",
+        backgroundColor: "#ffffff",
+      },
+    ],
+
+    // Add any other plugins here
+  ],
+  experiments: {
+    typedRoutes: true,
+  },
+});

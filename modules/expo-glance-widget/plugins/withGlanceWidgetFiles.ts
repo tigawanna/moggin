@@ -30,16 +30,17 @@ const DEFAULT_OPTIONS: WithExpoGlanceWidgetsProps = {
 
 /**
  * Main config plugin that copies widget files and modifies Android manifest
- * 
- * Features:
+ *  * Features:
  * 1. Syncs external widget files to local default directories for version control
- * 2. Copies widget Kotlin source files to Android package structure
- * 3. Copies widget resources to main Android resources directory
- * 4. Extracts and adds widget receivers from manifest to main Android manifest
+ * 2. Updates package names to match the current Expo project package
+ * 3. Copies widget Kotlin source files to Android package structure
+ * 4. Copies widget resources to main Android resources directory
+ * 5. Extracts and adds widget receivers from manifest to main Android manifest
  * 
  * When using custom paths (e.g., pointing to Android Studio project):
  * - Files are first copied to default local directories (widgets/android/)
- * - This ensures widget files are checked into version control
+ * - Package names are automatically updated to match your Expo app package
+ * - This ensures widget files are checked into version control with correct package names
  * - Then files are copied from the specified location to Android build
  */
 export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsProps>> = (
@@ -61,10 +62,8 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
         throw new Error(
           `ExpoGlanceWidgets: app.config must provide a value for android.package.`
         );
-      }
-
-      // First, sync external widget files to default locations for version control
-      syncWidgetFilesToDefaults(projectRoot, finalOptions);
+      }      // First, sync external widget files to default locations for version control
+      syncWidgetFilesToDefaults(projectRoot, finalOptions, packageName);
 
       // Copy widget Kotlin files
       copyWidgetSourceFiles(projectRoot, platformRoot, finalOptions.widgetClassPath, packageName);
@@ -313,15 +312,34 @@ function updatePackageDeclaration(filePath: string, packageName: string): void {
   try {
     let content = FileUtils.readFileSync(filePath);
     
-    // Replace package declaration
-    content = content.replace(/^package\s+[^\s\n]+/, `package ${packageName}`);
+    // Extract the current package name from the file
+    const packageMatch = content.match(/^package\s+([^\s\n]+)/m);
+    const currentPackage = packageMatch ? packageMatch[1] : null;
     
-    // Update imports that reference the old package (basic replacement)
-    // You might want to make this more sophisticated based on your needs
-    content = content.replace(/import\s+com\.anonymous\.moggin/g, `import ${packageName}`);
-    
-    FileUtils.writeFileSync(filePath, content);
-    Logger.success(`Updated package declaration in: ${path.basename(filePath)}`);
+    if (currentPackage && currentPackage !== packageName) {
+      Logger.debug(`Updating package: ${currentPackage} → ${packageName}`);
+      
+      // Replace package declaration
+      content = content.replace(/^package\s+[^\s\n]+/m, `package ${packageName}`);
+      
+      // Update imports that reference the old package
+      const importRegex = new RegExp(`import\\s+${currentPackage.replace(/\./g, '\\.')}`, 'g');
+      content = content.replace(importRegex, `import ${packageName}`);
+      
+      // Update any references to the old package in string literals or comments
+      const packageRefRegex = new RegExp(`${currentPackage.replace(/\./g, '\\.')}`, 'g');
+      content = content.replace(packageRefRegex, packageName);
+      
+      FileUtils.writeFileSync(filePath, content);
+      Logger.success(`Updated package declaration in: ${path.basename(filePath)} (${currentPackage} → ${packageName})`);
+    } else if (!currentPackage) {
+      // If no package declaration found, add one
+      content = `package ${packageName}\n\n${content}`;
+      FileUtils.writeFileSync(filePath, content);
+      Logger.success(`Added package declaration to: ${path.basename(filePath)} (${packageName})`);
+    } else {
+      Logger.debug(`Package already correct in: ${path.basename(filePath)}`);
+    }
   } catch (error) {
     Logger.error(`Error updating package in ${filePath}: ${error}`);
   }
@@ -331,10 +349,12 @@ function updatePackageDeclaration(filePath: string, packageName: string): void {
  * Syncs external widget files to local default directories for version control
  * @param projectRoot - Root directory of the Expo project
  * @param options - Plugin configuration options
+ * @param packageName - Target package name for the Expo project
  */
 function syncWidgetFilesToDefaults(
   projectRoot: string,
-  options: WithExpoGlanceWidgetsProps
+  options: WithExpoGlanceWidgetsProps,
+  packageName: string
 ): void {
   Logger.debug('Checking if widget files need to be synced to defaults...');
 
@@ -352,7 +372,7 @@ function syncWidgetFilesToDefaults(
   Logger.info('Custom widget paths detected, syncing to default locations for version control...');
 
   // Sync widget class files
-  syncWidgetClassFiles(projectRoot, options);
+  syncWidgetClassFiles(projectRoot, options, packageName);
 
   // Sync manifest file
   syncManifestFile(projectRoot, options);
@@ -363,10 +383,14 @@ function syncWidgetFilesToDefaults(
 
 /**
  * Syncs widget Kotlin class files to default location
+ * @param projectRoot - Root directory of the Expo project
+ * @param options - Plugin configuration options
+ * @param packageName - Target package name for the Expo project
  */
 function syncWidgetClassFiles(
   projectRoot: string,
-  options: WithExpoGlanceWidgetsProps
+  options: WithExpoGlanceWidgetsProps,
+  packageName: string
 ): void {
   const sourceFile = path.join(projectRoot, options.widgetClassPath);
   const defaultFile = path.join(projectRoot, DEFAULT_OPTIONS.widgetClassPath);
@@ -387,14 +411,16 @@ function syncWidgetClassFiles(
   try {
     const ktFiles = FileUtils.readdirSync(sourceDir).filter((file: string) => file.endsWith('.kt'));
     
-    Logger.mobile(`Syncing ${ktFiles.length} Kotlin files to ${DEFAULT_OPTIONS.widgetClassPath} directory...`);
-
-    ktFiles.forEach((fileName: string) => {
+    Logger.mobile(`Syncing ${ktFiles.length} Kotlin files to ${DEFAULT_OPTIONS.widgetClassPath} directory...`);    ktFiles.forEach((fileName: string) => {
       const sourcePath = path.join(sourceDir, fileName);
       const targetPath = path.join(defaultTargetDir, fileName);
 
       FileUtils.copyFileSync(sourcePath, targetPath);
-      Logger.success(`Synced: ${fileName} → ${path.relative(projectRoot, targetPath)}`);
+      
+      // Update package name in the synced file to match Expo project
+      updatePackageDeclaration(targetPath, packageName);
+      
+      Logger.success(`Synced: ${fileName} → ${path.relative(projectRoot, targetPath)} (package updated)`);
     });
   } catch (error) {
     Logger.error(`Error syncing widget class files: ${error}`);

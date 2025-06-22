@@ -37,13 +37,13 @@ function getDefaultedOptions(options: Partial<WithExpoGlanceWidgetsProps>): With
 
 /**
  * Main Expo Glance Widgets configuration plugin
- * 
- * This plugin:
+ *  * This plugin:
  * 1. Syncs external widget files to local directories for version control
- * 2. Adds Kotlin 2.0 and Compose compiler dependencies to the project-level build.gradle
- * 3. Copies widget Kotlin source files to the correct Android package structure
- * 4. Copies widget resources to the main Android resources directory
- * 5. Extracts and adds widget receivers from manifest to the main Android manifest
+ * 2. Updates package names to match your Expo project package automatically
+ * 3. Adds Kotlin 2.0 and Compose compiler dependencies to the project-level build.gradle
+ * 4. Copies widget Kotlin source files to the correct Android package structure
+ * 5. Copies widget resources to the main Android resources directory
+ * 6. Extracts and adds widget receivers from manifest to the main Android manifest
  * 
  * @example
  * // Using default paths (files in your repo)

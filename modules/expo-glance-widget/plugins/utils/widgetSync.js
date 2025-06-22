@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WidgetSync = void 0;
-const fs_1 = require("./fs");
-const widgetClassSync_1 = require("./widgetClassSync");
-const resourceSync_1 = require("./resourceSync");
-const manifestSync_1 = require("./manifestSync");
 const withPlugins_1 = require("../withPlugins");
+const fs_1 = require("./fs");
+const manifestSync_1 = require("./manifestSync");
+const resourceSync_1 = require("./resourceSync");
+const widgetClassSync_1 = require("./widgetClassSync");
 /**
  * Central utility for syncing external widget files to local directories
  */

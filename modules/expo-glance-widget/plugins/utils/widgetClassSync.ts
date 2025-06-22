@@ -108,7 +108,7 @@ export class WidgetClassSync {
    * @param widgetPath - Path to widget file or directory
    * @returns Resolved path to a valid widget file, or null if not found
    */
-  private static resolveWidgetPath(projectRoot: string, widgetPath: string): string | null {
+ static resolveWidgetPath(projectRoot: string, widgetPath: string): string | null {
     const fullPath = path.join(projectRoot, widgetPath);
     
     Logger.debug(`Resolving widget path: ${fullPath}`);

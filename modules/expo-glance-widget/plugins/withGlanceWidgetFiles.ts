@@ -37,7 +37,9 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
       const projectRoot = modRequest.projectRoot;
       const platformRoot = modRequest.platformProjectRoot;
       const packageName = AndroidConfig.Package.getPackage(config);
-
+      
+      console.log("=====   ✅✅✅✅✅✅✅✅✅✅ ========",modRequest)
+      console.log("=====   ✅✅✅✅✅✅✅✅✅✅ ========", packageName);
       if (!packageName) {
         throw new Error(
           `ExpoGlanceWidgets: app.config must provide a value for android.package.`

@@ -1,5 +1,10 @@
 import { ConfigPlugin, withAndroidManifest } from "expo/config-plugins";
-
+// TODO now figure out how to add the compose plugin in the project levelgradle file with this
+// plugins {
+//   alias(libs.plugins.android.application) apply false
+//   alias(libs.plugins.kotlin.android) apply false
+//   alias(libs.plugins.kotlin.compose) apply false
+// }
 const withAndroidPlugin: ConfigPlugin = (config) => {
   // Define a custom message
   const message = "Hello world, from Expo plugin!";

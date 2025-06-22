@@ -1,5 +1,5 @@
 {
-  "platforms": ["apple", "android", "web"],
+  "platforms": ["android"],
   "apple": {
     "modules": ["ExpoGlanceWidgetModule"]
   },

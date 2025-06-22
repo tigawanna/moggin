@@ -115,10 +115,7 @@ A simple port of pur `app.json` to `app.config.ts` :
 npm run build:android
 ```
 
->[!NOTE]
-> The steps below are useful if you intend to make a native view that will be imported in the expo project, but widgets never get imported in the expo project, so in our case all the logic will live in config plugins to copy the files into the root `android` folder.
-> check under `modules/expo-glance-widget/plugins/README.md` for more details on how to use the config plugin to setup your widget
->
+
 6 . Import the config plugin in your `app.config.ts` file
 
 ```ts
@@ -180,6 +177,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 });
 
 ```
+
+
+>[!NOTE]
+> The steps below are useful if you intend to make a native view that will be imported in the expo project, but widgets never get imported in the expo project, so in our case all the logic will live in config plugins to copy the files into the root `android` folder.
+> check under `modules/expo-glance-widget/plugins/README.md` for more details on how to use the config plugin to setup your widget
+
 
 ## The manual steps explaining what the config plugin does
 

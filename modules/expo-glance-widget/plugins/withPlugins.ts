@@ -1,6 +1,6 @@
 import { ConfigPlugin } from "expo/config-plugins";
 import withComposeProjectLevelDependancyPlugin from "./withComposeProjectLevelDependancyPlugin";
-import { withGlanceBuildConfig } from "./withGlanceBuildConfig";
+import { withGlanceAppLevelGradleConfig } from "./withGlanceAppLevelGradleConfig";
 import { withGlanceWidgetFiles } from "./withGlanceWidgetFiles";
 
 /**
@@ -74,7 +74,7 @@ const withExpoGlanceWidgets: ConfigPlugin<Partial<WithExpoGlanceWidgetsProps>> =
   config = withComposeProjectLevelDependancyPlugin(config, options);
   
   // Apply app-level build configuration for Kotlin Compose and Glance
-  config = withGlanceBuildConfig(config);
+  config = withGlanceAppLevelGradleConfig(config);
   
   // Apply widget files copying and manifest modifications
   config = withGlanceWidgetFiles(config, options);

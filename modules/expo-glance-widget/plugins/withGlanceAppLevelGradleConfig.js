@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.withGlanceBuildConfig = void 0;
+exports.withGlanceAppLevelGradleConfig = void 0;
 const config_plugins_1 = require("@expo/config-plugins");
 /**
  * Config plugin that modifies the app-level build.gradle to add Kotlin Compose and Glance dependencies
  */
-const withGlanceBuildConfig = (config) => {
+const withGlanceAppLevelGradleConfig = (config) => {
     return (0, config_plugins_1.withAppBuildGradle)(config, (config) => {
         if (config.modResults.language === 'groovy') {
             config.modResults.contents = addGlanceBuildConfiguration(config.modResults.contents);
@@ -13,7 +13,7 @@ const withGlanceBuildConfig = (config) => {
         return config;
     });
 };
-exports.withGlanceBuildConfig = withGlanceBuildConfig;
+exports.withGlanceAppLevelGradleConfig = withGlanceAppLevelGradleConfig;
 /**
  * Adds Kotlin Compose and Glance configuration to app build.gradle
  * @param buildGradle - Current build.gradle content
@@ -92,11 +92,11 @@ function addGlanceBuildConfiguration(buildGradle) {
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.ui:ui-unit'
-    
-    // Glance dependencies for widgets
-    implementation 'androidx.glance:glance:1.0.0'
-    implementation 'androidx.glance:glance-appwidget:1.0.0'
-    implementation 'androidx.glance:glance-material3:1.0.0'
+      // Glance dependencies for widgets
+    implementation 'androidx.glance:glance:1.1.1'
+    implementation 'androidx.glance:glance-appwidget:1.1.1'
+    implementation 'androidx.glance:glance-material3:1.1.1'
+    implementation 'androidx.glance:glance-material:1.1.1'
     
     // Additional dependencies for widget functionality
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
@@ -110,4 +110,4 @@ function addGlanceBuildConfiguration(buildGradle) {
     }
     return modifiedGradle;
 }
-exports.default = exports.withGlanceBuildConfig;
+exports.default = exports.withGlanceAppLevelGradleConfig;

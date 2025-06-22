@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DEFAULT_OPTIONS = void 0;
 const withComposeProjectLevelDependancyPlugin_1 = __importDefault(require("./withComposeProjectLevelDependancyPlugin"));
-const withGlanceBuildConfig_1 = require("./withGlanceBuildConfig");
+const withGlanceAppLevelGradleConfig_1 = require("./withGlanceAppLevelGradleConfig");
 const withGlanceWidgetFiles_1 = require("./withGlanceWidgetFiles");
 /**
  * Default configuration options for Expo Glance Widgets
@@ -63,7 +63,7 @@ const withExpoGlanceWidgets = (config, userOptions = {}) => {
     // Apply Compose project-level dependencies
     config = (0, withComposeProjectLevelDependancyPlugin_1.default)(config, options);
     // Apply app-level build configuration for Kotlin Compose and Glance
-    config = (0, withGlanceBuildConfig_1.withGlanceBuildConfig)(config);
+    config = (0, withGlanceAppLevelGradleConfig_1.withGlanceAppLevelGradleConfig)(config);
     // Apply widget files copying and manifest modifications
     config = (0, withGlanceWidgetFiles_1.withGlanceWidgetFiles)(config, options);
     return config;

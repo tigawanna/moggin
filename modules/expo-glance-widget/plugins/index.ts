@@ -3,7 +3,7 @@ export { DEFAULT_OPTIONS, default as withExpoGlanceWidgets, WithExpoGlanceWidget
 
 // Individual plugin exports for advanced usage
 export { default as withComposeProjectLevelDependancyPlugin } from './withComposeProjectLevelDependancyPlugin';
-export { withGlanceBuildConfig } from './withGlanceBuildConfig';
+export { withGlanceAppLevelGradleConfig } from './withGlanceAppLevelGradleConfig';
 export { withGlanceWidgetFiles } from './withGlanceWidgetFiles';
 
 // Utility exports

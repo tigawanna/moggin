@@ -3,7 +3,7 @@ import { ConfigPlugin, withAppBuildGradle } from '@expo/config-plugins';
 /**
  * Config plugin that modifies the app-level build.gradle to add Kotlin Compose and Glance dependencies
  */
-export const withGlanceBuildConfig: ConfigPlugin = (config) => {
+export const withGlanceAppLevelGradleConfig: ConfigPlugin = (config) => {
   return withAppBuildGradle(config, (config) => {
     if (config.modResults.language === 'groovy') {
       config.modResults.contents = addGlanceBuildConfiguration(config.modResults.contents);
@@ -100,11 +100,11 @@ function addGlanceBuildConfiguration(buildGradle: string): string {
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.ui:ui-unit'
-    
-    // Glance dependencies for widgets
-    implementation 'androidx.glance:glance:1.0.0'
-    implementation 'androidx.glance:glance-appwidget:1.0.0'
-    implementation 'androidx.glance:glance-material3:1.0.0'
+      // Glance dependencies for widgets
+    implementation 'androidx.glance:glance:1.1.1'
+    implementation 'androidx.glance:glance-appwidget:1.1.1'
+    implementation 'androidx.glance:glance-material3:1.1.1'
+    implementation 'androidx.glance:glance-material:1.1.1'
     
     // Additional dependencies for widget functionality
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
@@ -121,4 +121,4 @@ function addGlanceBuildConfiguration(buildGradle: string): string {
   return modifiedGradle;
 }
 
-export default withGlanceBuildConfig;
+export default withGlanceAppLevelGradleConfig;

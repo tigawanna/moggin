@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logger = exports.FileUtils = exports.withGlanceWidgetFiles = exports.withGlanceBuildConfig = exports.withComposeProjectLevelDependancyPlugin = exports.withExpoGlanceWidgets = exports.DEFAULT_OPTIONS = void 0;
+exports.Logger = exports.FileUtils = exports.withGlanceWidgetFiles = exports.withGlanceAppLevelGradleConfig = exports.withComposeProjectLevelDependancyPlugin = exports.withExpoGlanceWidgets = exports.DEFAULT_OPTIONS = void 0;
 // Main plugin export
 var withPlugins_1 = require("./withPlugins");
 Object.defineProperty(exports, "DEFAULT_OPTIONS", { enumerable: true, get: function () { return withPlugins_1.DEFAULT_OPTIONS; } });
@@ -11,8 +11,8 @@ Object.defineProperty(exports, "withExpoGlanceWidgets", { enumerable: true, get:
 // Individual plugin exports for advanced usage
 var withComposeProjectLevelDependancyPlugin_1 = require("./withComposeProjectLevelDependancyPlugin");
 Object.defineProperty(exports, "withComposeProjectLevelDependancyPlugin", { enumerable: true, get: function () { return __importDefault(withComposeProjectLevelDependancyPlugin_1).default; } });
-var withGlanceBuildConfig_1 = require("./withGlanceBuildConfig");
-Object.defineProperty(exports, "withGlanceBuildConfig", { enumerable: true, get: function () { return withGlanceBuildConfig_1.withGlanceBuildConfig; } });
+var withGlanceAppLevelGradleConfig_1 = require("./withGlanceAppLevelGradleConfig");
+Object.defineProperty(exports, "withGlanceAppLevelGradleConfig", { enumerable: true, get: function () { return withGlanceAppLevelGradleConfig_1.withGlanceAppLevelGradleConfig; } });
 var withGlanceWidgetFiles_1 = require("./withGlanceWidgetFiles");
 Object.defineProperty(exports, "withGlanceWidgetFiles", { enumerable: true, get: function () { return withGlanceWidgetFiles_1.withGlanceWidgetFiles; } });
 // Utility exports

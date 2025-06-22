@@ -1,5 +1,5 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
-import withExpoGlanceWidgetsPlugin from "./modules/expo-glance-widget/plugins/withComposeProjectLevelDependancyPlugin";
+import withExpoGlanceWidgets from "./modules/expo-glance-widget/plugins/withPlugins";
 
 
 
@@ -38,11 +38,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#ffffff",
-      },
+      },    ],
+    // Expo Glance Widgets plugin for Android widget support
+    [
+      withExpoGlanceWidgets as any,
+      {
+        widgetClassPath: "widgets/android/MyWidget.kt",
+        manifestPath: "widgets/android/AndroidManifest.xml",
+        resPath: "widgets/android/res"
+      }
     ],
-    // Add your custom Android plugin
-    // withExpoGlanceWidgetsPlugin as any // the config works just fine ignore the type mismatch
-    withExpoGlanceWidgetsPlugin as any, // the config works just fine ignore the type mismatch
   ],
   experiments: {
     typedRoutes: true,

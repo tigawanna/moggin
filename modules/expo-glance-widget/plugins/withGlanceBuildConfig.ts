@@ -90,8 +90,7 @@ function addGlanceBuildConfiguration(buildGradle: string): string {
     const depsMatch = modifiedGradle.match(/dependencies\s*\{/);
     if (depsMatch) {
       const depsStart = depsMatch.index! + depsMatch[0].length;
-      
-      const glanceDependencies = `
+        const glanceDependencies = `
     // Compose BOM for version management
     implementation platform('androidx.compose:compose-bom:2024.02.00')
     
@@ -105,9 +104,11 @@ function addGlanceBuildConfiguration(buildGradle: string): string {
     // Glance dependencies for widgets
     implementation 'androidx.glance:glance:1.0.0'
     implementation 'androidx.glance:glance-appwidget:1.0.0'
+    implementation 'androidx.glance:glance-material3:1.0.0'
     
     // Additional dependencies for widget functionality
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
 `;
       
       modifiedGradle = 

@@ -96,9 +96,11 @@ function addGlanceBuildConfiguration(buildGradle) {
     // Glance dependencies for widgets
     implementation 'androidx.glance:glance:1.0.0'
     implementation 'androidx.glance:glance-appwidget:1.0.0'
+    implementation 'androidx.glance:glance-material3:1.0.0'
     
     // Additional dependencies for widget functionality
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
 `;
             modifiedGradle =
                 modifiedGradle.slice(0, depsStart) +

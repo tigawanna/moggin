@@ -33,14 +33,17 @@ if (useManagedAndroidSdkVersions) {
 
 android {
   namespace "expo.modules.glancewidget"
+  
   defaultConfig {
     versionCode 1
     versionName "0.7.2"
   }
+
   lintOptions {
     abortOnError false
   }
-    buildFeatures {
+  
+  buildFeatures {
     compose true
   }
 

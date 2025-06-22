@@ -41,3 +41,8 @@ android {
     abortOnError false
   }
 }
+
+
+
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "org.jetbrains.kotlin.plugin.compose"

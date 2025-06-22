@@ -1,4 +1,5 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
+import withAndroidPlugin from "./plugins/withAndroidPlugin";
 
 
 
@@ -29,8 +30,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: "./assets/images/favicon.png",
   },
   plugins: [
-
-
     "expo-router",
     [
       "expo-splash-screen",
@@ -41,8 +40,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         backgroundColor: "#ffffff",
       },
     ],
-
-    // Add any other plugins here
+    // Add your custom Android plugin
+    withAndroidPlugin,
   ],
   experiments: {
     typedRoutes: true,

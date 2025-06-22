@@ -4,11 +4,10 @@ import { FileUtils, Logger } from './fs';
 /**
  * Utility functions for syncing and processing Android manifest files
  */
-export class ManifestSync {
-  /**
+export class ManifestSync {  /**
    * Syncs manifest file to default location
    * @param projectRoot - Root directory of the Expo project
-   * @param customManifestPath - Custom path to manifest file
+   * @param customManifestPath - Custom path to manifest file (can be relative or absolute)
    * @param defaultManifestPath - Default path for manifest file
    */
   static syncToDefaults(
@@ -16,43 +15,41 @@ export class ManifestSync {
     customManifestPath: string,
     defaultManifestPath: string
   ): void {
-    const sourceFile = path.join(projectRoot, customManifestPath);
-    const defaultFile = path.join(projectRoot, defaultManifestPath);
-
-    if (!FileUtils.exists(sourceFile)) {
-      Logger.warn(`Custom manifest file not found: ${sourceFile}`);
+    const resolvedSource = this.resolveManifestPath(projectRoot, customManifestPath);
+    
+    if (!resolvedSource) {
+      Logger.warn(`Custom manifest file not found: ${customManifestPath}`);
       return;
     }
+
+    const defaultFile = path.join(projectRoot, defaultManifestPath);
 
     // Create default directory if it doesn't exist
     FileUtils.ensureDir(path.dirname(defaultFile));
 
-    FileUtils.copyFileSync(sourceFile, defaultFile);
+    FileUtils.copyFileSync(resolvedSource, defaultFile);
     Logger.success(`Synced manifest: ${path.relative(projectRoot, defaultFile)}`);
   }
-
   /**
    * Adds widget receivers from the widget manifest to the main Android manifest
    * @param config - Expo config object
    * @param projectRoot - Root directory of the Expo project
-   * @param manifestPath - Path to the widget manifest file
+   * @param manifestPath - Path to the widget manifest file (can be relative or absolute)
    */
   static addReceiversToMainManifest(
     config: any,
     projectRoot: string,
     manifestPath: string
   ): void {
-    const widgetManifestPath = path.join(projectRoot, manifestPath);
+    const resolvedManifestPath = this.resolveManifestPath(projectRoot, manifestPath);
     
-    if (!FileUtils.exists(widgetManifestPath)) {
-      Logger.warn(`Widget manifest not found: ${widgetManifestPath}`);
+    if (!resolvedManifestPath) {
+      Logger.warn(`Widget manifest not found: ${manifestPath}`);
       return;
-    }
-
-    Logger.manifest(`Processing widget manifest: ${manifestPath}`);
+    }    Logger.manifest(`Processing widget manifest: ${manifestPath}`);
 
     try {
-      const widgetManifestContent = FileUtils.readFileSync(widgetManifestPath);
+      const widgetManifestContent = FileUtils.readFileSync(resolvedManifestPath);
       const receivers = this.extractReceiversFromManifest(widgetManifestContent);
 
       if (receivers.length === 0) {
@@ -155,8 +152,55 @@ export class ManifestSync {
         
         return result;
       });
-    }
+    }    return receiver;
+  }
 
-    return receiver;
+  /**
+   * Resolves manifest path - handles both file paths with robust validation
+   * @param projectRoot - Root directory of the Expo project
+   * @param manifestPath - Path to manifest file (can be relative or absolute)
+   * @returns Resolved path to a valid manifest file, or null if not found
+   */
+  private static resolveManifestPath(projectRoot: string, manifestPath: string): string | null {
+    // Determine if the path is absolute or relative
+    const isAbsolutePath = path.isAbsolute(manifestPath);
+    const fullPath = isAbsolutePath ? manifestPath : path.join(projectRoot, manifestPath);
+    
+    Logger.debug(`Resolving manifest path: ${fullPath} (${isAbsolutePath ? 'absolute' : 'relative'})`);
+    
+    // Check if the file exists and is a valid manifest file
+    if (FileUtils.exists(fullPath) && !FileUtils.isDirectory(fullPath)) {
+      if (this.isValidManifestFile(fullPath)) {
+        Logger.debug(`Found valid manifest file: ${fullPath}`);
+        return fullPath;
+      } else {
+        Logger.warn(`File exists but is not a valid manifest file: ${fullPath}`);
+        return null;
+      }
+    }
+    
+    Logger.warn(`Manifest file not found: ${fullPath}`);
+    return null;
+  }
+
+  /**
+   * Validates if a file is a legitimate Android manifest file
+   * @param filePath - Path to the file to validate
+   * @returns True if the file is a valid manifest file
+   */
+  private static isValidManifestFile(filePath: string): boolean {
+    if (!filePath.toLowerCase().includes('manifest') && !filePath.endsWith('.xml')) {
+      return false;
+    }
+    
+    try {
+      const content = FileUtils.readFileSync(filePath);
+      
+      // Check if file content contains manifest-related keywords
+      const manifestKeywords = ['<manifest', '<application', 'android:'];
+      return manifestKeywords.some(keyword => content.includes(keyword));
+    } catch {
+      return false;
+    }
   }
 }

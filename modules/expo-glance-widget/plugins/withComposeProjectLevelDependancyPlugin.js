@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_plugins_1 = require("expo/config-plugins");
-const withAndroidPlugin = (config) => {
+const withComposeProjectLevelDependancyPlugin = (config, options) => {
     return (0, config_plugins_1.withProjectBuildGradle)(config, (config) => {
         const buildGradleContent = config.modResults.contents;
         // Check if the compose plugin is already added
@@ -23,4 +23,4 @@ const withAndroidPlugin = (config) => {
         return config;
     });
 };
-exports.default = withAndroidPlugin;
+exports.default = withComposeProjectLevelDependancyPlugin;

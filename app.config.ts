@@ -1,5 +1,5 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
-import withAndroidPlugin from "./plugins/withAndroidPlugin";
+import withExpoGlanceWidgetsPlugin from "./modules/expo-glance-widget/plugins/withComposeProjectLevelDependancyPlugin";
 
 
 
@@ -41,7 +41,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     // Add your custom Android plugin
-    withAndroidPlugin as any // the config works just fine ignore the type mismatch
+    // withExpoGlanceWidgetsPlugin as any // the config works just fine ignore the type mismatch
+    withExpoGlanceWidgetsPlugin as any, // the config works just fine ignore the type mismatch
   ],
   experiments: {
     typedRoutes: true,

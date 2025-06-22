@@ -1,6 +1,7 @@
 import { ConfigPlugin, withProjectBuildGradle } from "expo/config-plugins";
+import { WithExpoGlanceWidgetsProps } from "./withPlugins";
 
-const withAndroidPlugin: ConfigPlugin = (config) => {
+const withComposeProjectLevelDependancyPlugin: ConfigPlugin<WithExpoGlanceWidgetsProps> = (config, options) => {
   return withProjectBuildGradle(config, (config) => {
     const buildGradleContent = config.modResults.contents;
 
@@ -35,4 +36,4 @@ const withAndroidPlugin: ConfigPlugin = (config) => {
   });
 };
 
-export default withAndroidPlugin;
+export default withComposeProjectLevelDependancyPlugin;

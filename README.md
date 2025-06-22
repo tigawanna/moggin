@@ -30,3 +30,8 @@ pnpx create-expo-module@latest expo-glance-widget --local
 ```sh
 npm run build:android
 ```
+
+
+converst
+```sh
+```

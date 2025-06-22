@@ -41,7 +41,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     // Add your custom Android plugin
-    withAndroidPlugin,
+    withAndroidPlugin as any // the config works just fine ignore the type mismatch
   ],
   experiments: {
     typedRoutes: true,

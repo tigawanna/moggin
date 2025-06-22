@@ -1,2 +1,0 @@
-C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\java\expo\modules\glancewidget\ExpoGlanceWidgetModule.kt
-C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\java\expo\modules\glancewidget\ExpoGlanceWidgetView.kt

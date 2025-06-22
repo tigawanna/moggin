@@ -6,6 +6,7 @@ import {
 } from '@expo/config-plugins';
 import path from 'path';
 import { FileUtils, Logger } from './utils/fs';
+import { DEFAULT_OPTIONS } from './withPlugins';
 
 /**
  * Configuration options for the Expo Glance Widgets plugin
@@ -19,14 +20,6 @@ export interface WithExpoGlanceWidgetsProps {
   resPath: string;
 }
 
-/**
- * Default configuration options
- */
-const DEFAULT_OPTIONS: WithExpoGlanceWidgetsProps = {
-  widgetClassPath: "widgets/android/MyWidget.kt",
-  manifestPath: "widgets/android/AndroidManifest.xml",
-  resPath: "widgets/android/res",
-};
 
 /**
  * Main config plugin that copies widget files and modifies Android manifest

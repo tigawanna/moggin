@@ -1,5 +1,6 @@
 import { ConfigPlugin } from "expo/config-plugins";
 import withComposeProjectLevelDependancyPlugin from "./withComposeProjectLevelDependancyPlugin";
+import { withGlanceBuildConfig } from "./withGlanceBuildConfig";
 import { withGlanceWidgetFiles } from "./withGlanceWidgetFiles";
 
 /**
@@ -69,9 +70,11 @@ const withExpoGlanceWidgets: ConfigPlugin<Partial<WithExpoGlanceWidgetsProps>> =
   if (sdkVersion < 53) {
     throw new Error("🚫 Expo Glance Widgets requires SDK version 53 or higher.");
   }
-  
-  // Apply Compose project-level dependencies
+    // Apply Compose project-level dependencies
   config = withComposeProjectLevelDependancyPlugin(config, options);
+  
+  // Apply app-level build configuration for Kotlin Compose and Glance
+  config = withGlanceBuildConfig(config);
   
   // Apply widget files copying and manifest modifications
   config = withGlanceWidgetFiles(config, options);

@@ -101,17 +101,24 @@ export class WidgetClassSync {
       // Update package declaration in the copied file
       this.updatePackageDeclaration(destinationFile, packageName);
     });
-  }
-  /**
+  }  /**
    * Resolves widget path - handles both file and directory paths with robust validation
    * @param projectRoot - Root directory of the Expo project
-   * @param widgetPath - Path to widget file or directory
+   * @param widgetPath - Path to widget file or directory (can be relative or absolute)
    * @returns Resolved path to a valid widget file, or null if not found
+   * 
+   * Note: This method correctly handles both relative and absolute paths:
+   * - Relative paths (e.g., "widgets/android/MyWidget.kt") are joined with projectRoot
+   * - Absolute paths (e.g., "C:\\...\\MyWidget.kt") are used as-is without joining
+   * This allows users to reference widget files outside their project directory,
+   * such as from Android Studio projects or other external locations.
    */
- static resolveWidgetPath(projectRoot: string, widgetPath: string): string | null {
-    const fullPath = path.join(projectRoot, widgetPath);
+  static resolveWidgetPath(projectRoot: string, widgetPath: string): string | null {
+    // Determine if the path is absolute or relative
+    const isAbsolutePath = path.isAbsolute(widgetPath);
+    const fullPath = isAbsolutePath ? widgetPath : path.join(projectRoot, widgetPath);
     
-    Logger.debug(`Resolving widget path: ${fullPath}`);
+    Logger.debug(`Resolving widget path: ${fullPath} (${isAbsolutePath ? 'absolute' : 'relative'})`);
     
     // If it's a file and exists, validate it's a valid widget file
     if (FileUtils.exists(fullPath) && !FileUtils.isDirectory(fullPath)) {

@@ -61,20 +61,33 @@ export default {
 
 ### Working with Android Studio Projects
 
-The plugin now handles complex Android Studio project paths intelligently:
+The plugin now handles complex Android Studio project paths intelligently and supports both relative and absolute paths:
 
 ```typescript
-// Example: Pointing to Android Studio project directory
+// Example 1: Using absolute paths to Android Studio projects
 [
   withExpoGlanceWidgets,
   {
-    // Even if the exact path doesn't exist, the plugin will search for widget files
+    // Absolute paths work from anywhere on your system
+    widgetClassPath: "C:\\Users\\user\\AndroidStudioProjects\\MyApp\\app\\src\\main\\java\\com\\mycompany\\myapp\\",
+    manifestPath: "C:\\Users\\user\\AndroidStudioProjects\\MyApp\\app\\src\\main\\AndroidManifest.xml",
+    resPath: "C:\\Users\\user\\AndroidStudioProjects\\MyApp\\app\\src\\main\\res"
+  }
+]
+
+// Example 2: Using relative paths (from your Expo project root)
+[
+  withExpoGlanceWidgets,
+  {
+    // Relative paths are joined with your project root
     widgetClassPath: "../AndroidStudioProjects/MyApp/app/src/main/java/com/mycompany/myapp/MyWidget.kt",
-    manifestPath: "../AndroidStudioProjects/MyApp/app/src/main/AndroidManifest.xml",
+    manifestPath: "../AndroidStudioProjects/MyApp/app/src/main/AndroidManifest.xml", 
     resPath: "../AndroidStudioProjects/MyApp/app/src/main/res"
   }
 ]
 ```
+
+**💡 Pro Tip**: The plugin automatically detects whether paths are absolute or relative, so you can mix and match based on your project structure without issues.
 
 ### Default Options
 

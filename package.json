@@ -5,7 +5,7 @@
   "scripts": {
     "start": "expo start",
     "build:plugins": "tsc -p tsconfig.plugins.json",
-    "pre:build":"npm run build:plugins",
+    "pre:build": "npm run build:plugins",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "prebuild:android": "expo prebuild -p android --clean",
@@ -52,6 +52,7 @@
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
+    "tsx": "^4.20.3",
     "typescript": "~5.8.3"
   },
   "private": true

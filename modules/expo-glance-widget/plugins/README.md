@@ -188,3 +188,10 @@ Contributions are welcome! Please ensure:
 ## License
 
 MIT
+
+
+res path: C:\Users\user\AndroidStudioProjects\Bidii-kotlin-widget\app\src\main\res
+
+manifest path: C:\Users\user\AndroidStudioProjects\Bidii-kotlin-widget\app\src\main\AndroidManifest.xml
+
+class pats C:\Users\user\AndroidStudioProjects\Bidii-kotlin-widget\app\src\main\java\com\tigawanna\bidii

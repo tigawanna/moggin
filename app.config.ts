@@ -1,8 +1,6 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
 import withExpoGlanceWidgets from "./modules/expo-glance-widget/plugins/withPlugins";
 
-
-
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: "moggin",
@@ -38,15 +36,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#ffffff",
-      },    ],
+      },
+    ],
     // Expo Glance Widgets plugin for Android widget support
     [
       withExpoGlanceWidgets as any,
       {
-        widgetClassPath: "widgets/android/MyWidget.kt",
-        manifestPath: "widgets/android/AndroidManifest.xml",
-        resPath: "widgets/android/res"
-      }
+        widgetClassPath:
+          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
+        manifestPath:
+          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
+        resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
+      },
     ],
   ],
   experiments: {

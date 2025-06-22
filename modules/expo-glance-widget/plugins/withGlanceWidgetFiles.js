@@ -17,16 +17,17 @@ const DEFAULT_OPTIONS = {
 };
 /**
  * Main config plugin that copies widget files and modifies Android manifest
- *
- * Features:
+ *  * Features:
  * 1. Syncs external widget files to local default directories for version control
- * 2. Copies widget Kotlin source files to Android package structure
- * 3. Copies widget resources to main Android resources directory
- * 4. Extracts and adds widget receivers from manifest to main Android manifest
+ * 2. Updates package names to match the current Expo project package
+ * 3. Copies widget Kotlin source files to Android package structure
+ * 4. Copies widget resources to main Android resources directory
+ * 5. Extracts and adds widget receivers from manifest to main Android manifest
  *
  * When using custom paths (e.g., pointing to Android Studio project):
  * - Files are first copied to default local directories (widgets/android/)
- * - This ensures widget files are checked into version control
+ * - Package names are automatically updated to match your Expo app package
+ * - This ensures widget files are checked into version control with correct package names
  * - Then files are copied from the specified location to Android build
  */
 const withGlanceWidgetFiles = (config, options = {}) => {
@@ -41,9 +42,8 @@ const withGlanceWidgetFiles = (config, options = {}) => {
             const packageName = config_plugins_1.AndroidConfig.Package.getPackage(config);
             if (!packageName) {
                 throw new Error(`ExpoGlanceWidgets: app.config must provide a value for android.package.`);
-            }
-            // First, sync external widget files to default locations for version control
-            syncWidgetFilesToDefaults(projectRoot, finalOptions);
+            } // First, sync external widget files to default locations for version control
+            syncWidgetFilesToDefaults(projectRoot, finalOptions, packageName);
             // Copy widget Kotlin files
             copyWidgetSourceFiles(projectRoot, platformRoot, finalOptions.widgetClassPath, packageName);
             // Copy resource files
@@ -249,13 +249,31 @@ function parseReceiverXml(receiverXml) {
 function updatePackageDeclaration(filePath, packageName) {
     try {
         let content = fs_1.FileUtils.readFileSync(filePath);
-        // Replace package declaration
-        content = content.replace(/^package\s+[^\s\n]+/, `package ${packageName}`);
-        // Update imports that reference the old package (basic replacement)
-        // You might want to make this more sophisticated based on your needs
-        content = content.replace(/import\s+com\.anonymous\.moggin/g, `import ${packageName}`);
-        fs_1.FileUtils.writeFileSync(filePath, content);
-        fs_1.Logger.success(`Updated package declaration in: ${path_1.default.basename(filePath)}`);
+        // Extract the current package name from the file
+        const packageMatch = content.match(/^package\s+([^\s\n]+)/m);
+        const currentPackage = packageMatch ? packageMatch[1] : null;
+        if (currentPackage && currentPackage !== packageName) {
+            fs_1.Logger.debug(`Updating package: ${currentPackage} → ${packageName}`);
+            // Replace package declaration
+            content = content.replace(/^package\s+[^\s\n]+/m, `package ${packageName}`);
+            // Update imports that reference the old package
+            const importRegex = new RegExp(`import\\s+${currentPackage.replace(/\./g, '\\.')}`, 'g');
+            content = content.replace(importRegex, `import ${packageName}`);
+            // Update any references to the old package in string literals or comments
+            const packageRefRegex = new RegExp(`${currentPackage.replace(/\./g, '\\.')}`, 'g');
+            content = content.replace(packageRefRegex, packageName);
+            fs_1.FileUtils.writeFileSync(filePath, content);
+            fs_1.Logger.success(`Updated package declaration in: ${path_1.default.basename(filePath)} (${currentPackage} → ${packageName})`);
+        }
+        else if (!currentPackage) {
+            // If no package declaration found, add one
+            content = `package ${packageName}\n\n${content}`;
+            fs_1.FileUtils.writeFileSync(filePath, content);
+            fs_1.Logger.success(`Added package declaration to: ${path_1.default.basename(filePath)} (${packageName})`);
+        }
+        else {
+            fs_1.Logger.debug(`Package already correct in: ${path_1.default.basename(filePath)}`);
+        }
     }
     catch (error) {
         fs_1.Logger.error(`Error updating package in ${filePath}: ${error}`);
@@ -265,8 +283,9 @@ function updatePackageDeclaration(filePath, packageName) {
  * Syncs external widget files to local default directories for version control
  * @param projectRoot - Root directory of the Expo project
  * @param options - Plugin configuration options
+ * @param packageName - Target package name for the Expo project
  */
-function syncWidgetFilesToDefaults(projectRoot, options) {
+function syncWidgetFilesToDefaults(projectRoot, options, packageName) {
     fs_1.Logger.debug('Checking if widget files need to be synced to defaults...');
     // Check if user is using non-default paths
     const usingCustomPaths = options.widgetClassPath !== DEFAULT_OPTIONS.widgetClassPath ||
@@ -278,7 +297,7 @@ function syncWidgetFilesToDefaults(projectRoot, options) {
     }
     fs_1.Logger.info('Custom widget paths detected, syncing to default locations for version control...');
     // Sync widget class files
-    syncWidgetClassFiles(projectRoot, options);
+    syncWidgetClassFiles(projectRoot, options, packageName);
     // Sync manifest file
     syncManifestFile(projectRoot, options);
     // Sync resource files
@@ -286,8 +305,11 @@ function syncWidgetFilesToDefaults(projectRoot, options) {
 }
 /**
  * Syncs widget Kotlin class files to default location
+ * @param projectRoot - Root directory of the Expo project
+ * @param options - Plugin configuration options
+ * @param packageName - Target package name for the Expo project
  */
-function syncWidgetClassFiles(projectRoot, options) {
+function syncWidgetClassFiles(projectRoot, options, packageName) {
     const sourceFile = path_1.default.join(projectRoot, options.widgetClassPath);
     const defaultFile = path_1.default.join(projectRoot, DEFAULT_OPTIONS.widgetClassPath);
     if (!fs_1.FileUtils.exists(sourceFile)) {
@@ -307,7 +329,9 @@ function syncWidgetClassFiles(projectRoot, options) {
             const sourcePath = path_1.default.join(sourceDir, fileName);
             const targetPath = path_1.default.join(defaultTargetDir, fileName);
             fs_1.FileUtils.copyFileSync(sourcePath, targetPath);
-            fs_1.Logger.success(`Synced: ${fileName} → ${path_1.default.relative(projectRoot, targetPath)}`);
+            // Update package name in the synced file to match Expo project
+            updatePackageDeclaration(targetPath, packageName);
+            fs_1.Logger.success(`Synced: ${fileName} → ${path_1.default.relative(projectRoot, targetPath)} (package updated)`);
         });
     }
     catch (error) {

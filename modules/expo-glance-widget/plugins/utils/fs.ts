@@ -76,7 +76,6 @@ export class FileUtils {
   static readdirSync(dirPath: string): string[] {
     return fs.readdirSync(dirPath);
   }
-
   /**
    * Recursively copy files and directories with callback support
    * @param sourceDir - Source directory
@@ -88,7 +87,7 @@ export class FileUtils {
     sourceDir: string,
     destDir: string,
     onSuccess?: (targetPath: string) => void,
-    onSkip?: (targetPath: string) => void
+    onSkip?: (targetPath: string, sourcePath: string) => void
   ): void {
     this.ensureDir(destDir);
     const items = this.readdirSync(sourceDir);
@@ -101,7 +100,7 @@ export class FileUtils {
         this.copyRecursively(sourcePath, destPath, onSuccess, onSkip);
       } else {
         if (this.exists(destPath)) {
-          onSkip?.(destPath);
+          onSkip?.(destPath, sourcePath);
           return;
         }
 

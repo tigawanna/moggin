@@ -127,7 +127,7 @@ class FileUtils {
             }
             else {
                 if (this.exists(destPath)) {
-                    onSkip?.(destPath);
+                    onSkip?.(destPath, sourcePath);
                     return;
                 }
                 this.copyFileSync(sourcePath, destPath);

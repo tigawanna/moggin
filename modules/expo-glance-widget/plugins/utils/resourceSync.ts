@@ -1,5 +1,6 @@
 import path from 'path';
 import { FileUtils, Logger } from './fs';
+import { XmlUtils } from './xml';
 
 /**
  * Utility functions for syncing and copying resource files
@@ -22,11 +23,21 @@ export class ResourceSync {  /**
       return;
     }
 
-    const defaultDir = path.join(projectRoot, defaultResPath);
-
-    Logger.file(`Syncing resources to ${defaultResPath} directory...`);
+    const defaultDir = path.join(projectRoot, defaultResPath);    Logger.file(`Syncing resources to ${defaultResPath} directory...`);
     FileUtils.copyRecursively(resolvedSource, defaultDir, (targetPath) => {
-      Logger.success(`Synced resource: ${path.relative(projectRoot, targetPath)}`);
+      Logger.success(`Synced resource: ${path.relative(projectRoot, targetPath)}`);    }, (targetPath: string, sourcePath: string) => {
+      // Handle conflicts intelligently during sync as well
+      if (path.extname(targetPath) === '.xml') {
+        // Try to merge XML files instead of skipping
+        const merged = XmlUtils.mergeXmlFiles(sourcePath, targetPath, 'smart');
+        if (merged) {
+          Logger.success(`Merged XML resource during sync: ${path.relative(projectRoot, targetPath)}`);
+        } else {
+          Logger.warn(`Could not merge XML file during sync, skipping: ${path.relative(projectRoot, targetPath)}`);
+        }
+      } else {
+        Logger.warn(`Resource file already exists during sync, skipping: ${path.relative(projectRoot, targetPath)}`);
+      }
     });
   }
   /**
@@ -49,11 +60,21 @@ export class ResourceSync {  /**
     
     Logger.file(`Copying resources from ${resPath}...`);
 
-    // Copy resources with conflict detection
+    // Copy resources with intelligent XML merging
     FileUtils.copyRecursively(resolvedSource, destinationResDir, (targetPath) => {
-      Logger.success(`Copying resource: ${path.relative(destinationResDir, targetPath)}`);
-    }, (targetPath) => {
-      Logger.warn(`Resource file already exists, skipping: ${path.relative(destinationResDir, targetPath)}`);
+      Logger.success(`Copying resource: ${path.relative(destinationResDir, targetPath)}`);    }, (targetPath: string, sourcePath: string) => {
+      // Handle conflicts intelligently
+      if (path.extname(targetPath) === '.xml') {
+        // Try to merge XML files instead of skipping
+        const merged = XmlUtils.mergeXmlFiles(sourcePath, targetPath, 'smart');
+        if (merged) {
+          Logger.success(`Merged XML resource: ${path.relative(destinationResDir, targetPath)}`);
+        } else {
+          Logger.warn(`Could not merge XML file, skipping: ${path.relative(destinationResDir, targetPath)}`);
+        }
+      } else {
+        Logger.warn(`Resource file already exists, skipping: ${path.relative(destinationResDir, targetPath)}`);
+      }
     });
   }
 

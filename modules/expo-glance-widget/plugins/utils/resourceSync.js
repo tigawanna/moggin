@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResourceSync = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = require("./fs");
+const xml_1 = require("./xml");
 /**
  * Utility functions for syncing and copying resource files
  */
@@ -20,6 +21,21 @@ class ResourceSync {
         fs_1.Logger.file(`Syncing resources to ${defaultResPath} directory...`);
         fs_1.FileUtils.copyRecursively(resolvedSource, defaultDir, (targetPath) => {
             fs_1.Logger.success(`Synced resource: ${path_1.default.relative(projectRoot, targetPath)}`);
+        }, (targetPath, sourcePath) => {
+            // Handle conflicts intelligently during sync as well
+            if (path_1.default.extname(targetPath) === '.xml') {
+                // Try to merge XML files instead of skipping
+                const merged = xml_1.XmlUtils.mergeXmlFiles(sourcePath, targetPath, 'smart');
+                if (merged) {
+                    fs_1.Logger.success(`Merged XML resource during sync: ${path_1.default.relative(projectRoot, targetPath)}`);
+                }
+                else {
+                    fs_1.Logger.warn(`Could not merge XML file during sync, skipping: ${path_1.default.relative(projectRoot, targetPath)}`);
+                }
+            }
+            else {
+                fs_1.Logger.warn(`Resource file already exists during sync, skipping: ${path_1.default.relative(projectRoot, targetPath)}`);
+            }
         });
     }
     /**
@@ -36,11 +52,24 @@ class ResourceSync {
         }
         const destinationResDir = path_1.default.join(platformRoot, 'app/src/main/res');
         fs_1.Logger.file(`Copying resources from ${resPath}...`);
-        // Copy resources with conflict detection
+        // Copy resources with intelligent XML merging
         fs_1.FileUtils.copyRecursively(resolvedSource, destinationResDir, (targetPath) => {
             fs_1.Logger.success(`Copying resource: ${path_1.default.relative(destinationResDir, targetPath)}`);
-        }, (targetPath) => {
-            fs_1.Logger.warn(`Resource file already exists, skipping: ${path_1.default.relative(destinationResDir, targetPath)}`);
+        }, (targetPath, sourcePath) => {
+            // Handle conflicts intelligently
+            if (path_1.default.extname(targetPath) === '.xml') {
+                // Try to merge XML files instead of skipping
+                const merged = xml_1.XmlUtils.mergeXmlFiles(sourcePath, targetPath, 'smart');
+                if (merged) {
+                    fs_1.Logger.success(`Merged XML resource: ${path_1.default.relative(destinationResDir, targetPath)}`);
+                }
+                else {
+                    fs_1.Logger.warn(`Could not merge XML file, skipping: ${path_1.default.relative(destinationResDir, targetPath)}`);
+                }
+            }
+            else {
+                fs_1.Logger.warn(`Resource file already exists, skipping: ${path_1.default.relative(destinationResDir, targetPath)}`);
+            }
         });
     }
     /**

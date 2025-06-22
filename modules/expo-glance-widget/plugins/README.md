@@ -9,8 +9,24 @@ A comprehensive Expo config plugin for integrating Android Glance Widgets with a
 ✅ **External file synchronization for version control**  
 ✅ **Resource management with conflict detection**  
 ✅ **Android manifest receiver integration**  
-✅ **Comprehensive logging with emoji feedback**
+✅ **Comprehensive logging with emoji feedback**  
+✅ **Robust path validation with recursive search**  
+✅ **Smart widget file detection by content and filename**  
 ⚠️ **Conflict Detection**: Warns about existing files without overwriting  
+
+## New Validation Features
+
+🔍 **Enhanced Widget File Detection**:
+- Validates files contain actual widget code (not just .kt extension)
+- Searches for `GlanceAppWidget`, `AppWidgetProvider`, and other widget keywords
+- Prioritizes files with "widget" in the filename
+- Falls back to recursive directory search for complex project structures
+
+🛡️ **Robust Path Handling**:
+- Handles invalid paths by searching parent directories
+- Works with complex Android Studio project structures
+- Recursive search with depth limits to prevent infinite loops
+- Smart detection of widget files even in deeply nested directories
 
 ## Installation
 
@@ -41,6 +57,23 @@ export default {
     ]
   ]
 };
+```
+
+### Working with Android Studio Projects
+
+The plugin now handles complex Android Studio project paths intelligently:
+
+```typescript
+// Example: Pointing to Android Studio project directory
+[
+  withExpoGlanceWidgets,
+  {
+    // Even if the exact path doesn't exist, the plugin will search for widget files
+    widgetClassPath: "../AndroidStudioProjects/MyApp/app/src/main/java/com/mycompany/myapp/MyWidget.kt",
+    manifestPath: "../AndroidStudioProjects/MyApp/app/src/main/AndroidManifest.xml",
+    resPath: "../AndroidStudioProjects/MyApp/app/src/main/res"
+  }
+]
 ```
 
 ### Default Options

@@ -115,8 +115,75 @@ A simple port of pur `app.json` to `app.config.ts` :
 npm run build:android
 ```
 
-## 5. Add Jetpack Compose dependencies
+>[!NOTE]
+> The steps below are useful if you intend to make a native view that will be imported in the expo project, but widgets never get imported in the expo project, so in our case all the logic will live in config plugins to copy the files into the root `android` folder.
+> check under `modules/expo-glance-widget/plugins/README.md` for more details on how to use the config plugin to setup your widget
+>
+6 . Import the config plugin in your `app.config.ts` file
 
+```ts
+import { ConfigContext, ExpoConfig } from "expo/config";
+import withExpoGlanceWidgets from "./modules/expo-glance-widget/plugins/withPlugins";
+
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  name: "moggin",
+  slug: "moggin",
+  version: "1.0.0",
+  orientation: "portrait",
+  icon: "./assets/images/icon.png",
+  scheme: "moggin",
+  userInterfaceStyle: "automatic",
+  newArchEnabled: true,
+  ios: {
+    supportsTablet: true,
+  },
+  android: {
+    adaptiveIcon: {
+      foregroundImage: "./assets/images/adaptive-icon.png",
+      backgroundColor: "#ffffff",
+    },
+    edgeToEdgeEnabled: true,
+    package: "com.anonymous.moggin",
+  },
+  web: {
+    bundler: "metro",
+    output: "static",
+    favicon: "./assets/images/favicon.png",
+  },
+  plugins: [
+    "expo-router",
+    [
+      "expo-splash-screen",
+      {
+        image: "./assets/images/splash-icon.png",
+        imageWidth: 200,
+        resizeMode: "contain",
+        backgroundColor: "#ffffff",
+      },
+    ],
+    // Expo Glance Widgets plugin for Android widget support
+    [
+      withExpoGlanceWidgets as any,
+      {
+        widgetClassPath:
+          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
+        manifestPath:
+          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
+        resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
+      },
+    ],
+  ],
+  experiments: {
+    typedRoutes: true,
+  },
+});
+
+```
+
+## The manual steps explaining what the config plugin does
+
+### - Add Jetpack Compose Dependencies
 We now need to add the necessary Jetpack Compose dependencies to our project.
 
 [official jetpack compose reference](https://developer.android.com/develop/ui/compose/setup#kotlin_1)
@@ -182,7 +249,7 @@ buildscript {
 > adding configs direclty to the project level `build.gradle` file is not advised in an expo project, as it will be overwritten by the expo prebuild process.
 > we need to add a custom config plugin to do it for us
 
-## 6. Add Custom Config Plugin
+### - Add Custom Config Plugin
 Create a new file `plugins/withAndroidPlugin.ts` and add the following code:
 
 ```ts

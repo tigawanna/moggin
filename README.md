@@ -1,3 +1,5 @@
+
+# WIP
 # Setting Up Expo Glance Widget Project
 
 ## 1. Create a New Expo Project

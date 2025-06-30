@@ -92,7 +92,8 @@ function addGlanceBuildConfiguration(buildGradle) {
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.ui:ui-unit'
-      // Glance dependencies for widgets
+    
+    // Glance dependencies for widgets
     implementation 'androidx.glance:glance:1.1.1'
     implementation 'androidx.glance:glance-appwidget:1.1.1'
     implementation 'androidx.glance:glance-material3:1.1.1'
@@ -101,6 +102,9 @@ function addGlanceBuildConfiguration(buildGradle) {
     // Additional dependencies for widget functionality
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
     implementation 'androidx.work:work-runtime-ktx:2.9.0'
+    
+    // JSON parsing for widget configuration
+    implementation 'com.google.code.gson:gson:2.10.1'
 `;
             modifiedGradle =
                 modifiedGradle.slice(0, depsStart) +

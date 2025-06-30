@@ -1,4 +1,5 @@
 import { ConfigPlugin } from "expo/config-plugins";
+import path from "path";
 import withComposeProjectLevelDependancyPlugin from "./withComposeProjectLevelDependancyPlugin";
 import { withGlanceAppLevelGradleConfig } from "./withGlanceAppLevelGradleConfig";
 import { withGlanceWidgetFiles } from "./withGlanceWidgetFiles";
@@ -7,12 +8,16 @@ import { withGlanceWidgetFiles } from "./withGlanceWidgetFiles";
  * Configuration options for the Expo Glance Widgets plugin
  */
 export interface WithExpoGlanceWidgetsProps {
-  /** Path to the widget Kotlin class file */
+  /** Path to the widget Kotlin class file or directory */
   widgetClassPath: string;
   /** Path to the AndroidManifest.xml file containing widget receivers */
   manifestPath: string;
   /** Path to the Android resources directory */
   resPath: string;
+  /** Pattern to match widget files (regex string or simple string with wildcards) */
+  fileMatchPattern?: string;
+  /** Directory to sync external widget files for version control (auto-generated if external sources) */
+  syncDirectory?: string;
 }
 
 /**
@@ -22,18 +27,37 @@ export const DEFAULT_OPTIONS: WithExpoGlanceWidgetsProps = {
   widgetClassPath: "widgets/android/MyWidget.kt",
   manifestPath: "widgets/android/AndroidManifest.xml",
   resPath: "widgets/android/res",
+  fileMatchPattern: "Widget", // Default: match files containing "Widget" in the name
+  syncDirectory: "widgets/android", // Default sync directory for external sources
 };
 
 /**
- * Merges user options with default options
+ * Merges user options with default options and handles external source paths
  * @param options - User provided options
- * @returns Merged options with defaults
+ * @returns Merged options with defaults and smart path resolution
  */
 function getDefaultedOptions(options: Partial<WithExpoGlanceWidgetsProps>): WithExpoGlanceWidgetsProps {
-  return {
+  const mergedOptions = {
     ...DEFAULT_OPTIONS,
     ...options,
   };
+
+  // Auto-detect external sources and adjust sync directory
+  const isExternalWidgetPath = path.isAbsolute(mergedOptions.widgetClassPath) || 
+                              mergedOptions.widgetClassPath.startsWith('../');
+  const isExternalManifestPath = path.isAbsolute(mergedOptions.manifestPath) ||
+                                mergedOptions.manifestPath.startsWith('../');
+  const isExternalResPath = path.isAbsolute(mergedOptions.resPath) ||
+                           mergedOptions.resPath.startsWith('../');
+
+  // If any source is external and syncDirectory wasn't explicitly set, ensure we use the default
+  if ((isExternalWidgetPath || isExternalManifestPath || isExternalResPath) && 
+      !options.syncDirectory) {
+    mergedOptions.syncDirectory = DEFAULT_OPTIONS.syncDirectory;
+    console.log(`🔍 External widget sources detected, will sync to: ${mergedOptions.syncDirectory}`);
+  }
+
+  return mergedOptions;
 }
 
 /**

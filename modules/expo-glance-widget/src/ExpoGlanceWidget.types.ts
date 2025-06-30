@@ -17,3 +17,10 @@ export type ExpoGlanceWidgetViewProps = {
   onLoad: (event: { nativeEvent: OnLoadEventPayload }) => void;
   style?: StyleProp<ViewStyle>;
 };
+
+// Shared Preferences Types
+export type SharedPreferencesValue = string | number | boolean | null;
+
+export interface SharedPreferencesOptions {
+  name?: string; // SharedPreferences file name, defaults to app package name
+}

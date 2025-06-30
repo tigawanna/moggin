@@ -1,8 +1,18 @@
 package expo.modules.glancewidget
 
+import android.content.Context
+import android.content.SharedPreferences
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.records.Field
+import expo.modules.kotlin.records.Record
 import java.net.URL
+
+// Record class for SharedPreferences options
+class SharedPreferencesOptions : Record {
+  @Field
+  val name: String? = null
+}
 
 class ExpoGlanceWidgetModule : Module() {
   // Each module class must implement the definition function. The definition consists of components
@@ -36,6 +46,50 @@ class ExpoGlanceWidgetModule : Module() {
       ))
     }
 
+    // Shared Preferences functions
+    AsyncFunction("setSharedPreferenceAsync") { key: String, value: Any?, options: SharedPreferencesOptions? ->
+      val prefs = getSharedPreferences(options)
+      val editor = prefs.edit()
+      
+      when (value) {
+        is String -> editor.putString(key, value)
+        is Int -> editor.putInt(key, value)
+        is Long -> editor.putLong(key, value)
+        is Float -> editor.putFloat(key, value)
+        is Double -> editor.putFloat(key, value.toFloat()) // SharedPreferences doesn't support Double, convert to Float
+        is Boolean -> editor.putBoolean(key, value)
+        null -> editor.remove(key)
+        else -> throw IllegalArgumentException("Unsupported value type: ${value::class.java.simpleName}")
+      }
+      
+      editor.apply()
+    }
+
+    AsyncFunction("getSharedPreferenceAsync") { key: String, options: SharedPreferencesOptions? ->
+      val prefs = getSharedPreferences(options)
+      val allPrefs = prefs.all
+      allPrefs[key]
+    }
+
+    AsyncFunction("removeSharedPreferenceAsync") { key: String, options: SharedPreferencesOptions? ->
+      val prefs = getSharedPreferences(options)
+      val editor = prefs.edit()
+      editor.remove(key)
+      editor.apply()
+    }
+
+    AsyncFunction("clearSharedPreferencesAsync") { options: SharedPreferencesOptions? ->
+      val prefs = getSharedPreferences(options)
+      val editor = prefs.edit()
+      editor.clear()
+      editor.apply()
+    }
+
+    AsyncFunction("getAllSharedPreferencesAsync") { options: SharedPreferencesOptions? ->
+      val prefs = getSharedPreferences(options)
+      prefs.all
+    }
+
     // Enables the module to be used as a native view. Definition components that are accepted as part of
     // the view definition: Prop, Events.
     View(ExpoGlanceWidgetView::class) {
@@ -46,5 +100,11 @@ class ExpoGlanceWidgetModule : Module() {
       // Defines an event that the view can send to JavaScript.
       Events("onLoad")
     }
+  }
+
+  private fun getSharedPreferences(options: SharedPreferencesOptions?): SharedPreferences {
+    val context = appContext.reactContext ?: throw IllegalStateException("React context is not available")
+    val preferencesName = options?.name ?: context.packageName
+    return context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
   }
 }

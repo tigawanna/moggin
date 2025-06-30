@@ -5,12 +5,16 @@ import { ResourceSync } from './resourceSync';
 import { WidgetClassSync } from './widgetClassSync';
 
 export interface WithExpoGlanceWidgetsProps {
-  /** Path to the widget Kotlin class file */
+  /** Path to the widget Kotlin class file or directory */
   widgetClassPath: string;
   /** Path to the AndroidManifest.xml file containing widget receivers */
   manifestPath: string;
   /** Path to the Android resources directory */
   resPath: string;
+  /** Pattern to match widget files (regex string or simple string with wildcards) */
+  fileMatchPattern?: string;
+  /** Directory to sync external widget files for version control (auto-generated if external sources) */
+  syncDirectory?: string;
 }
 
 /**
@@ -43,26 +47,33 @@ export class WidgetSync {
 
     Logger.info('Custom widget paths detected, syncing to default locations for version control...');
 
+    // Determine target paths for syncing
+    const targetSyncDir = options.syncDirectory || DEFAULT_OPTIONS.syncDirectory;
+    const targetWidgetPath = `${targetSyncDir}/MyWidget.kt`;
+    const targetManifestPath = `${targetSyncDir}/AndroidManifest.xml`;  
+    const targetResPath = `${targetSyncDir}/res`;
+
     // Sync widget class files
     WidgetClassSync.syncToDefaults(
       projectRoot, 
       options.widgetClassPath, 
-      DEFAULT_OPTIONS.widgetClassPath, 
-      packageName
+      targetWidgetPath,
+      packageName,
+      options.fileMatchPattern || "Widget"
     );
 
     // Sync manifest file
     ManifestSync.syncToDefaults(
       projectRoot, 
       options.manifestPath, 
-      DEFAULT_OPTIONS.manifestPath
+      targetManifestPath
     );
 
     // Sync resource files
     ResourceSync.syncToDefaults(
       projectRoot, 
       options.resPath, 
-      DEFAULT_OPTIONS.resPath
+      targetResPath
     );
   }
 
@@ -84,7 +95,8 @@ export class WidgetSync {
       projectRoot, 
       platformRoot, 
       options.widgetClassPath, 
-      packageName
+      packageName,
+      options.fileMatchPattern || "Widget"
     );
 
     // Copy resource files

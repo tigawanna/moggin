@@ -11,12 +11,14 @@ export class WidgetClassSync {
    * @param customPath - Custom path to widget files
    * @param defaultPath - Default path for widget files
    * @param packageName - Target package name for the Expo project
+   * @param fileMatchPattern - Pattern to match widget files (default: "Widget")
    */
   static syncToDefaults(
     projectRoot: string,
     customPath: string,
     defaultPath: string,
-    packageName: string
+    packageName: string,
+    fileMatchPattern: string = "Widget"
   ): void {
     const resolvedSource = this.resolveWidgetPath(projectRoot, customPath);
     
@@ -32,7 +34,7 @@ export class WidgetClassSync {
     FileUtils.ensureDir(defaultTargetDir);
 
     const sourceDir = path.dirname(resolvedSource);
-    const ktFiles = this.findWidgetFiles(sourceDir);
+    const ktFiles = this.findWidgetFiles(sourceDir, fileMatchPattern);
     
     if (ktFiles.length === 0) {
       Logger.warn(`No widget Kotlin files found in: ${sourceDir}`);
@@ -60,12 +62,14 @@ export class WidgetClassSync {
    * @param platformRoot - Root directory of the Android platform
    * @param widgetClassPath - Path to the widget class file
    * @param packageName - Android package name
+   * @param fileMatchPattern - Pattern to match widget files (default: "Widget")
    */
   static copyToBuild(
     projectRoot: string,
     platformRoot: string,
     widgetClassPath: string,
-    packageName: string
+    packageName: string,
+    fileMatchPattern: string = "Widget"
   ): void {
     const resolvedSource = this.resolveWidgetPath(projectRoot, widgetClassPath);
     
@@ -82,7 +86,7 @@ export class WidgetClassSync {
     FileUtils.ensureDir(destinationDir);
     
     const sourceDir = path.dirname(resolvedSource);
-    const ktFiles = this.findWidgetFiles(sourceDir);
+    const ktFiles = this.findWidgetFiles(sourceDir, fileMatchPattern);
 
     Logger.mobile(`Copying ${ktFiles.length} Kotlin widget files...`);
 
@@ -133,7 +137,7 @@ export class WidgetClassSync {
     
     // If it's a directory, look for widget files inside
     if (FileUtils.exists(fullPath) && FileUtils.isDirectory(fullPath)) {
-      const widgetFiles = this.findWidgetFiles(fullPath);
+      const widgetFiles = this.findWidgetFiles(fullPath, "Widget"); // Use default pattern for discovery
       if (widgetFiles.length > 0) {
         const firstWidgetFile = path.join(fullPath, widgetFiles[0]);
         Logger.debug(`Found widget files in directory: ${widgetFiles.join(', ')}`);
@@ -176,9 +180,10 @@ export class WidgetClassSync {
   /**
    * Finds Kotlin files that contain widget-related content in a directory
    * @param directory - Directory to search in
+   * @param fileMatchPattern - Pattern to match widget files (default: "Widget")
    * @returns Array of widget file names, sorted by relevance
    */
-  private static findWidgetFiles(directory: string): string[] {
+  private static findWidgetFiles(directory: string, fileMatchPattern: string = "Widget"): string[] {
     if (!FileUtils.exists(directory) || !FileUtils.isDirectory(directory)) {
       return [];
     }
@@ -197,9 +202,10 @@ export class WidgetClassSync {
       
       ktFiles.forEach((file: string) => {
         const fileName = file.toLowerCase();
+        const matchPattern = fileMatchPattern.toLowerCase();
         
-        // Files with "widget" in the name are definitely widget files
-        if (fileName.includes('widget')) {
+        // Files with the specified pattern in the name are prioritized
+        if (fileName.includes(matchPattern)) {
           definitiveWidgetFiles.push(file);
           return;
         }
@@ -324,7 +330,7 @@ export class WidgetClassSync {
     
     try {
       // First, check current directory for widget files
-      const widgetFiles = this.findWidgetFiles(rootDir);
+      const widgetFiles = this.findWidgetFiles(rootDir, "Widget"); // Use default pattern for discovery
       if (widgetFiles.length > 0) {
         return path.join(rootDir, widgetFiles[0]);
       }

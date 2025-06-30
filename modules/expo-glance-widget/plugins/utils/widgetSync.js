@@ -27,12 +27,17 @@ class WidgetSync {
             return;
         }
         fs_1.Logger.info('Custom widget paths detected, syncing to default locations for version control...');
+        // Determine target paths for syncing
+        const targetSyncDir = options.syncDirectory || withPlugins_1.DEFAULT_OPTIONS.syncDirectory;
+        const targetWidgetPath = `${targetSyncDir}/MyWidget.kt`;
+        const targetManifestPath = `${targetSyncDir}/AndroidManifest.xml`;
+        const targetResPath = `${targetSyncDir}/res`;
         // Sync widget class files
-        widgetClassSync_1.WidgetClassSync.syncToDefaults(projectRoot, options.widgetClassPath, withPlugins_1.DEFAULT_OPTIONS.widgetClassPath, packageName);
+        widgetClassSync_1.WidgetClassSync.syncToDefaults(projectRoot, options.widgetClassPath, targetWidgetPath, packageName, options.fileMatchPattern || "Widget");
         // Sync manifest file
-        manifestSync_1.ManifestSync.syncToDefaults(projectRoot, options.manifestPath, withPlugins_1.DEFAULT_OPTIONS.manifestPath);
+        manifestSync_1.ManifestSync.syncToDefaults(projectRoot, options.manifestPath, targetManifestPath);
         // Sync resource files
-        resourceSync_1.ResourceSync.syncToDefaults(projectRoot, options.resPath, withPlugins_1.DEFAULT_OPTIONS.resPath);
+        resourceSync_1.ResourceSync.syncToDefaults(projectRoot, options.resPath, targetResPath);
     }
     /**
      * Copies widget files to Android build directories
@@ -43,7 +48,7 @@ class WidgetSync {
      */
     static copyToBuild(projectRoot, platformRoot, options, packageName) {
         // Copy widget Kotlin files
-        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, options.widgetClassPath, packageName);
+        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, options.widgetClassPath, packageName, options.fileMatchPattern || "Widget");
         // Copy resource files
         resourceSync_1.ResourceSync.copyToBuild(projectRoot, platformRoot, options.resPath);
     }

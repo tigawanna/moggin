@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DEFAULT_OPTIONS = void 0;
+const path_1 = __importDefault(require("path"));
 const withComposeProjectLevelDependancyPlugin_1 = __importDefault(require("./withComposeProjectLevelDependancyPlugin"));
 const withGlanceAppLevelGradleConfig_1 = require("./withGlanceAppLevelGradleConfig");
 const withGlanceWidgetFiles_1 = require("./withGlanceWidgetFiles");
@@ -14,17 +15,33 @@ exports.DEFAULT_OPTIONS = {
     widgetClassPath: "widgets/android/MyWidget.kt",
     manifestPath: "widgets/android/AndroidManifest.xml",
     resPath: "widgets/android/res",
+    fileMatchPattern: "Widget", // Default: match files containing "Widget" in the name
+    syncDirectory: "widgets/android", // Default sync directory for external sources
 };
 /**
- * Merges user options with default options
+ * Merges user options with default options and handles external source paths
  * @param options - User provided options
- * @returns Merged options with defaults
+ * @returns Merged options with defaults and smart path resolution
  */
 function getDefaultedOptions(options) {
-    return {
+    const mergedOptions = {
         ...exports.DEFAULT_OPTIONS,
         ...options,
     };
+    // Auto-detect external sources and adjust sync directory
+    const isExternalWidgetPath = path_1.default.isAbsolute(mergedOptions.widgetClassPath) ||
+        mergedOptions.widgetClassPath.startsWith('../');
+    const isExternalManifestPath = path_1.default.isAbsolute(mergedOptions.manifestPath) ||
+        mergedOptions.manifestPath.startsWith('../');
+    const isExternalResPath = path_1.default.isAbsolute(mergedOptions.resPath) ||
+        mergedOptions.resPath.startsWith('../');
+    // If any source is external and syncDirectory wasn't explicitly set, ensure we use the default
+    if ((isExternalWidgetPath || isExternalManifestPath || isExternalResPath) &&
+        !options.syncDirectory) {
+        mergedOptions.syncDirectory = exports.DEFAULT_OPTIONS.syncDirectory;
+        console.log(`🔍 External widget sources detected, will sync to: ${mergedOptions.syncDirectory}`);
+    }
+    return mergedOptions;
 }
 /**
  * Main Expo Glance Widgets configuration plugin

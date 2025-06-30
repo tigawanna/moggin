@@ -34,6 +34,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="shared-prefs"
+        options={{
+          title: 'SharedPrefs',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="externaldrive.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',

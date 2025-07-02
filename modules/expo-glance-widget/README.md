@@ -134,6 +134,22 @@ if (storedData) {
 }
 ```
 
+#### Updating Widgets Automatically
+
+Jetpack Glance widgets don't automatically update when DataStore changes. You can use the `setAndUpdateWidgets` method to update DataStore and trigger a widget update in one call:
+
+```typescript
+// Update DataStore and refresh widget in one call
+await DataStore.setAndUpdateWidgets(
+  'widget_title',           // key
+  'New Title',              // value
+  'com.example.MyWidget',   // fully qualified widget class name
+  { name: 'custom_store' }  // optional DataStore options
+);
+```
+
+This is useful when you want to ensure your widget is updated immediately after changing data, rather than waiting for the next scheduled update or user interaction.
+
 #### Convenience Functions
 
 ```typescript

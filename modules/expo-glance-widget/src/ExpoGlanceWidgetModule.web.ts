@@ -161,6 +161,30 @@ export default {
     
     return result;
   },
+  
+  /**
+   * Set a value in DataStore and update all widget instances of the given class name
+   * Note: Widget updates only work on Android, on web this just updates DataStore
+   */
+  async setDataStoreAndUpdateWidgetsAsync(
+    key: string, 
+    value: DataStoreValue, 
+    options?: DataStoreOptions,
+    widgetClassName?: string
+  ): Promise<void> {
+    // On web, this just performs the DataStore update (widgets don't exist)
+    const prefixedKey = getDataStoreKey(key, options);
+    if (value === null) {
+      localStorage.removeItem(prefixedKey);
+    } else {
+      localStorage.setItem(prefixedKey, JSON.stringify(value));
+    }
+    
+    // Log that widget updates are not supported on web
+    if (widgetClassName) {
+      console.log(`Widget updates are not supported on web. Widget class: ${widgetClassName}`);
+    }
+  },
 
   addListener(eventName: string, listener: Function): void {
     emitter.addListener(eventName, listener);

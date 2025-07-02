@@ -2,12 +2,16 @@ package expo.modules.glancewidget
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
 import kotlinx.coroutines.*
 import java.net.URL
+import kotlin.reflect.KClass
 
 // Record class for SharedPreferences options
 class SharedPreferencesOptions : Record {
@@ -136,6 +140,26 @@ class ExpoGlanceWidgetModule : Module() {
       runBlocking { dataStore.getAll() }
     }
 
+    // DataStore + Widget update function
+    AsyncFunction("setDataStoreAndUpdateWidgetsAsync") { key: String, value: Any?, options: DataStoreOptions?, widgetClassName: String? ->
+      val dataStore = getDataStore(options)
+      // Update DataStore
+      when (value) {
+        is String -> runBlocking { dataStore.setString(key, value) }
+        is Int -> runBlocking { dataStore.setInt(key, value) }
+        is Long -> runBlocking { dataStore.setLong(key, value) }
+        is Float -> runBlocking { dataStore.setFloat(key, value) }
+        is Double -> runBlocking { dataStore.setFloat(key, value.toFloat()) }
+        is Boolean -> runBlocking { dataStore.setBoolean(key, value) }
+        null -> runBlocking { dataStore.remove(key) }
+        else -> throw IllegalArgumentException("Unsupported value type: ${value::class.java.simpleName}")
+      }
+      // Update widgets if className provided
+      if (widgetClassName != null) {
+        runBlocking { updateAllWidgets(widgetClassName) }
+      }
+    }
+
     // Enables the module to be used as a native view. Definition components that are accepted as part of
     // the view definition: Prop, Events.
     View(ExpoGlanceWidgetView::class) {
@@ -158,5 +182,45 @@ class ExpoGlanceWidgetModule : Module() {
     val context = appContext.reactContext ?: throw IllegalStateException("React context is not available")
     val dataStoreName = options?.name ?: "${context.packageName}_preferences"
     return DataStoreHelper.create(context, dataStoreName)
+  }
+
+  private suspend fun updateAllWidgets(className: String) {
+    try {
+      val context = appContext.reactContext ?: return
+      val javaClass = Class.forName(className)
+      
+      // Create widget instance
+      val widgetInstance = try {
+        // Try to get it as a Kotlin object (for singleton widgets)
+        val kotlinClass = javaClass.kotlin
+        val objectInstance = kotlinClass.objectInstance
+        if (objectInstance is GlanceAppWidget) {
+          objectInstance
+        } else {
+          // Create a new instance
+          javaClass.getDeclaredConstructor().newInstance() as GlanceAppWidget
+        }
+      } catch (e: Exception) {
+        // Fallback to Java instantiation
+        javaClass.getDeclaredConstructor().newInstance() as GlanceAppWidget
+      }
+      
+      // Get all glance IDs for this widget type
+      val manager = GlanceAppWidgetManager(context)
+      
+      // Need to cast the Java class to the proper type
+      @Suppress("UNCHECKED_CAST")
+      val widgetClass = javaClass as Class<GlanceAppWidget>
+      val glanceIds = manager.getGlanceIds(widgetClass)
+      
+      // Update each widget instance
+      for (glanceId in glanceIds) {
+        widgetInstance.update(context, glanceId)
+      }
+      
+      android.util.Log.d("ExpoGlanceWidget", "Updated ${glanceIds.size} widgets of type $className")
+    } catch (e: Exception) {
+      android.util.Log.e("ExpoGlanceWidget", "Failed to update widgets: ${e.message}", e)
+    }
   }
 }

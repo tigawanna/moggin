@@ -65,6 +65,27 @@ export class DataStore {
   static setDefaultOptions(options: DataStoreOptions): void {
     this.defaultOptions = { ...this.defaultOptions, ...options };
   }
+
+  /**
+   * Set a value in DataStore and update all widget instances of the given class
+   * @param key The key to store the value under
+   * @param value The value to store
+   * @param widgetClassName The fully qualified class name of the widget to update (e.g. 'com.tigawanna.bidii.BidiiHoursWidget')
+   * @param options Optional configuration
+   */
+  static async setAndUpdateWidgets(
+    key: string,
+    value: DataStoreValue,
+    widgetClassName: string,
+    options: DataStoreOptions = {}
+  ): Promise<void> {
+    return ExpoGlanceWidgetModule.setDataStoreAndUpdateWidgetsAsync(
+      key,
+      value,
+      { ...this.defaultOptions, ...options },
+      widgetClassName
+    );
+  }
 }
 
 // Export convenience functions for direct use

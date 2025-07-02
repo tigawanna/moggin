@@ -41,6 +41,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="datastore-test"
+        options={{
+          title: 'DataStore',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="table.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',

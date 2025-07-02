@@ -6,10 +6,17 @@ import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
+import kotlinx.coroutines.*
 import java.net.URL
 
 // Record class for SharedPreferences options
 class SharedPreferencesOptions : Record {
+  @Field
+  val name: String? = null
+}
+
+// Record class for DataStore options
+class DataStoreOptions : Record {
   @Field
   val name: String? = null
 }
@@ -90,6 +97,45 @@ class ExpoGlanceWidgetModule : Module() {
       prefs.all
     }
 
+    // DataStore functions
+    AsyncFunction("setDataStoreAsync") { key: String, value: Any?, options: DataStoreOptions? ->
+      val dataStore = getDataStore(options)
+      
+      when (value) {
+        is String -> runBlocking { dataStore.setString(key, value) }
+        is Int -> runBlocking { dataStore.setInt(key, value) }
+        is Long -> runBlocking { dataStore.setLong(key, value) }
+        is Float -> runBlocking { dataStore.setFloat(key, value) }
+        is Double -> runBlocking { dataStore.setFloat(key, value.toFloat()) } // Convert Double to Float
+        is Boolean -> runBlocking { dataStore.setBoolean(key, value) }
+        null -> runBlocking { dataStore.remove(key) }
+        else -> throw IllegalArgumentException("Unsupported value type: ${value::class.java.simpleName}")
+      }
+    }
+
+    AsyncFunction("getDataStoreAsync") { key: String, options: DataStoreOptions? ->
+      val dataStore = getDataStore(options)
+      runBlocking {
+        val allData = dataStore.getAll()
+        allData[key]
+      }
+    }
+
+    AsyncFunction("removeDataStoreAsync") { key: String, options: DataStoreOptions? ->
+      val dataStore = getDataStore(options)
+      runBlocking { dataStore.remove(key) }
+    }
+
+    AsyncFunction("clearDataStoreAsync") { options: DataStoreOptions? ->
+      val dataStore = getDataStore(options)
+      runBlocking { dataStore.clear() }
+    }
+
+    AsyncFunction("getAllDataStoreAsync") { options: DataStoreOptions? ->
+      val dataStore = getDataStore(options)
+      runBlocking { dataStore.getAll() }
+    }
+
     // Enables the module to be used as a native view. Definition components that are accepted as part of
     // the view definition: Prop, Events.
     View(ExpoGlanceWidgetView::class) {
@@ -106,5 +152,11 @@ class ExpoGlanceWidgetModule : Module() {
     val context = appContext.reactContext ?: throw IllegalStateException("React context is not available")
     val preferencesName = options?.name ?: context.packageName
     return context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
+  }
+
+  private fun getDataStore(options: DataStoreOptions?): DataStoreWrapper {
+    val context = appContext.reactContext ?: throw IllegalStateException("React context is not available")
+    val dataStoreName = options?.name ?: "${context.packageName}_preferences"
+    return DataStoreHelper.create(context, dataStoreName)
   }
 }

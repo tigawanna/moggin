@@ -3,5 +3,9 @@
 export * from './src/ExpoGlanceWidget.types';
 export { default } from './src/ExpoGlanceWidgetModule';
 
-// Export shared preferences API
+// Export shared preferences API (legacy)
 export * from './src/SharedPreferences';
+
+// Export DataStore API (recommended)
+export * from './src/DataStore';
+

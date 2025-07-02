@@ -5,7 +5,8 @@ A comprehensive Expo module for creating Android Glance Widgets with shared pref
 ## Features
 
 ✅ **Complete Android Glance Widget support**  
-✅ **SharedPreferences API for data persistence**  
+✅ **DataStore API for modern data persistence (Recommended)**  
+✅ **SharedPreferences API for legacy compatibility**  
 ✅ **JavaScript ↔ Kotlin data communication**  
 ✅ **JSON, string, number, and boolean support**  
 ✅ **Automatic Kotlin 2.0 & Compose setup**  
@@ -58,7 +59,174 @@ widgets/
             └── my_widget_info.xml
 ```
 
-### 3. Use SharedPreferences in Your App
+### 3. Use DataStore in Your App (Recommended)
+
+```typescript
+import { DataStore } from 'expo-glance-widget';
+
+// Set data that widgets can read using currentState()
+await DataStore.set('wakatime_hours', '08:45');
+await DataStore.set('widget_title', 'Hello World!');
+await DataStore.set('user_score', 1250);
+await DataStore.set('is_premium', true);
+
+// Complex data as JSON
+await DataStore.set('user_profile', JSON.stringify({
+  name: 'John Doe',
+  level: 42,
+  achievements: ['first_win', 'speed_demon']
+}));
+```
+
+## DataStore API (Recommended)
+
+DataStore is the modern replacement for SharedPreferences and works seamlessly with Glance widgets using `currentState()`. It provides better performance, type safety, and coroutines support.
+
+### JavaScript/TypeScript API
+
+#### Basic Operations
+
+```typescript
+import { DataStore } from 'expo-glance-widget';
+
+// Set values
+await DataStore.set('key', 'value');
+await DataStore.set('count', 42);
+await DataStore.set('enabled', true);
+
+// Get values
+const text = await DataStore.get('key'); // string | null
+const count = await DataStore.get('count'); // number | null
+const enabled = await DataStore.get('enabled'); // boolean | null
+
+// Remove values
+await DataStore.remove('key');
+
+// Clear all
+await DataStore.clear();
+
+// Get all key-value pairs
+const allData = await DataStore.getAll();
+console.log(allData); // { key: 'value', count: 42, enabled: true }
+```
+
+#### Working with JSON Data
+
+```typescript
+// Store complex objects
+const userData = {
+  id: 123,
+  name: 'Alice',
+  preferences: {
+    theme: 'dark',
+    notifications: true
+  },
+  scores: [100, 85, 92]
+};
+
+await DataStore.set('user_data', JSON.stringify(userData));
+
+// Retrieve and parse JSON
+const storedData = await DataStore.get('user_data');
+if (storedData) {
+  const parsed = JSON.parse(storedData as string);
+  console.log(parsed.name); // 'Alice'
+}
+```
+
+#### Convenience Functions
+
+```typescript
+import { 
+  setDataStore,
+  getDataStore,
+  removeDataStore,
+  clearDataStore,
+  getAllDataStore
+} from 'expo-glance-widget';
+
+// Direct function calls (same as DataStore methods)
+await setDataStore('key', 'value');
+const value = await getDataStore('key');
+```
+
+#### Custom DataStore Names
+
+```typescript
+// Use different DataStore instances
+const options = { name: 'widget_settings' };
+
+await DataStore.set('theme', 'dark', options);
+const theme = await DataStore.get('theme', options);
+
+// Set default options for all operations
+DataStore.setDefaultOptions({ name: 'my_app_widgets' });
+```
+
+### Kotlin API (In Widgets)
+
+#### Using currentState() (Recommended)
+
+```kotlin
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.glance.currentState
+
+class MyWidget : GlanceAppWidget() {
+    // Define preference keys
+    private val wakatimeHoursKey = stringPreferencesKey("wakatime_hours")
+    private val userScoreKey = stringPreferencesKey("user_score")
+    
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            // Read data set from JavaScript using currentState
+            val hours = currentState(key = wakatimeHoursKey) ?: "--:--"
+            val score = currentState(key = userScoreKey) ?: "0"
+            
+            GlanceTheme {
+                Column {
+                    Text(text = "Hours: $hours")
+                    Text(text = "Score: $score")
+                }
+            }
+        }
+    }
+}
+```
+
+#### Using DataStoreHelper Directly
+
+```kotlin
+import expo.modules.glancewidget.DataStoreHelper
+
+class MyWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val dataStore = DataStoreHelper.create(context)
+        
+        // Read data set from JavaScript
+        val title = dataStore.getString("widget_title", "Default Title")
+        val score = dataStore.getInt("user_score", 0)
+        val isPremium = dataStore.getBoolean("is_premium", false)
+        
+        // Parse JSON data
+        val userDataJson = dataStore.getString("user_data", "{}")
+        // Use Gson to parse JSON (already included in dependencies)
+        
+        provideContent {
+            GlanceTheme {
+                Column {
+                    Text(text = title ?: "Default Title")
+                    Text(text = "Score: $score")
+                    if (isPremium) {
+                        Text(text = "Premium User ⭐")
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+### 4. Use SharedPreferences in Your App (Legacy)
 
 ```typescript
 import { SharedPreferences } from 'expo-glance-widget';
@@ -76,7 +244,7 @@ await SharedPreferences.set('user_profile', {
 });
 ```
 
-## SharedPreferences API
+## SharedPreferences API (Legacy)
 
 ### JavaScript/TypeScript API
 
@@ -192,7 +360,195 @@ class MyWidget : GlanceAppWidget() {
 }
 ```
 
-## Complete Widget Example
+## Complete Widget Example (DataStore)
+
+### JavaScript Side (App)
+
+```typescript
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { DataStore } from 'expo-glance-widget';
+
+export default function WidgetControlScreen() {
+  const [title, setTitle] = useState('');
+  const [count, setCount] = useState(0);
+  const [wakatimeHours, setWakatimeHours] = useState('--:--');
+
+  const updateWidget = async () => {
+    // Update widget data using DataStore
+    await DataStore.set('widget_title', title);
+    await DataStore.set('widget_count', count);
+    await DataStore.set('wakatime_hours', wakatimeHours);
+    await DataStore.set('last_update', new Date().toISOString());
+    
+    // Complex data example
+    await DataStore.set('widget_config', JSON.stringify({
+      theme: 'dark',
+      showIcon: true,
+      refreshInterval: 300000 // 5 minutes
+    }));
+    
+    console.log('Widget data updated with DataStore!');
+  };
+
+  const generateRandomHours = () => {
+    const hours = Math.floor(Math.random() * 12);
+    const minutes = Math.floor(Math.random() * 60);
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>DataStore Widget Control</Text>
+      
+      <View style={styles.section}>
+        <Text style={styles.label}>Widget Title:</Text>
+        <TextInput 
+          style={styles.input}
+          value={title}
+          onChangeText={setTitle}
+          placeholder="Enter widget title"
+        />
+      </View>
+      
+      <View style={styles.section}>
+        <Text>Count: {count}</Text>
+        <Button title="+" onPress={() => setCount(count + 1)} />
+        <Button title="-" onPress={() => setCount(Math.max(0, count - 1))} />
+      </View>
+      
+      <View style={styles.section}>
+        <Text>Wakatime Hours: {wakatimeHours}</Text>
+        <Button title="Generate Random" onPress={() => setWakatimeHours(generateRandomHours())} />
+      </View>
+      
+      <Button title="Update Widget" onPress={updateWidget} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  section: { marginBottom: 20 },
+  label: { fontSize: 16, marginBottom: 8 },
+  input: { borderWidth: 1, borderColor: '#ddd', padding: 10, borderRadius: 8 },
+});
+```
+
+### Kotlin Side (Widget using currentState)
+
+```kotlin
+package com.yourpackage.widgets
+
+import android.content.ComponentName
+import android.content.Context
+import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.glance.*
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
+import androidx.glance.appwidget.*
+import androidx.glance.appwidget.components.*
+import androidx.glance.layout.*
+import androidx.glance.text.*
+import com.google.gson.Gson
+
+data class WidgetConfig(
+    val theme: String,
+    val showIcon: Boolean,
+    val refreshInterval: Long
+)
+
+class MyDataStoreWidget : GlanceAppWidget() {
+    // Define preference keys for DataStore
+    private val wakatimeHoursKey = stringPreferencesKey("wakatime_hours")
+    private val widgetTitleKey = stringPreferencesKey("widget_title")
+    private val widgetCountKey = stringPreferencesKey("widget_count")
+    private val lastUpdateKey = stringPreferencesKey("last_update")
+    private val widgetConfigKey = stringPreferencesKey("widget_config")
+
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            // Get values using currentState (DataStore integration)
+            val wakatimeHours = currentState(key = wakatimeHoursKey) ?: "--:--"
+            val widgetTitle = currentState(key = widgetTitleKey) ?: "My Widget"
+            val widgetCount = currentState(key = widgetCountKey) ?: "0"
+            val lastUpdate = currentState(key = lastUpdateKey) ?: "Never"
+            val widgetConfigJson = currentState(key = widgetConfigKey) ?: "{}"
+
+            // Parse JSON configuration
+            val config = try {
+                Gson().fromJson(widgetConfigJson, WidgetConfig::class.java)
+            } catch (e: Exception) {
+                WidgetConfig("light", true, 300000)
+            }
+
+            // Create action to open app
+            val componentName = ComponentName(context, MainActivity::class.java)
+            val launchAppAction = actionStartActivity(componentName)
+
+            GlanceTheme {
+                Scaffold(
+                    titleBar = {
+                        TitleBar(
+                            startIcon = if (config.showIcon) ImageProvider(R.drawable.main_app_icon) else null,
+                            title = widgetTitle
+                        )
+                    },
+                    backgroundColor = GlanceTheme.colors.widgetBackground
+                ) {
+                    Column(
+                        modifier = GlanceModifier
+                            .fillMaxSize()
+                            .clickable(launchAppAction),
+                        horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+                        verticalAlignment = Alignment.Vertical.CenterVertically
+                    ) {
+                        // Main display
+                        Text(
+                            text = wakatimeHours,
+                            style = TextStyle(
+                                fontSize = 64.sp,
+                                color = GlanceTheme.colors.onSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        
+                        Text(
+                            text = "Count: $widgetCount",
+                            style = TextStyle(fontSize = 16.sp)
+                        )
+                        
+                        Text(
+                            text = "Updated: ${formatTime(lastUpdate)}",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                color = GlanceTheme.colors.onSurface.copy(alpha = 0.7f)
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+    
+    private fun formatTime(isoString: String): String {
+        return try {
+            if (isoString == "Never") return "Never"
+            isoString.substring(11, 16)
+        } catch (e: Exception) {
+            "Never"
+        }
+    }
+}
+
+class MyDataStoreWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = MyDataStoreWidget()
+}
+```
+
+## Complete Widget Example (SharedPreferences - Legacy)
 
 ### JavaScript Side (App)
 

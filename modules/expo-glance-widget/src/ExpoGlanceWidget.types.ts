@@ -24,3 +24,10 @@ export type SharedPreferencesValue = string | number | boolean | null;
 export interface SharedPreferencesOptions {
   name?: string; // SharedPreferences file name, defaults to app package name
 }
+
+// DataStore Types
+export type DataStoreValue = string | number | boolean | null;
+
+export interface DataStoreOptions {
+  name?: string; // DataStore name, defaults to app package name + "_preferences"
+}

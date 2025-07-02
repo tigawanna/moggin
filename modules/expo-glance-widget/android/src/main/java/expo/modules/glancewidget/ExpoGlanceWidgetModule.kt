@@ -29,7 +29,7 @@ class ExpoGlanceWidgetModule : Module() {
             "PI" to Math.PI
         )
 
-        Events("onChange")
+
 
         // Function("createWidget") {
         //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -1,5 +1,5 @@
 export type ExpoGlanceWidgetModuleEvents = {
-  onLoad: { url: string };
+
 };
 
 export type WidgetCreationResult = {
@@ -7,7 +7,3 @@ export type WidgetCreationResult = {
   error?: string;
 };
 
-export type ExpoGlanceWidgetModuleViewProps = {
-  url: string;
-  onLoad?: (event: { nativeEvent: { url: string } }) => void;
-};

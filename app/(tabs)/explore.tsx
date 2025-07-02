@@ -1,4 +1,4 @@
-import { } from "@/modules/expo-glance-widget";
+import ExpoGlance from "@/modules/expo-glance-widget";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function TabTwoScreen() {

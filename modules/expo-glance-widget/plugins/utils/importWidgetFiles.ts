@@ -2,24 +2,26 @@ import fs from "fs";
 import path from "path";
 import { Logger } from "./fs";
 
-interface FindWidgetFilesProps {
+interface ImportWidgetFilesProps {
   widgetsSourceBasePath: string;
-  directoriesToInclude?: string[];
+  includeDirectories?: string[];
   destinationBasePath: string;
   filesMatchPattern?: string;
   destinationPackageName: string;
   sourcePackageName?: string;
 }
 
-export function findWidgetFiles({
+export function importWidgetFiles({
   widgetsSourceBasePath,
-  directoriesToInclude = [],
+  includeDirectories = [],
   destinationBasePath,
   filesMatchPattern,
   destinationPackageName,
   sourcePackageName,
-}: FindWidgetFilesProps) {
-  Logger.file(`Finding widget files in source path: ${widgetsSourceBasePath}`);
+}: ImportWidgetFilesProps) {
+  console.log(" == inludeDirectories == ", includeDirectories);
+
+  Logger.file(`\nFinding widget files in source path: ${widgetsSourceBasePath}\n`);
 
   if (!fs.existsSync(widgetsSourceBasePath)) {
     Logger.warn(`Widgets source path does not exist: ${widgetsSourceBasePath}`);
@@ -42,14 +44,14 @@ export function findWidgetFiles({
     const destinationPath = path.join(destinationBasePath, file.name);
 
     // Skip if file doesn't match pattern (if pattern exists)
-    if (patternRegex && !patternRegex.test(file.name)) {
+    if (patternRegex && file.isFile() && !patternRegex.test(file.name)) {
       Logger.warn(`Skipping ${file.name} - doesn't match pattern`);
       return;
     }
 
     if (file.isDirectory()) {
       // Process directory if it's in the include list or if no specific directories were specified
-      if (directoriesToInclude.length === 0 || directoriesToInclude.includes(file.name)) {
+      if (includeDirectories.length === 0 || includeDirectories.includes(file.name)) {
         Logger.file(`🚧🚧 Processing directory: ${file.name}`);
         recreateWidgetDirectories({
           directoryToInclude: file.name,

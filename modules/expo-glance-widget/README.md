@@ -36,7 +36,7 @@ export default {
     [
       withExpoGlanceWidgets,
       {
-        widgetClassPath: "widgets/android/",
+        widgetFilesPath: "widgets/android/",
         manifestPath: "widgets/android/AndroidManifest.xml",
         resPath: "widgets/android/res"
       }
@@ -715,7 +715,7 @@ class MyWidgetReceiver : GlanceAppWidgetReceiver() {
 ```typescript
 export interface GlanceWidgetConfig {
   // Widget class files
-  widgetClassPath?: string;           // Path to widget Kotlin files
+  widgetFilesPath?: string;           // Path to widget Kotlin files
   
   // Android manifest
   manifestPath?: string;              // Path to widget manifest
@@ -742,7 +742,7 @@ export interface GlanceWidgetConfig {
 [
   withExpoGlanceWidgets,
   {
-    widgetClassPath: "widgets/android/",
+    widgetFilesPath: "widgets/android/",
     manifestPath: "widgets/android/AndroidManifest.xml",
     resPath: "widgets/android/res"
   }
@@ -764,7 +764,7 @@ export interface GlanceWidgetConfig {
     includeDirectories: ["widgets", "utils", "models"],
     
     // External Android Studio project
-    widgetClassPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\java\\com\\mycompany\\",
+    widgetFilesPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\java\\com\\mycompany\\",
     manifestPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\AndroidManifest.xml",
     resPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\res",
     
@@ -781,7 +781,7 @@ export interface GlanceWidgetConfig {
   withExpoGlanceWidgets,
   {
     // Comma-separated paths for multiple widget sources
-    widgetClassPath: "widgets/weather/,widgets/calendar/,widgets/news/",
+    widgetFilesPath: "widgets/weather/,widgets/calendar/,widgets/news/",
     resPath: "widgets/weather/res,widgets/calendar/res,widgets/news/res"
   }
 ]
@@ -820,7 +820,7 @@ MyAndroidProject/
 [
   withExpoGlanceWidgets,
   {
-    widgetClassPath: "MyAndroidProject/src/main/java/com/mycompany/",
+    widgetFilesPath: "MyAndroidProject/src/main/java/com/mycompany/",
     includeDirectories: ["widgets", "utils", "models"],
     // This will copy:
     // - widgets/WeatherWidget.kt
@@ -859,14 +859,14 @@ This ensures that all imports and references work correctly in your Expo project
 
 1. **Relative paths** (from your Expo project root):
    ```typescript
-   widgetClassPath: "widgets/android/"
-   widgetClassPath: "../external-widgets/"
+   widgetFilesPath: "widgets/android/"
+   widgetFilesPath: "../external-widgets/"
    ```
 
 2. **Absolute paths** (anywhere on your system):
    ```typescript
-   widgetClassPath: "C:\\Users\\user\\AndroidStudioProjects\\MyApp\\widgets\\"
-   widgetClassPath: "/home/user/android-projects/widgets/"
+   widgetFilesPath: "C:\\Users\\user\\AndroidStudioProjects\\MyApp\\widgets\\"
+   widgetFilesPath: "/home/user/android-projects/widgets/"
    ```
 
 3. **Auto-sync directories** (created automatically):

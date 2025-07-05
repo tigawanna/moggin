@@ -14,7 +14,7 @@ export default {
       withExpoGlanceWidgets,
       {
         // Path to your Android project or widget directory
-        widgetClassPath: "../MyAndroidProject/app/src/main/java/com/mycompany/",
+        widgetFilesPath: "../MyAndroidProject/app/src/main/java/com/mycompany/",
         
         // Only copy from these specific directories
         includeDirectories: ["widgets", "utils", "data"],
@@ -77,7 +77,7 @@ android/app/src/main/java/com/yourexpoapp/
 
 ## Options
 
-- `includeDirectories`: Array of directory names to copy from (relative to `widgetClassPath`)
+- `includeDirectories`: Array of directory names to copy from (relative to `widgetFilesPath`)
 - `fileMatchPattern`: Pattern to match files (default: "Widget")
 - Empty `includeDirectories` array: Falls back to copying all widget files from the source directory
 

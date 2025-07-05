@@ -16,6 +16,7 @@ export class ManifestSync {  /**
     customManifestPath: string,
     defaultManifestPath: string
   ): void {
+    Logger.info(`\n\n==================== Syncing manifest file ====================\n\n`);
     const resolvedSource = this.resolveManifestPath(projectRoot, customManifestPath);
     
     if (!resolvedSource) {
@@ -42,6 +43,7 @@ export class ManifestSync {  /**
     projectRoot: string,
     manifestPath: string
   ): Promise<void> {
+    Logger.info(`\n\n==================== Adding widget receivers and permissions ====================\n\n`);
     const resolvedManifestPath = this.resolveManifestPath(projectRoot, manifestPath);
     
     if (!resolvedManifestPath) {

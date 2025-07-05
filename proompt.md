@@ -2,7 +2,7 @@ i want to buld a util for the config plugin that will copy
 all files including Widget wnd ending with .kt to the root android folder  
 
 const DEFAULT_OPTIONS: WithExpoGlanceWidgetsProps = {
-  widgetClassPath: "widgets/android/MyWidget.kt",
+  widgetFilesPath: "widgets/android/MyWidget.kt",
   manifestPath: "widgets/android/AndroidManifest.xml",
   resPath: "widgets/android/res",
 };

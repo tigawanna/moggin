@@ -12,6 +12,7 @@ const xml_1 = require("./xml");
  */
 class ResourceSync {
     static syncToDefaults(projectRoot, customResPath, defaultResPath) {
+        fs_1.Logger.info(`\n\n==================== Syncing resources ====================\n\n`);
         const resolvedSource = this.resolveResourcePath(projectRoot, customResPath);
         if (!resolvedSource) {
             fs_1.Logger.warn(`Custom resources directory not found: ${customResPath}`);
@@ -45,6 +46,7 @@ class ResourceSync {
      * @param resPath - Path to the resources directory (can be relative or absolute)
      */
     static copyToBuild(projectRoot, platformRoot, resPath) {
+        fs_1.Logger.info(`\n\n==================== Copying resources to build directory ====================\n\n`);
         const resolvedSource = this.resolveResourcePath(projectRoot, resPath);
         if (!resolvedSource) {
             fs_1.Logger.warn(`Resources directory not found: ${resPath}`);

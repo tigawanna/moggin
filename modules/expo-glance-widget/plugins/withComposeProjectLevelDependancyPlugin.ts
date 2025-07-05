@@ -24,6 +24,25 @@ const withComposeProjectLevelDependancyPlugin: ConfigPlugin<WithExpoGlanceWidget
       }
     }
 
+    // Check if the serialization plugin is already added
+    if (!buildGradleContent.includes("kotlin-serialization")) {
+      // Find the dependencies block and add the serialization plugin
+      const dependenciesRegex = /(dependencies\s*\{[^}]*)/;
+      const match = config.modResults.contents.match(dependenciesRegex);
+
+      if (match) {
+        const newDependencies =
+          match[1] +
+          "\n    // Add Kotlin serialization plugin" +
+          "\n    classpath('org.jetbrains.kotlin:kotlin-serialization:2.0.0')";
+
+        config.modResults.contents = config.modResults.contents.replace(
+          dependenciesRegex,
+          newDependencies
+        );
+      }
+    }
+
     // Also update Kotlin version if needed
     if (!buildGradleContent.includes("kotlin-gradle-plugin:2.0.0")) {
       config.modResults.contents = config.modResults.contents.replace(

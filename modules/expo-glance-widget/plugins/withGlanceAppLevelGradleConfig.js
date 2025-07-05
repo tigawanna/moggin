@@ -23,13 +23,14 @@ function addGlanceBuildConfiguration(buildGradle) {
     // Check if Kotlin plugins are already applied
     const hasKotlinPlugin = buildGradle.includes('apply plugin: "org.jetbrains.kotlin.android"');
     const hasComposePlugin = buildGradle.includes('apply plugin: "org.jetbrains.kotlin.plugin.compose"');
+    const hasSerializationPlugin = buildGradle.includes('apply plugin: "org.jetbrains.kotlin.plugin.serialization"');
     // Check if Compose build features are configured
     const hasBuildFeatures = buildGradle.includes('buildFeatures') && buildGradle.includes('compose true');
     // Check if Glance dependencies are present
     const hasGlanceDeps = buildGradle.includes('androidx.glance:glance-appwidget');
     let modifiedGradle = buildGradle;
     // 1. Add Kotlin plugins after the React Native plugin
-    if (!hasKotlinPlugin || !hasComposePlugin) {
+    if (!hasKotlinPlugin || !hasComposePlugin || !hasSerializationPlugin) {
         const pluginInsertPoint = modifiedGradle.indexOf('apply plugin: "com.facebook.react"');
         if (pluginInsertPoint !== -1) {
             const insertAfter = modifiedGradle.indexOf('\n', pluginInsertPoint) + 1;
@@ -39,6 +40,9 @@ function addGlanceBuildConfiguration(buildGradle) {
             }
             if (!hasComposePlugin) {
                 pluginsToAdd += 'apply plugin: "org.jetbrains.kotlin.plugin.compose"\n';
+            }
+            if (!hasSerializationPlugin) {
+                pluginsToAdd += 'apply plugin: "org.jetbrains.kotlin.plugin.serialization"\n';
             }
             modifiedGradle =
                 modifiedGradle.slice(0, insertAfter) +
@@ -93,17 +97,34 @@ function addGlanceBuildConfiguration(buildGradle) {
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.ui:ui-unit'
     
-    // Glance dependencies for widgets
-    implementation 'androidx.glance:glance:1.1.1'
-    implementation 'androidx.glance:glance-appwidget:1.1.1'
-    implementation 'androidx.glance:glance-material3:1.1.1'
-    implementation 'androidx.glance:glance-material:1.1.1'
-    
-    // Additional dependencies for widget functionality
-    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    // Required for WorkManager
     implementation 'androidx.work:work-runtime-ktx:2.9.0'
     
-    // JSON parsing for widget configuration
+    // Jetpack Glance dependencies
+    // For AppWidgets support
+    implementation 'androidx.glance:glance-appwidget:1.1.1'
+    // For interop APIs with Material 3
+    implementation 'androidx.glance:glance-material3:1.1.1'
+    // For interop APIs with Material 2
+    implementation 'androidx.glance:glance-material:1.1.1'
+    
+    // Ktor for networking
+    implementation 'io.ktor:ktor-client-android:2.3.8'
+    implementation 'io.ktor:ktor-client-content-negotiation:2.3.8'
+    implementation 'io.ktor:ktor-serialization-kotlinx-json:2.3.8'
+    implementation 'io.ktor:ktor-client-logging:2.3.8'
+    
+    // Kotlinx Serialization for JSON parsing
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
+    
+    // Kotlin Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    
+    // DataStore for preferences - ensure this is the latest stable version
+    implementation 'androidx.datastore:datastore-preferences:1.1.1'
+    
+    // JSON parsing for widget configuration (fallback)
     implementation 'com.google.code.gson:gson:2.10.1'
 `;
             modifiedGradle =

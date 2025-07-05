@@ -12,7 +12,7 @@ const withGlanceWidgetFiles_1 = require("./withGlanceWidgetFiles");
  * Default configuration options for Expo Glance Widgets
  */
 exports.DEFAULT_OPTIONS = {
-    widgetClassPath: "widgets/android/MyWidget.kt",
+    widgetFilesPath: "widgets/android/MyWidget.kt",
     manifestPath: "widgets/android/AndroidManifest.xml",
     resPath: "widgets/android/res",
     fileMatchPattern: "Widget", // Default: match files containing "Widget" in the name
@@ -26,8 +26,8 @@ exports.DEFAULT_OPTIONS = {
 function getDefaultedOptions(options) {
     const mergedOptions = Object.assign(Object.assign({}, exports.DEFAULT_OPTIONS), options);
     // Auto-detect external sources and adjust sync directory
-    const isExternalWidgetPath = path_1.default.isAbsolute(mergedOptions.widgetClassPath) ||
-        mergedOptions.widgetClassPath.startsWith('../');
+    const isExternalWidgetPath = path_1.default.isAbsolute(mergedOptions.widgetFilesPath) ||
+        mergedOptions.widgetFilesPath.startsWith('../');
     const isExternalManifestPath = path_1.default.isAbsolute(mergedOptions.manifestPath) ||
         mergedOptions.manifestPath.startsWith('../');
     const isExternalResPath = path_1.default.isAbsolute(mergedOptions.resPath) ||
@@ -57,7 +57,7 @@ function getDefaultedOptions(options) {
  * @example
  * // Using external Android Studio project
  * [withExpoGlanceWidgets, {
- *   widgetClassPath: "../../MyAndroidProject/app/src/main/java/com/example/MyWidget.kt",
+ *   widgetFilesPath: "../../MyAndroidProject/app/src/main/java/com/example/MyWidget.kt",
  *   manifestPath: "../../MyAndroidProject/app/src/main/AndroidManifest.xml",
  *   resPath: "../../MyAndroidProject/app/src/main/res"
  * }]

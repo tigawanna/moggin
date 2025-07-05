@@ -6,7 +6,8 @@ import {
 } from '@expo/config-plugins';
 import { WidgetSync, WithExpoGlanceWidgetsProps } from './utils/widgetSync';
 import { DEFAULT_OPTIONS } from './withPlugins';
-
+import { importWidgetFiles } from './utils/importWidgetFiles';
+import path from 'path';
 /**
  * Main config plugin that copies widget files and modifies Android manifest
  * 
@@ -37,6 +38,8 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
       const projectRoot = modRequest.projectRoot;
       const platformRoot = modRequest.platformProjectRoot;
       const packageName = AndroidConfig.Package.getPackage(config);
+
+
       
       console.log("=====   ✅✅✅✅✅✅✅✅✅✅ ========",modRequest)
       console.log("=====   ✅✅✅✅✅✅✅✅✅✅ ========", packageName);
@@ -51,6 +54,7 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
 
       // Copy widget files to Android build directories
       WidgetSync.copyToBuild(projectRoot, platformRoot, finalOptions, packageName);
+
 
       return newConfig;
     },

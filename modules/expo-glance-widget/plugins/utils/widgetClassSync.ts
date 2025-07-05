@@ -1,5 +1,23 @@
-import path from 'path';
-import { FileUtils, Logger } from './fs';
+import path from "path";
+import { FileUtils, Logger } from "./fs";
+import { importWidgetFiles } from "./importWidgetFiles";
+
+interface CopyToProps {
+  projectRoot: string;
+  platformRoot: string;
+  widgetFilesPath: string;
+  packageName: string;
+  fileMatchPattern?: string;
+  includeDirectories?: string[];
+  projectAndroidRoot: string;
+  /**
+   * used as the default source path if widgetFilesPath is not provided
+   * if widgets file paths is external to the project the files will be duplicated here
+   * @default "widgets/android"
+   *
+   */
+  defaultSourcePath?: string;
+}
 
 /**
  * Utility functions for syncing widget class files
@@ -7,156 +25,173 @@ import { FileUtils, Logger } from './fs';
 export class WidgetClassSync {
   /**
    * Syncs widget Kotlin class files to default location with package name updates
-   * @param projectRoot - Root directory of the Expo project
-   * @param customPath - Custom path to widget files
-   * @param defaultPath - Default path for widget files
-   * @param packageName - Target package name for the Expo project
-   * @param fileMatchPattern - Pattern to match widget files (default: "Widget")
    */
-  static syncToDefaults(
-    projectRoot: string,
-    customPath: string,
-    defaultPath: string,
-    packageName: string,
-    fileMatchPattern: string = "Widget"
-  ): void {
-    const resolvedSource = this.resolveWidgetPath(projectRoot, customPath);
-    
+  static syncToDefaults({
+    projectRoot,
+    widgetFilesPath,
+    includeDirectories,
+    defaultSourcePath = "widgets/android",
+    packageName,
+    fileMatchPattern = "Widget",
+  }: Omit<CopyToProps, "projectAndroidRoot">): void {
+    Logger.info(
+      `\n\n==================== Syncing widget files to default location ====================\n\n`
+    );
+    const resolvedSource = this.resolveWidgetPath(projectRoot, widgetFilesPath);
+
     if (!resolvedSource) {
-      Logger.warn(`No valid widget files found at: ${customPath}`);
+      Logger.warn(`No valid widget files found at: ${widgetFilesPath}`);
       return;
     }
-
-    const defaultFile = path.join(projectRoot, defaultPath);
-    const defaultTargetDir = path.dirname(defaultFile);
-    
-    // Ensure default directory exists
-    FileUtils.ensureDir(defaultTargetDir);
+    if (!resolvedSource) {
+      Logger.warn(`No valid widget files found at: ${widgetFilesPath}`);
+      return;
+    }
 
     const sourceDir = path.dirname(resolvedSource);
-    const ktFiles = this.findWidgetFiles(sourceDir, fileMatchPattern);
-    
-    if (ktFiles.length === 0) {
-      Logger.warn(`No widget Kotlin files found in: ${sourceDir}`);
-      return;
-    }
 
-    Logger.mobile(`Syncing ${ktFiles.length} Kotlin files to ${defaultPath} directory...`);
-
-    ktFiles.forEach((fileName: string) => {
-      const sourcePath = path.join(sourceDir, fileName);
-      const targetPath = path.join(defaultTargetDir, fileName);
-
-      FileUtils.copyFileSync(sourcePath, targetPath);
-      
-      // Update package name in the synced file to match Expo project
-      this.updatePackageDeclaration(targetPath, packageName);
-      
-      Logger.success(`Synced: ${fileName} → ${path.relative(projectRoot, targetPath)} (package updated)`);
+    const destinationBaseDir = path.join(projectRoot, defaultSourcePath);
+    // console.log(`n\n\ ==== Syncing widget files from: ${sourceDir} to ${destinationBaseDir}\n\n`);
+    importWidgetFiles({
+      includeDirectories: includeDirectories || [],
+      widgetsSourceBasePath: sourceDir,
+      destinationBasePath: destinationBaseDir,
+      filesMatchPattern: fileMatchPattern,
+      destinationPackageName: packageName,
     });
+    // Ensure default directory exists
+    // FileUtils.ensureDir(defaultTargetDir);
+
+    // const sourceDir = path.dirname(resolvedSource);
+    // const ktFiles = this.findWidgetFiles(sourceDir, fileMatchPattern);
+
+    // if (ktFiles.length === 0) {
+    //   Logger.warn(`No widget Kotlin files found in: ${sourceDir}`);
+    //   return;
+    // }
+
+    // Logger.mobile(`Syncing ${ktFiles.length} Kotlin files to ${defaultPath} directory...`);
+
+    // ktFiles.forEach((fileName: string) => {
+    //   const sourcePath = path.join(sourceDir, fileName);
+    //   const targetPath = path.join(defaultTargetDir, fileName);
+
+    //   FileUtils.copyFileSync(sourcePath, targetPath);
+
+    //   // Update package name in the synced file to match Expo project
+    //   this.updatePackageDeclaration(targetPath, packageName);
+
+    //   Logger.success(
+    //     `Synced: ${fileName} → ${path.relative(projectRoot, targetPath)} (package updated)`
+    //   );
+    // });
   }
 
   /**
    * Copies widget files to Android build directory from specified directories only
-   * @param projectRoot - Root directory of the Expo project
-   * @param platformRoot - Root directory of the Android platform
-   * @param widgetClassPath - Path to the widget class file
-   * @param packageName - Android package name
-   * @param fileMatchPattern - Pattern to match widget files (default: "Widget")
-   * @param targetDirectories - Array of directory names relative to widget source to copy from
+
    */
-  static copyToBuild(
-    projectRoot: string,
-    platformRoot: string,
-    widgetClassPath: string,
-    packageName: string,
-    fileMatchPattern: string = "Widget",
-    targetDirectories: string[] = []
-  ): void {
-    const resolvedSource = this.resolveWidgetPath(projectRoot, widgetClassPath);
-    
+  static copyToBuild({
+    packageName,
+    widgetFilesPath,
+    includeDirectories,
+    projectAndroidRoot,
+    projectRoot,
+    fileMatchPattern,
+  }: CopyToProps): void {
+    Logger.info(
+      `\n\n\==================== Copying widget files to build location ====================\n\n`
+    );
+    const resolvedSource = this.resolveWidgetPath(projectRoot, widgetFilesPath);
+
     if (!resolvedSource) {
-      Logger.warn(`No valid widget files found at: ${widgetClassPath}`);
+      Logger.warn(`No valid widget files found at: ${widgetFilesPath}`);
       return;
     }
 
     const sourceDir = path.dirname(resolvedSource);
-    const basePackagePath = packageName.replace(/\./g, '/');
-    const destinationBaseDir = path.join(platformRoot, 'app/src/main/java', basePackagePath);
-    
-    // Ensure base destination directory exists
-    FileUtils.ensureDir(destinationBaseDir);
-    
-    let allWidgetFiles: {sourcePath: string, relativePath: string}[] = [];
+    const destinationBaseDir = path.join(projectRoot, projectAndroidRoot, "app/src/main/java");
 
-    if (targetDirectories.length > 0) {
-      // Copy only from specified directories
-      Logger.mobile(`Copying from specified directories: ${targetDirectories.join(', ')}`);
-      
-      targetDirectories.forEach(dirName => {
-        const targetDir = path.join(sourceDir, dirName);
-        
-        if (!FileUtils.exists(targetDir) || !FileUtils.isDirectory(targetDir)) {
-          Logger.warn(`Specified directory does not exist: ${dirName}`);
-          return;
-        }
-        
-        // Find widget files in this specific directory and its subdirectories
-        const widgetFiles = this.findWidgetFilesInDirectory(targetDir, fileMatchPattern);
-        
-        widgetFiles.forEach(file => {
-          // Calculate relative path from the source directory to preserve subdirectory structure
-          const relativePath = path.relative(sourceDir, file);
-          
-          allWidgetFiles.push({
-            sourcePath: file,
-            relativePath: relativePath
-          });
-        });
-      });
-    } else {
-      // Fallback: only copy files from the immediate source directory (no subdirectories)
-      Logger.mobile(`No target directories specified, copying from source directory only`);
-      
-      const widgetFiles = this.findWidgetFiles(sourceDir, fileMatchPattern);
-      widgetFiles.forEach(fileName => {
-        allWidgetFiles.push({
-          sourcePath: path.join(sourceDir, fileName),
-          relativePath: fileName
-        });
-      });
-    }
-
-    if (allWidgetFiles.length === 0) {
-      Logger.warn(`No widget files found matching pattern "${fileMatchPattern}"`);
-      return;
-    }
-
-    Logger.mobile(`Copying ${allWidgetFiles.length} Kotlin widget files...`);
-
-    allWidgetFiles.forEach(({sourcePath, relativePath}) => {
-      const destinationFile = path.join(destinationBaseDir, relativePath);
-      const destinationDir = path.dirname(destinationFile);
-
-      // Ensure destination subdirectory exists
-      FileUtils.ensureDir(destinationDir);
-
-      if (FileUtils.exists(destinationFile)) {
-        Logger.warn(`File already exists, overwriting: ${relativePath}`);
-      }
-
-      Logger.success(`Copying: ${relativePath}`);
-      FileUtils.copyFileSync(sourcePath, destinationFile);
-
-      // Calculate package name including subdirectories
-      const subPath = path.relative(destinationBaseDir, destinationDir);
-      const fullPackageName = subPath
-        ? `${packageName}.${subPath.replace(/[\\/]/g, '.')}` // Convert path separators to dots
-        : packageName;
-
-      // Update package declaration in the copied file
-      this.updatePackageDeclaration(destinationFile, fullPackageName);
+    importWidgetFiles({
+      includeDirectories: includeDirectories || [],
+      widgetsSourceBasePath: sourceDir,
+      destinationBasePath: destinationBaseDir,
+      filesMatchPattern: fileMatchPattern,
+      destinationPackageName: packageName,
     });
+    // Ensure base destination directory exists
+    // FileUtils.ensureDir(destinationBaseDir);
+
+    // let allWidgetFiles: { sourcePath: string; relativePath: string }[] = [];
+
+    // if (includeDirectories.length > 0) {
+    //   // Copy only from specified directories
+    //   Logger.mobile(`Copying from specified directories: ${includeDirectories.join(", ")}`);
+
+    //   includeDirectories.forEach((dirName) => {
+    //     const targetDir = path.join(sourceDir, dirName);
+
+    //     if (!FileUtils.exists(targetDir) || !FileUtils.isDirectory(targetDir)) {
+    //       Logger.warn(`Specified directory does not exist: ${dirName}`);
+    //       return;
+    //     }
+
+    //     // Find widget files in this specific directory and its subdirectories
+    //     const widgetFiles = this.findWidgetFilesInDirectory(targetDir, fileMatchPattern);
+
+    //     widgetFiles.forEach((file) => {
+    //       // Calculate relative path from the source directory to preserve subdirectory structure
+    //       const relativePath = path.relative(sourceDir, file);
+
+    //       allWidgetFiles.push({
+    //         sourcePath: file,
+    //         relativePath: relativePath,
+    //       });
+    //     });
+    //   });
+    // } else {
+    //   // Fallback: only copy files from the immediate source directory (no subdirectories)
+    //   Logger.mobile(`No target directories specified, copying from source directory only`);
+
+    //   const widgetFiles = this.findWidgetFiles(sourceDir, fileMatchPattern);
+    //   widgetFiles.forEach((fileName) => {
+    //     allWidgetFiles.push({
+    //       sourcePath: path.join(sourceDir, fileName),
+    //       relativePath: fileName,
+    //     });
+    //   });
+    // }
+
+    // if (allWidgetFiles.length === 0) {
+    //   Logger.warn(`No widget files found matching pattern "${fileMatchPattern}"`);
+    //   return;
+    // }
+
+    // Logger.mobile(`Copying ${allWidgetFiles.length} Kotlin widget files...`);
+
+    // allWidgetFiles.forEach(({ sourcePath, relativePath }) => {
+    //   const destinationFile = path.join(destinationBaseDir, relativePath);
+    //   const destinationDir = path.dirname(destinationFile);
+
+    //   // Ensure destination subdirectory exists
+    //   FileUtils.ensureDir(destinationDir);
+
+    //   if (FileUtils.exists(destinationFile)) {
+    //     Logger.warn(`File already exists, overwriting: ${relativePath}`);
+    //   }
+
+    //   Logger.success(`Copying: ${relativePath}`);
+    //   FileUtils.copyFileSync(sourcePath, destinationFile);
+
+    //   // Calculate package name including subdirectories
+    //   const subPath = path.relative(destinationBaseDir, destinationDir);
+    //   const fullPackageName = subPath
+    //     ? `${packageName}.${subPath.replace(/[\\/]/g, ".")}` // Convert path separators to dots
+    //     : packageName;
+
+    //   // Update package declaration in the copied file
+    //   this.updatePackageDeclaration(destinationFile, fullPackageName);
+    // });
   }
 
   /**
@@ -169,9 +204,11 @@ export class WidgetClassSync {
     // Determine if the path is absolute or relative
     const isAbsolutePath = path.isAbsolute(widgetPath);
     const fullPath = isAbsolutePath ? widgetPath : path.join(projectRoot, widgetPath);
-    
-    Logger.debug(`Resolving widget path: ${fullPath} (${isAbsolutePath ? 'absolute' : 'relative'})`);
-    
+
+    Logger.debug(
+      `Resolving widget path: ${fullPath} (${isAbsolutePath ? "absolute" : "relative"})`
+    );
+
     // If it's a file and exists, validate it's a valid widget file
     if (FileUtils.exists(fullPath) && !FileUtils.isDirectory(fullPath)) {
       if (this.isValidWidgetFile(fullPath)) {
@@ -182,36 +219,38 @@ export class WidgetClassSync {
         return null;
       }
     }
-    
+
     // If it's a directory, look for widget files inside
     if (FileUtils.exists(fullPath) && FileUtils.isDirectory(fullPath)) {
       const widgetFiles = this.findWidgetFiles(fullPath, "Widget"); // Use default pattern for discovery
       if (widgetFiles.length > 0) {
         const firstWidgetFile = path.join(fullPath, widgetFiles[0]);
-        Logger.debug(`Found widget files in directory: ${widgetFiles.join(', ')}`);
+        Logger.debug(`Found widget files in directory: ${widgetFiles.join(", ")}`);
         return firstWidgetFile;
       } else {
         Logger.debug(`Directory exists but contains no widget files: ${fullPath}`);
       }
     }
-    
+
     // Handle case where path might be invalid but we can scan for widget files
     // This is useful for complex Android Studio project structures
     if (!FileUtils.exists(fullPath)) {
-      Logger.debug(`Path does not exist, checking if we can find widget files in nearby directories...`);
-      
+      Logger.debug(
+        `Path does not exist, checking if we can find widget files in nearby directories...`
+      );
+
       // Try to find the closest existing parent directory
       let currentPath = fullPath;
       let attempts = 0;
       const maxAttempts = 5; // Prevent infinite loops
-      
+
       while (!FileUtils.exists(currentPath) && attempts < maxAttempts) {
         currentPath = path.dirname(currentPath);
         attempts++;
-        
+
         if (FileUtils.exists(currentPath) && FileUtils.isDirectory(currentPath)) {
           Logger.debug(`Found existing parent directory: ${currentPath}`);
-          
+
           // Recursively search for widget files in this directory tree
           const foundWidgetFile = this.recursiveWidgetSearch(currentPath, 3); // Max depth 3
           if (foundWidgetFile) {
@@ -221,7 +260,7 @@ export class WidgetClassSync {
         }
       }
     }
-    
+
     Logger.warn(`No valid widget files found for path: ${widgetPath}`);
     return null;
   }
@@ -239,44 +278,44 @@ export class WidgetClassSync {
 
     try {
       const allFiles = FileUtils.readdirSync(directory);
-      const ktFiles = allFiles.filter((file: string) => file.endsWith('.kt'));
-      
+      const ktFiles = allFiles.filter((file: string) => file.endsWith(".kt"));
+
       if (ktFiles.length === 0) {
         return [];
       }
-      
+
       // Categorize files by widget relevance
       const definitiveWidgetFiles: string[] = [];
       const possibleWidgetFiles: string[] = [];
-      
+
       ktFiles.forEach((file: string) => {
         const fileName = file.toLowerCase();
         const matchPattern = fileMatchPattern.toLowerCase();
-        
+
         // Files with the specified pattern in the name are prioritized
         if (fileName.includes(matchPattern)) {
           definitiveWidgetFiles.push(file);
           return;
         }
-        
+
         // Check file content for widget-related keywords
         try {
           const filePath = path.join(directory, file);
           const content = FileUtils.readFileSync(filePath);
-          
+
           // Strong indicators of widget files
-          const strongKeywords = ['GlanceAppWidget', '@GlanceAppWidget', 'AppWidgetProvider'];
-          const hasStrongKeyword = strongKeywords.some(keyword => content.includes(keyword));
-          
+          const strongKeywords = ["GlanceAppWidget", "@GlanceAppWidget", "AppWidgetProvider"];
+          const hasStrongKeyword = strongKeywords.some((keyword) => content.includes(keyword));
+
           if (hasStrongKeyword) {
             definitiveWidgetFiles.push(file);
             return;
           }
-          
+
           // Weaker indicators
-          const weakKeywords = ['Widget', 'AppWidget'];
-          const hasWeakKeyword = weakKeywords.some(keyword => content.includes(keyword));
-          
+          const weakKeywords = ["Widget", "AppWidget"];
+          const hasWeakKeyword = weakKeywords.some((keyword) => content.includes(keyword));
+
           if (hasWeakKeyword) {
             possibleWidgetFiles.push(file);
           }
@@ -284,12 +323,14 @@ export class WidgetClassSync {
           // If we can't read the file, skip it
         }
       });
-      
+
       // Return definitive widget files first, then possible ones
       const result = [...definitiveWidgetFiles, ...possibleWidgetFiles];
-      
-      Logger.debug(`Found ${definitiveWidgetFiles.length} definitive and ${possibleWidgetFiles.length} possible widget files in ${directory}`);
-      
+
+      Logger.debug(
+        `Found ${definitiveWidgetFiles.length} definitive and ${possibleWidgetFiles.length} possible widget files in ${directory}`
+      );
+
       return result;
     } catch (error) {
       Logger.error(`Error reading directory ${directory}: ${error}`);
@@ -309,34 +350,44 @@ export class WidgetClassSync {
     }
 
     const widgetFiles: string[] = [];
-    
+
     try {
       const traverse = (dir: string): void => {
         const items = FileUtils.readdirSync(dir);
-        
-        items.forEach(item => {
+
+        items.forEach((item) => {
           const itemPath = path.join(dir, item);
-          
+
           if (FileUtils.isDirectory(itemPath)) {
             // Skip common build/generated directories
-            const skipDirs = ['build', 'gradle', '.gradle', 'generated', 'intermediates', 'outputs', 'tmp'];
+            const skipDirs = [
+              "build",
+              "gradle",
+              ".gradle",
+              "generated",
+              "intermediates",
+              "outputs",
+              "tmp",
+            ];
             if (!skipDirs.includes(item)) {
               traverse(itemPath);
             }
-          } else if (item.endsWith('.kt')) {
+          } else if (item.endsWith(".kt")) {
             // Check if this is a widget file
             const fileName = item.toLowerCase();
             const matchPattern = fileMatchPattern.toLowerCase();
-            
+
             if (fileName.includes(matchPattern)) {
               widgetFiles.push(itemPath);
             } else {
               // Check file content for widget-related keywords
               try {
                 const content = FileUtils.readFileSync(itemPath);
-                const strongKeywords = ['GlanceAppWidget', '@GlanceAppWidget', 'AppWidgetProvider'];
-                const hasStrongKeyword = strongKeywords.some(keyword => content.includes(keyword));
-                
+                const strongKeywords = ["GlanceAppWidget", "@GlanceAppWidget", "AppWidgetProvider"];
+                const hasStrongKeyword = strongKeywords.some((keyword) =>
+                  content.includes(keyword)
+                );
+
                 if (hasStrongKeyword) {
                   widgetFiles.push(itemPath);
                 }
@@ -347,12 +398,12 @@ export class WidgetClassSync {
           }
         });
       };
-      
+
       traverse(directory);
     } catch (error) {
       Logger.error(`Error traversing directory ${directory}: ${error}`);
     }
-    
+
     return widgetFiles;
   }
 
@@ -364,23 +415,30 @@ export class WidgetClassSync {
   private static updatePackageDeclaration(filePath: string, packageName: string): void {
     try {
       let content = FileUtils.readFileSync(filePath);
-      
+
       // Extract the current package name from the file
       const packageMatch = content.match(/^package\s+([^\s\n]+)/m);
       const currentPackage = packageMatch ? packageMatch[1] : null;
-      
+
       if (currentPackage && currentPackage !== packageName) {
         Logger.debug(`Updating package: ${currentPackage} → ${packageName}`);
-        
+
         // Replace package declaration
         content = content.replace(/^package\s+[^\s\n]+/m, `package ${packageName}`);
-        
+
         // Update imports that reference the old package
-        const importRegex = new RegExp(`import\\s+${currentPackage.replace(/\./g, '\\.')}(\..*)`, 'g');
+        const importRegex = new RegExp(
+          `import\\s+${currentPackage.replace(/\./g, "\\.")}(\..*)`,
+          "g"
+        );
         content = content.replace(importRegex, `import ${packageName}$1`);
-        
+
         FileUtils.writeFileSync(filePath, content);
-        Logger.success(`Updated package declaration in: ${path.basename(filePath)} (${currentPackage} → ${packageName})`);
+        Logger.success(
+          `Updated package declaration in: ${path.basename(
+            filePath
+          )} (${currentPackage} → ${packageName})`
+        );
       } else if (!currentPackage) {
         // If no package declaration found, add one
         content = `package ${packageName}\n\n${content}`;
@@ -400,22 +458,22 @@ export class WidgetClassSync {
    * @returns True if the file is a valid widget file
    */
   private static isValidWidgetFile(filePath: string): boolean {
-    if (!filePath.endsWith('.kt')) {
+    if (!filePath.endsWith(".kt")) {
       return false;
     }
-    
+
     try {
       const content = FileUtils.readFileSync(filePath);
       const fileName = path.basename(filePath);
-      
+
       // Check if filename contains "Widget"
-      if (fileName.toLowerCase().includes('widget')) {
+      if (fileName.toLowerCase().includes("widget")) {
         return true;
       }
-      
+
       // Check if file content contains widget-related keywords
-      const widgetKeywords = ['Widget', 'AppWidget', 'GlanceAppWidget', '@GlanceAppWidget'];
-      return widgetKeywords.some(keyword => content.includes(keyword));
+      const widgetKeywords = ["Widget", "AppWidget", "GlanceAppWidget", "@GlanceAppWidget"];
+      return widgetKeywords.some((keyword) => content.includes(keyword));
     } catch {
       return false;
     }
@@ -431,27 +489,35 @@ export class WidgetClassSync {
     if (maxDepth <= 0 || !FileUtils.exists(rootDir) || !FileUtils.isDirectory(rootDir)) {
       return null;
     }
-    
+
     try {
       // First, check current directory for widget files
       const widgetFiles = this.findWidgetFiles(rootDir, "Widget"); // Use default pattern for discovery
       if (widgetFiles.length > 0) {
         return path.join(rootDir, widgetFiles[0]);
       }
-      
+
       // If no widget files in current directory, search subdirectories
       const items = FileUtils.readdirSync(rootDir);
-      
+
       for (const item of items) {
         const itemPath = path.join(rootDir, item);
-        
+
         if (FileUtils.isDirectory(itemPath)) {
           // Skip common directories that are unlikely to contain widget source files
-          const skipDirs = ['build', 'gradle', '.gradle', 'generated', 'intermediates', 'outputs', 'tmp'];
+          const skipDirs = [
+            "build",
+            "gradle",
+            ".gradle",
+            "generated",
+            "intermediates",
+            "outputs",
+            "tmp",
+          ];
           if (skipDirs.includes(item)) {
             continue;
           }
-          
+
           const result = this.recursiveWidgetSearch(itemPath, maxDepth - 1);
           if (result) {
             return result;
@@ -461,7 +527,7 @@ export class WidgetClassSync {
     } catch (error) {
       Logger.debug(`Error during recursive search in ${rootDir}: ${error}`);
     }
-    
+
     return null;
   }
 }

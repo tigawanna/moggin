@@ -48,15 +48,15 @@ class WidgetClassSync {
      * Copies widget files to Android build directory from specified directories only
      * @param projectRoot - Root directory of the Expo project
      * @param platformRoot - Root directory of the Android platform
-     * @param widgetClassPath - Path to the widget class file
+     * @param widgetFilesPath - Path to the widget class file
      * @param packageName - Android package name
      * @param fileMatchPattern - Pattern to match widget files (default: "Widget")
-     * @param targetDirectories - Array of directory names relative to widget source to copy from
+     * @param includeDirectories - Array of directory names relative to widget source to copy from
      */
-    static copyToBuild(projectRoot, platformRoot, widgetClassPath, packageName, fileMatchPattern = "Widget", targetDirectories = []) {
-        const resolvedSource = this.resolveWidgetPath(projectRoot, widgetClassPath);
+    static copyToBuild(projectRoot, platformRoot, widgetFilesPath, packageName, fileMatchPattern = "Widget", includeDirectories = []) {
+        const resolvedSource = this.resolveWidgetPath(projectRoot, widgetFilesPath);
         if (!resolvedSource) {
-            fs_1.Logger.warn(`No valid widget files found at: ${widgetClassPath}`);
+            fs_1.Logger.warn(`No valid widget files found at: ${widgetFilesPath}`);
             return;
         }
         const sourceDir = path_1.default.dirname(resolvedSource);
@@ -65,10 +65,10 @@ class WidgetClassSync {
         // Ensure base destination directory exists
         fs_1.FileUtils.ensureDir(destinationBaseDir);
         let allWidgetFiles = [];
-        if (targetDirectories.length > 0) {
+        if (includeDirectories.length > 0) {
             // Copy only from specified directories
-            fs_1.Logger.mobile(`Copying from specified directories: ${targetDirectories.join(', ')}`);
-            targetDirectories.forEach(dirName => {
+            fs_1.Logger.mobile(`Copying from specified directories: ${includeDirectories.join(', ')}`);
+            includeDirectories.forEach(dirName => {
                 const targetDir = path_1.default.join(sourceDir, dirName);
                 if (!fs_1.FileUtils.exists(targetDir) || !fs_1.FileUtils.isDirectory(targetDir)) {
                     fs_1.Logger.warn(`Specified directory does not exist: ${dirName}`);

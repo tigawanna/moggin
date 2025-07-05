@@ -12,6 +12,7 @@ const xml2js_1 = require("xml2js");
  */
 class ManifestSync {
     static syncToDefaults(projectRoot, customManifestPath, defaultManifestPath) {
+        fs_1.Logger.info(`\n\n==================== Syncing manifest file ====================\n\n`);
         const resolvedSource = this.resolveManifestPath(projectRoot, customManifestPath);
         if (!resolvedSource) {
             fs_1.Logger.warn(`Custom manifest file not found: ${customManifestPath}`);
@@ -30,6 +31,7 @@ class ManifestSync {
      * @param manifestPath - Path to the widget manifest file (can be relative or absolute)
      */
     static async addReceiversToMainManifest(config, projectRoot, manifestPath) {
+        fs_1.Logger.info(`\n\n==================== Adding widget receivers and permissions ====================\n\n`);
         const resolvedManifestPath = this.resolveManifestPath(projectRoot, manifestPath);
         if (!resolvedManifestPath) {
             fs_1.Logger.warn(`Widget manifest not found: ${manifestPath}`);

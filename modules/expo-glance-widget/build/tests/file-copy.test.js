@@ -40,24 +40,24 @@ describe('WidgetClassSync', () => {
     const tempDir = path.join(__dirname, 'temp');
     const projectRoot = tempDir;
     const platformRoot = path.join(tempDir, 'android');
-    const widgetClassPath = path.join(tempDir, 'custom-widgets');
+    const widgetFilesPath = path.join(tempDir, 'custom-widgets');
     const packageName = 'com.example.myapp';
     beforeEach(() => {
         // Create a temporary directory structure for testing
         fs.mkdirSync(tempDir, { recursive: true });
         fs.mkdirSync(platformRoot, { recursive: true });
-        fs.mkdirSync(widgetClassPath, { recursive: true });
+        fs.mkdirSync(widgetFilesPath, { recursive: true });
         // Create some dummy widget files
-        fs.writeFileSync(path.join(widgetClassPath, 'MyWidget.kt'), 'package com.example.oldpackage\n\nclass MyWidget');
-        fs.mkdirSync(path.join(widgetClassPath, 'wakatime'), { recursive: true });
-        fs.writeFileSync(path.join(widgetClassPath, 'wakatime', 'WakaTimeWidget.kt'), 'package com.example.oldpackage.wakatime\n\nclass WakaTimeWidget');
+        fs.writeFileSync(path.join(widgetFilesPath, 'MyWidget.kt'), 'package com.example.oldpackage\n\nclass MyWidget');
+        fs.mkdirSync(path.join(widgetFilesPath, 'wakatime'), { recursive: true });
+        fs.writeFileSync(path.join(widgetFilesPath, 'wakatime', 'WakaTimeWidget.kt'), 'package com.example.oldpackage.wakatime\n\nclass WakaTimeWidget');
     });
     afterEach(() => {
         // Clean up the temporary directory
         fs.rmSync(tempDir, { recursive: true, force: true });
     });
     it('should copy files from includeDirectories and update package names', () => {
-        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, widgetClassPath, packageName, 'Widget', ['wakatime']);
+        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, widgetFilesPath, packageName, 'Widget', ['wakatime']);
         const expectedWakaTimeWidgetPath = path.join(platformRoot, 'app/src/main/java/com/example/myapp/wakatime/WakaTimeWidget.kt');
         expect(fs.existsSync(expectedWakaTimeWidgetPath)).toBe(true);
         const wakatimeWidgetContent = fs.readFileSync(expectedWakaTimeWidgetPath, 'utf-8');

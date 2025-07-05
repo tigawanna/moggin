@@ -9,7 +9,7 @@ import { withGlanceWidgetFiles } from "./withGlanceWidgetFiles";
  */
 export interface WithExpoGlanceWidgetsProps {
   /** Path to the widget Kotlin class file or directory */
-  widgetClassPath: string;
+  widgetFilesPath: string;
   /** Path to the AndroidManifest.xml file containing widget receivers */
   manifestPath: string;
   /** Path to the Android resources directory */
@@ -18,13 +18,19 @@ export interface WithExpoGlanceWidgetsProps {
   fileMatchPattern?: string;
   /** Directory to sync external widget files for version control (auto-generated if external sources) */
   syncDirectory?: string;
+  /** Array of specific directories to include when copying files (relative to widgetFilesPath) */
+  includeDirectories?: string[];
+  /** Base path for external widget sources (if using external Android Studio projects) */
+  destinationPackageName ?: string;
+  /** Base path for the original widget sources (if different from destination) */
+  sourcePackageName?: string;
 }
 
 /**
  * Default configuration options for Expo Glance Widgets
  */
 export const DEFAULT_OPTIONS: WithExpoGlanceWidgetsProps = {
-  widgetClassPath: "widgets/android/MyWidget.kt",
+  widgetFilesPath: "widgets/android/MyWidget.kt",
   manifestPath: "widgets/android/AndroidManifest.xml",
   resPath: "widgets/android/res",
   fileMatchPattern: "Widget", // Default: match files containing "Widget" in the name
@@ -43,8 +49,8 @@ function getDefaultedOptions(options: Partial<WithExpoGlanceWidgetsProps>): With
   };
 
   // Auto-detect external sources and adjust sync directory
-  const isExternalWidgetPath = path.isAbsolute(mergedOptions.widgetClassPath) || 
-                              mergedOptions.widgetClassPath.startsWith('../');
+  const isExternalWidgetPath = path.isAbsolute(mergedOptions.widgetFilesPath) || 
+                              mergedOptions.widgetFilesPath.startsWith('../');
   const isExternalManifestPath = path.isAbsolute(mergedOptions.manifestPath) ||
                                 mergedOptions.manifestPath.startsWith('../');
   const isExternalResPath = path.isAbsolute(mergedOptions.resPath) ||
@@ -77,7 +83,7 @@ function getDefaultedOptions(options: Partial<WithExpoGlanceWidgetsProps>): With
  * @example
  * // Using external Android Studio project
  * [withExpoGlanceWidgets, {
- *   widgetClassPath: "../../MyAndroidProject/app/src/main/java/com/example/MyWidget.kt",
+ *   widgetFilesPath: "../../MyAndroidProject/app/src/main/java/com/example/MyWidget.kt",
  *   manifestPath: "../../MyAndroidProject/app/src/main/AndroidManifest.xml",
  *   resPath: "../../MyAndroidProject/app/src/main/res"
  * }]

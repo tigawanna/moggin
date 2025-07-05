@@ -16,6 +16,7 @@ export class ResourceSync {  /**
     customResPath: string,
     defaultResPath: string
   ): void {
+    Logger.info(`\n\n==================== Syncing resources ====================\n\n`);
     const resolvedSource = this.resolveResourcePath(projectRoot, customResPath);
     
     if (!resolvedSource) {
@@ -51,6 +52,7 @@ export class ResourceSync {  /**
     platformRoot: string,
     resPath: string
   ): void {
+    Logger.info(`\n\n==================== Copying resources to build directory ====================\n\n`);
     const resolvedSource = this.resolveResourcePath(projectRoot, resPath);
     
     if (!resolvedSource) {

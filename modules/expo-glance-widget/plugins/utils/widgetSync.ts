@@ -1,12 +1,13 @@
+import path from 'path';
 import { DEFAULT_OPTIONS } from '../withPlugins';
-import { Logger } from './fs';
+import { FileUtils, Logger } from './fs';
 import { ManifestSync } from './manifestSync';
 import { ResourceSync } from './resourceSync';
 import { WidgetClassSync } from './widgetClassSync';
 
 export interface WithExpoGlanceWidgetsProps {
   /** Path to the widget Kotlin class file or directory */
-  widgetClassPath: string;
+  widgetFilesPath: string;
   /** Path to the AndroidManifest.xml file containing widget receivers */
   manifestPath: string;
   /** Path to the Android resources directory */
@@ -15,7 +16,7 @@ export interface WithExpoGlanceWidgetsProps {
   fileMatchPattern?: string;
   /** Directory to sync external widget files for version control (auto-generated if external sources) */
   syncDirectory?: string;
-  /** Array of specific directories to include when copying files (relative to widgetClassPath) */
+  /** Array of specific directories to include when copying files (relative to widgetFilesPath) */
   includeDirectories?: string[];
 }
 
@@ -39,10 +40,10 @@ export class WidgetSync {
     includeDirectories?: string[]
   ): void {
     Logger.debug('Checking if widget files need to be synced to defaults...');
-
+  
     // Check if user is using non-default paths
     const usingCustomPaths = 
-      options.widgetClassPath !== DEFAULT_OPTIONS.widgetClassPath ||
+      options.widgetFilesPath !== DEFAULT_OPTIONS.widgetFilesPath ||
       options.manifestPath !== DEFAULT_OPTIONS.manifestPath ||
       options.resPath !== DEFAULT_OPTIONS.resPath;
 
@@ -55,18 +56,18 @@ export class WidgetSync {
 
     // Determine target paths for syncing
     const targetSyncDir = options.syncDirectory || DEFAULT_OPTIONS.syncDirectory;
-    const targetWidgetPath = `${targetSyncDir}/MyWidget.kt`;
     const targetManifestPath = `${targetSyncDir}/AndroidManifest.xml`;  
     const targetResPath = `${targetSyncDir}/res`;
-
-    // Sync widget class files
-    WidgetClassSync.syncToDefaults(
-      projectRoot, 
-      options.widgetClassPath, 
-      targetWidgetPath,
+// Sync widget class files
+    WidgetClassSync.syncToDefaults({
+      projectRoot,
+      platformRoot: projectRoot,
+      fileMatchPattern: fileMatchPattern || options.fileMatchPattern || "Widget",
       packageName,
-      options.fileMatchPattern || "Widget"
-    );
+      widgetFilesPath: options.widgetFilesPath,
+      includeDirectories: includeDirectories || options.includeDirectories,
+      defaultSourcePath: options.syncDirectory, // Use the provided path as the default source
+    });
 
     // Sync manifest file
     ManifestSync.syncToDefaults(
@@ -100,15 +101,30 @@ export class WidgetSync {
     fileMatchPattern?: string,
     includeDirectories?: string[]
   ): void {
-    // Copy widget Kotlin files
-    WidgetClassSync.copyToBuild(
-      projectRoot, 
-      platformRoot, 
-      options.widgetClassPath, 
+    const projectAndroidRoot = path.relative(projectRoot, "android");
+    FileUtils.ensureDir(projectAndroidRoot);
+    console.log("\n ==== copying with options ===\n", {
+      projectRoot,
+      platformRoot: projectRoot,
+      fileMatchPattern: fileMatchPattern || options.fileMatchPattern || "Widget",
       packageName,
-      fileMatchPattern || options.fileMatchPattern || "Widget",
-      includeDirectories || options.includeDirectories
-    );
+      widgetFilesPath: options.widgetFilesPath,
+      includeDirectories: includeDirectories || options.includeDirectories,
+      defaultSourcePath: options.widgetFilesPath, // Use the provided path as the default source
+    });
+    // Copy widget Kotlin files
+    WidgetClassSync.copyToBuild({
+      projectRoot,
+      projectAndroidRoot,
+      platformRoot: projectRoot,
+      fileMatchPattern: fileMatchPattern || options.fileMatchPattern || "Widget",
+      packageName,
+      widgetFilesPath: options.widgetFilesPath,
+      includeDirectories: includeDirectories || options.includeDirectories,
+      defaultSourcePath: options.widgetFilesPath, // Use the provided path as the default source
+    });
+
+
 
     // Copy resource files
     ResourceSync.copyToBuild(

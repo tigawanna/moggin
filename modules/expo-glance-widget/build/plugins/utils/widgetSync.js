@@ -21,7 +21,7 @@ class WidgetSync {
     static syncToDefaults(projectRoot, options, packageName, fileMatchPattern, includeDirectories) {
         fs_1.Logger.debug('Checking if widget files need to be synced to defaults...');
         // Check if user is using non-default paths
-        const usingCustomPaths = options.widgetClassPath !== withPlugins_1.DEFAULT_OPTIONS.widgetClassPath ||
+        const usingCustomPaths = options.widgetFilesPath !== withPlugins_1.DEFAULT_OPTIONS.widgetFilesPath ||
             options.manifestPath !== withPlugins_1.DEFAULT_OPTIONS.manifestPath ||
             options.resPath !== withPlugins_1.DEFAULT_OPTIONS.resPath;
         if (!usingCustomPaths) {
@@ -35,7 +35,7 @@ class WidgetSync {
         const targetManifestPath = `${targetSyncDir}/AndroidManifest.xml`;
         const targetResPath = `${targetSyncDir}/res`;
         // Sync widget class files
-        widgetClassSync_1.WidgetClassSync.syncToDefaults(projectRoot, options.widgetClassPath, targetWidgetPath, packageName, options.fileMatchPattern || "Widget");
+        widgetClassSync_1.WidgetClassSync.syncToDefaults(projectRoot, options.widgetFilesPath, targetWidgetPath, packageName, options.fileMatchPattern || "Widget");
         // Sync manifest file
         manifestSync_1.ManifestSync.syncToDefaults(projectRoot, options.manifestPath, targetManifestPath);
         // Sync resource files
@@ -52,7 +52,7 @@ class WidgetSync {
      */
     static copyToBuild(projectRoot, platformRoot, options, packageName, fileMatchPattern, includeDirectories) {
         // Copy widget Kotlin files
-        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, options.widgetClassPath, packageName, fileMatchPattern || options.fileMatchPattern || "Widget", includeDirectories || options.includeDirectories);
+        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, options.widgetFilesPath, packageName, fileMatchPattern || options.fileMatchPattern || "Widget", includeDirectories || options.includeDirectories);
         // Copy resource files
         resourceSync_1.ResourceSync.copyToBuild(projectRoot, platformRoot, options.resPath);
     }

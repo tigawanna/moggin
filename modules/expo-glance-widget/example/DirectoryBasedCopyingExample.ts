@@ -12,7 +12,7 @@ export default {
       withExpoGlanceWidgets,
       {
         // Path to your Android project or widget directory
-        widgetClassPath: "../MyAndroidProject/app/src/main/java/com/mycompany/",
+        widgetFilesPath: "../MyAndroidProject/app/src/main/java/com/mycompany/",
         
         // Only copy from these specific directories
         includeDirectories: ["widgets", "utils", "data"],

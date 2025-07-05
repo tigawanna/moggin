@@ -42,7 +42,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       withExpoGlanceWidgets as any,
       {
-        widgetClassPath:
+        widgetFilesPath:
           "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
         manifestPath:
           "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",

@@ -165,7 +165,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       withExpoGlanceWidgets as any,
       {
-        widgetClassPath:
+        widgetFilesPath:
           "C:\Users\user\Desktop\code\expo\moggin\widgets\android",
         manifestPath:
           "C:\Users\user\Desktop\code\expo\moggin\widgets\android\AndroidManifest.xml",

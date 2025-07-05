@@ -157,7 +157,7 @@ const testPaths = [
   'widgets/android/',
   
   // Your problematic path
-  '../../../Users/user/AndroidStudioProjects/Bidii-kotlin-widget/app/src/main/java/com/tigawanna/bidii',
+  'widgets/android',
   
   // Some other Android Studio-like paths
   '../AndroidStudioProjects/MyApp/app/src/main/java',

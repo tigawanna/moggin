@@ -166,10 +166,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       withExpoGlanceWidgets as any,
       {
         widgetClassPath:
-          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
+          "C:\Users\user\Desktop\code\expo\moggin\widgets\android",
         manifestPath:
-          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
-        resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
+          "C:\Users\user\Desktop\code\expo\moggin\widgets\android\AndroidManifest.xml",
+        resPath: "C:\Users\user\Desktop\code\expo\moggin\widgets\android\res",
       },
     ],
   ],

@@ -225,7 +225,7 @@ class WidgetClassSync {
                         possibleWidgetFiles.push(file);
                     }
                 }
-                catch {
+                catch (_a) {
                     // If we can't read the file, skip it
                 }
             });
@@ -279,7 +279,7 @@ class WidgetClassSync {
                                     widgetFiles.push(itemPath);
                                 }
                             }
-                            catch {
+                            catch (_a) {
                                 // If we can't read the file, skip it
                             }
                         }
@@ -348,7 +348,7 @@ class WidgetClassSync {
             const widgetKeywords = ['Widget', 'AppWidget', 'GlanceAppWidget', '@GlanceAppWidget'];
             return widgetKeywords.some(keyword => content.includes(keyword));
         }
-        catch {
+        catch (_a) {
             return false;
         }
     }

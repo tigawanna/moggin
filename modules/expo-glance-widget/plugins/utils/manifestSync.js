@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManifestSync = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = require("./fs");
+const xml2js_1 = require("xml2js");
 /**
  * Utility functions for syncing and processing Android manifest files
  */
@@ -23,12 +24,12 @@ class ManifestSync {
         fs_1.Logger.success(`Synced manifest: ${path_1.default.relative(projectRoot, defaultFile)}`);
     }
     /**
-     * Adds widget receivers from the widget manifest to the main Android manifest
+     * Adds widget receivers and permissions from the widget manifest to the main Android manifest
      * @param config - Expo config object
      * @param projectRoot - Root directory of the Expo project
      * @param manifestPath - Path to the widget manifest file (can be relative or absolute)
      */
-    static addReceiversToMainManifest(config, projectRoot, manifestPath) {
+    static async addReceiversToMainManifest(config, projectRoot, manifestPath) {
         const resolvedManifestPath = this.resolveManifestPath(projectRoot, manifestPath);
         if (!resolvedManifestPath) {
             fs_1.Logger.warn(`Widget manifest not found: ${manifestPath}`);
@@ -37,9 +38,12 @@ class ManifestSync {
         fs_1.Logger.manifest(`Processing widget manifest: ${manifestPath}`);
         try {
             const widgetManifestContent = fs_1.FileUtils.readFileSync(resolvedManifestPath);
-            const receivers = this.extractReceiversFromManifest(widgetManifestContent);
-            if (receivers.length === 0) {
-                fs_1.Logger.info(`No <receiver> elements found in widget manifest`);
+            const parser = new xml2js_1.Parser();
+            const widgetManifest = await parser.parseStringPromise(widgetManifestContent);
+            const receivers = widgetManifest?.manifest?.application?.[0]?.receiver || [];
+            const permissions = widgetManifest?.manifest?.['uses-permission'] || [];
+            if (receivers.length === 0 && permissions.length === 0) {
+                fs_1.Logger.info(`No <receiver> or <uses-permission> elements found in widget manifest`);
                 return;
             }
             // Add receivers to the main manifest
@@ -54,77 +58,21 @@ class ManifestSync {
                 });
                 fs_1.Logger.mobile(`Added ${receivers.length} widget receiver(s) to Android manifest`);
             }
+            // Add permissions to the main manifest
+            if (config?.modResults?.manifest) {
+                if (!config.modResults.manifest['uses-permission']) {
+                    config.modResults.manifest['uses-permission'] = [];
+                }
+                permissions.forEach((permission, index) => {
+                    fs_1.Logger.success(`Adding permission ${index + 1}: ${permission.$?.['android:name'] || 'unnamed'}`);
+                    config.modResults.manifest['uses-permission'].push(permission);
+                });
+                fs_1.Logger.mobile(`Added ${permissions.length} permission(s) to Android manifest`);
+            }
         }
         catch (error) {
             fs_1.Logger.error(`Error processing widget manifest: ${error}`);
         }
-    }
-    /**
-     * Extracts receiver elements from an Android manifest XML string
-     * @param manifestContent - XML content of the manifest
-     * @returns Array of receiver objects
-     */
-    static extractReceiversFromManifest(manifestContent) {
-        const receivers = [];
-        // Simple regex to extract receiver blocks (basic implementation)
-        // In a production environment, you might want to use a proper XML parser
-        const receiverRegex = /<receiver[^>]*>[\s\S]*?<\/receiver>/g;
-        const matches = manifestContent.match(receiverRegex);
-        if (matches) {
-            matches.forEach(receiverXml => {
-                // Parse basic receiver attributes and children
-                const receiver = this.parseReceiverXml(receiverXml);
-                if (receiver) {
-                    receivers.push(receiver);
-                }
-            });
-        }
-        return receivers;
-    }
-    /**
-     * Basic XML parser for receiver elements
-     * @param receiverXml - XML string for a receiver element
-     * @returns Parsed receiver object
-     */
-    static parseReceiverXml(receiverXml) {
-        // This is a simplified parser - in production, use a proper XML parser
-        const nameMatch = receiverXml.match(/android:name="([^"]*)"/);
-        const exportedMatch = receiverXml.match(/android:exported="([^"]*)"/);
-        const receiver = {
-            $: {}
-        };
-        if (nameMatch) {
-            receiver.$['android:name'] = nameMatch[1];
-        }
-        if (exportedMatch) {
-            receiver.$['android:exported'] = exportedMatch[1];
-        }
-        // Extract intent-filter and meta-data (simplified)
-        const intentFilterRegex = /<intent-filter[^>]*>[\s\S]*?<\/intent-filter>/g;
-        const metaDataRegex = /<meta-data[^>]*\/>/g;
-        const intentFilters = receiverXml.match(intentFilterRegex);
-        const metaDataElements = receiverXml.match(metaDataRegex);
-        if (intentFilters) {
-            receiver['intent-filter'] = intentFilters.map(filter => {
-                const actionMatch = filter.match(/<action[^>]*android:name="([^"]*)"[^>]*\/>/);
-                return {
-                    action: actionMatch ? [{ $: { 'android:name': actionMatch[1] } }] : []
-                };
-            });
-        }
-        if (metaDataElements) {
-            receiver['meta-data'] = metaDataElements.map(metaData => {
-                const nameMatch = metaData.match(/android:name="([^"]*)"/);
-                const resourceMatch = metaData.match(/android:resource="([^"]*)"/);
-                const result = { $: {} };
-                if (nameMatch)
-                    result.$['android:name'] = nameMatch[1];
-                if (resourceMatch)
-                    result.$['android:resource'] = resourceMatch[1];
-                return result;
-            });
-        }
-        return receiver;
     }
     /**
      * Resolves manifest path - handles both file paths with robust validation

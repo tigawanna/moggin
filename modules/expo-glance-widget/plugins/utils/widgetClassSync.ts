@@ -105,10 +105,8 @@ export class WidgetClassSync {
         const widgetFiles = this.findWidgetFilesInDirectory(targetDir, fileMatchPattern);
         
         widgetFiles.forEach(file => {
-          // Calculate relative path from the target directory (preserving subdirectory structure)
-          const relativeFromTargetDir = path.relative(targetDir, file);
-          // Include the target directory name in the relative path
-          const relativePath = path.join(dirName, relativeFromTargetDir);
+          // Calculate relative path from the source directory to preserve subdirectory structure
+          const relativePath = path.relative(sourceDir, file);
           
           allWidgetFiles.push({
             sourcePath: file,
@@ -378,12 +376,8 @@ export class WidgetClassSync {
         content = content.replace(/^package\s+[^\s\n]+/m, `package ${packageName}`);
         
         // Update imports that reference the old package
-        const importRegex = new RegExp(`import\\s+${currentPackage.replace(/\./g, '\\.')}`, 'g');
-        content = content.replace(importRegex, `import ${packageName}`);
-        
-        // Update any references to the old package in string literals or comments
-        const packageRefRegex = new RegExp(`${currentPackage.replace(/\./g, '\\.')}`, 'g');
-        content = content.replace(packageRefRegex, packageName);
+        const importRegex = new RegExp(`import\\s+${currentPackage.replace(/\./g, '\\.')}(\..*)`, 'g');
+        content = content.replace(importRegex, `import ${packageName}$1`);
         
         FileUtils.writeFileSync(filePath, content);
         Logger.success(`Updated package declaration in: ${path.basename(filePath)} (${currentPackage} → ${packageName})`);

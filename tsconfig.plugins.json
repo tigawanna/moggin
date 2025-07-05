@@ -10,8 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "noEmitOnError": true,
     "moduleResolution": "node",
-    "allowJs": true
+    "allowJs": true,
   },
-  "include": ["modules/expo-glance-widget/plugins/**/*.ts"],
+  "include": ["modules/expo-glance-widget/plugins/index.ts"],
   "exclude": ["node_modules"]
 }

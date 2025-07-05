@@ -15,8 +15,10 @@ class WidgetSync {
      * @param projectRoot - Root directory of the Expo project
      * @param options - Plugin configuration options
      * @param packageName - Target package name for the Expo project
+     * @param fileMatchPattern - Pattern to match widget files
+     * @param includeDirectories - Array of directories to include
      */
-    static syncToDefaults(projectRoot, options, packageName) {
+    static syncToDefaults(projectRoot, options, packageName, fileMatchPattern, includeDirectories) {
         fs_1.Logger.debug('Checking if widget files need to be synced to defaults...');
         // Check if user is using non-default paths
         const usingCustomPaths = options.widgetClassPath !== withPlugins_1.DEFAULT_OPTIONS.widgetClassPath ||
@@ -45,10 +47,12 @@ class WidgetSync {
      * @param platformRoot - Root directory of the Android platform
      * @param options - Plugin configuration options
      * @param packageName - Android package name
+     * @param fileMatchPattern - Pattern to match widget files
+     * @param includeDirectories - Array of directories to include
      */
-    static copyToBuild(projectRoot, platformRoot, options, packageName) {
+    static copyToBuild(projectRoot, platformRoot, options, packageName, fileMatchPattern, includeDirectories) {
         // Copy widget Kotlin files
-        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, options.widgetClassPath, packageName, options.fileMatchPattern || "Widget");
+        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, options.widgetClassPath, packageName, fileMatchPattern || options.fileMatchPattern || "Widget", includeDirectories || options.includeDirectories);
         // Copy resource files
         resourceSync_1.ResourceSync.copyToBuild(projectRoot, platformRoot, options.resPath);
     }

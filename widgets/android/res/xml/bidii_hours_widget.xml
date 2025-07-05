@@ -2,9 +2,9 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/bidii_hours_widget_description"
     android:minWidth="100dp"
-    android:minHeight="90dp"
+    android:minHeight="100dp"
     android:resizeMode="horizontal|vertical"
     android:initialLayout="@layout/glance_default_loading_layout"
-    android:previewImage="@drawable/bidii_hours"
+    android:previewImage="@drawable/main_app_icon"
     />
 

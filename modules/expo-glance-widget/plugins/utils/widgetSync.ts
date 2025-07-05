@@ -15,6 +15,8 @@ export interface WithExpoGlanceWidgetsProps {
   fileMatchPattern?: string;
   /** Directory to sync external widget files for version control (auto-generated if external sources) */
   syncDirectory?: string;
+  /** Array of specific directories to include when copying files (relative to widgetClassPath) */
+  includeDirectories?: string[];
 }
 
 /**
@@ -26,11 +28,15 @@ export class WidgetSync {
    * @param projectRoot - Root directory of the Expo project
    * @param options - Plugin configuration options
    * @param packageName - Target package name for the Expo project
+   * @param fileMatchPattern - Pattern to match widget files
+   * @param includeDirectories - Array of directories to include
    */
   static syncToDefaults(
     projectRoot: string,
     options: WithExpoGlanceWidgetsProps,
-    packageName: string
+    packageName: string,
+    fileMatchPattern?: string,
+    includeDirectories?: string[]
   ): void {
     Logger.debug('Checking if widget files need to be synced to defaults...');
 
@@ -83,12 +89,16 @@ export class WidgetSync {
    * @param platformRoot - Root directory of the Android platform
    * @param options - Plugin configuration options
    * @param packageName - Android package name
+   * @param fileMatchPattern - Pattern to match widget files
+   * @param includeDirectories - Array of directories to include
    */
   static copyToBuild(
     projectRoot: string,
     platformRoot: string,
     options: WithExpoGlanceWidgetsProps,
-    packageName: string
+    packageName: string,
+    fileMatchPattern?: string,
+    includeDirectories?: string[]
   ): void {
     // Copy widget Kotlin files
     WidgetClassSync.copyToBuild(
@@ -96,7 +106,8 @@ export class WidgetSync {
       platformRoot, 
       options.widgetClassPath, 
       packageName,
-      options.fileMatchPattern || "Widget"
+      fileMatchPattern || options.fileMatchPattern || "Widget",
+      includeDirectories || options.includeDirectories
     );
 
     // Copy resource files

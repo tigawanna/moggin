@@ -726,6 +726,7 @@ export interface GlanceWidgetConfig {
   // Advanced options
   fileMatchPattern?: string;          // Custom pattern for widget files
   syncDirectory?: string;             // Auto-sync directory name
+  includeDirectories?: string[];      // Specific directories to copy from
   
   // Build configuration
   enableCompose?: boolean;            // Enable Compose dependencies
@@ -759,6 +760,9 @@ export interface GlanceWidgetConfig {
     // Custom sync directory
     syncDirectory: "my-widgets",
     
+    // Only copy from specific directories (preserves folder structure)
+    includeDirectories: ["widgets", "utils", "models"],
+    
     // External Android Studio project
     widgetClassPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\java\\com\\mycompany\\",
     manifestPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\AndroidManifest.xml",
@@ -782,6 +786,72 @@ export interface GlanceWidgetConfig {
   }
 ]
 ```
+
+## Directory-Based File Copying
+
+### Selective Directory Copying
+
+The plugin now supports copying only from specific directories while preserving the folder structure. This is useful when you have a large Android project but only want to copy specific widget-related directories.
+
+#### How it works:
+
+1. **Without `includeDirectories`**: Copies all widget files from the source directory
+2. **With `includeDirectories`**: Only copies files from the specified directories
+
+#### Example Structure:
+```
+MyAndroidProject/
+├── src/main/java/com/mycompany/
+│   ├── widgets/           # ← Include this
+│   │   ├── WeatherWidget.kt
+│   │   └── CalendarWidget.kt
+│   ├── utils/             # ← Include this
+│   │   └── WidgetUtils.kt
+│   ├── models/            # ← Include this
+│   │   └── WeatherData.kt
+│   ├── activities/        # ← Skip this
+│   │   └── MainActivity.kt
+│   └── services/          # ← Skip this
+│       └── MyService.kt
+```
+
+#### Configuration:
+```typescript
+[
+  withExpoGlanceWidgets,
+  {
+    widgetClassPath: "MyAndroidProject/src/main/java/com/mycompany/",
+    includeDirectories: ["widgets", "utils", "models"],
+    // This will copy:
+    // - widgets/WeatherWidget.kt
+    // - widgets/CalendarWidget.kt  
+    // - utils/WidgetUtils.kt
+    // - models/WeatherData.kt
+    // But skip activities/ and services/ directories
+  }
+]
+```
+
+#### Result in your Expo project:
+```
+android/app/src/main/java/com/yourapp/
+├── widgets/
+│   ├── WeatherWidget.kt    # Package updated to com.yourapp.widgets
+│   └── CalendarWidget.kt   # Package updated to com.yourapp.widgets
+├── utils/
+│   └── WidgetUtils.kt      # Package updated to com.yourapp.utils
+└── models/
+    └── WeatherData.kt      # Package updated to com.yourapp.models
+```
+
+### Package Name Updates
+
+The plugin automatically updates package declarations in copied files to match your Expo project's package structure:
+
+- Source: `package com.mycompany.widgets`
+- Target: `package com.yourapp.widgets`
+
+This ensures that all imports and references work correctly in your Expo project.
 
 ## Path Handling
 

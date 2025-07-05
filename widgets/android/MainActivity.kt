@@ -1,11 +1,8 @@
 package com.anonymous.moggin
 
 import android.util.Log
-import android.content.ComponentName
 import android.content.Context
-import android.appwidget.AppWidgetManager
 import android.os.Bundle
-import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,60 +12,39 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anonymous.moggin.ui.theme.BidiiTheme
 import androidx.compose.material3.Button
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.work.Constraints
-import kotlinx.coroutines.flow.map
 import androidx.work.*
 import java.util.concurrent.TimeUnit
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.glance.appwidget.GlanceAppWidgetManager
-import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.glance.appwidget.updateAll
-import kotlinx.coroutines.CoroutineScope
-import androidx.compose.material3.TextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.datastore.preferences.core.edit
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.ui.text.font.FontWeight
-import com.anonymous.moggin.utils.WakatimeDataFetcher.updateWidget
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.text.SimpleDateFormat
-import java.util.Locale
-import kotlinx.coroutines.flow.first
+import com.anonymous.moggin.wakatime.WakatimeDataFetcher
+import com.anonymous.moggin.wakatime.WakatimeDataFetcher.updateWidget
+import com.anonymous.moggin.wakatime.WakatimeWidgetWorker
 
 
 class MainActivity : ComponentActivity() {
@@ -118,7 +94,7 @@ class MainActivity : ComponentActivity() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = PeriodicWorkRequestBuilder<WakatimeWorker>(15, TimeUnit.MINUTES)
+        val workRequest = PeriodicWorkRequestBuilder<WakatimeWidgetWorker>(15, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .build()
 
@@ -155,7 +131,7 @@ fun ManualSyncButton(context: Context, modifier: Modifier = Modifier) {
         onClick = {
             scope.launch {
                 // Trigger one-time work request for immediate sync
-                val workRequest = OneTimeWorkRequestBuilder<WakatimeWorker>()
+                val workRequest = OneTimeWorkRequestBuilder<WakatimeWidgetWorker>()
                     .setConstraints(
                         Constraints.Builder()
                             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -186,7 +162,7 @@ fun CurrentWidgetDataDisplay(context: Context) {
         scope.launch {
             isRefreshing = true
             try {
-                val result = com.anonymous.moggin.utils.WakatimeDataFetcher.fetchWakatimeData(context)
+                val result = WakatimeDataFetcher.fetchWakatimeData(context)
                 currentData = if (result.success && result.freshHours != null) {
                     "Fresh Data: ${result.freshHours}"
                 } else if (result.error != null) {
@@ -212,7 +188,7 @@ fun CurrentWidgetDataDisplay(context: Context) {
         scope.launch {
             isRefreshing = true
             try {
-                val result = com.anonymous.moggin.utils.WakatimeDataFetcher.fetchAndUpdateWidget(context)
+                val result = WakatimeDataFetcher.fetchAndUpdateWidget(context)
                 currentData = if (result.success && result.freshHours != null) {
                     "Updated! Total: ${result.totalTime}"
                 } else if (result.error != null) {

@@ -47,7 +47,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         manifestPath:
           "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
         resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
-                // Only copy from these specific directories
+        // Only copy from these specific directories
         includeDirectories: ["wakatime"],
       },
     ],

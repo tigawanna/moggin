@@ -48,7 +48,7 @@ class MockLogger {
  * Test the actual validation logic
  */
 function testActualPath() {
-  const actualPath = "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii";
+  const actualPath = "C:\Users\user\Desktop\code\expo\moggin\widgets\android";
   
   console.log(`\n=== Testing Actual Path: ${actualPath} ===`);
   

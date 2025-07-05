@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.withGlanceWidgetFiles = void 0;
 const config_plugins_1 = require("@expo/config-plugins");
@@ -21,11 +30,11 @@ const withPlugins_1 = require("./withPlugins");
  * - Then files are copied from the specified location to Android build
  */
 const withGlanceWidgetFiles = (config, options = {}) => {
-    const finalOptions = { ...withPlugins_1.DEFAULT_OPTIONS, ...options };
+    const finalOptions = Object.assign(Object.assign({}, withPlugins_1.DEFAULT_OPTIONS), options);
     // Copy widget source files and resources
     config = (0, config_plugins_1.withDangerousMod)(config, [
         'android',
-        async (newConfig) => {
+        (newConfig) => __awaiter(void 0, void 0, void 0, function* () {
             const { modRequest } = newConfig;
             const projectRoot = modRequest.projectRoot;
             const platformRoot = modRequest.platformProjectRoot;
@@ -40,16 +49,17 @@ const withGlanceWidgetFiles = (config, options = {}) => {
             // Copy widget files to Android build directories
             widgetSync_1.WidgetSync.copyToBuild(projectRoot, platformRoot, finalOptions, packageName);
             return newConfig;
-        },
+        }),
     ]);
     // Modify Android manifest to include widget receivers
-    config = (0, config_plugins_1.withAndroidManifest)(config, async (config) => {
-        const projectRoot = config.modRequest?.projectRoot;
+    config = (0, config_plugins_1.withAndroidManifest)(config, (config) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
+        const projectRoot = (_a = config.modRequest) === null || _a === void 0 ? void 0 : _a.projectRoot;
         if (projectRoot) {
-            await widgetSync_1.WidgetSync.addReceiversToManifest(config, projectRoot, finalOptions.manifestPath);
+            yield widgetSync_1.WidgetSync.addReceiversToManifest(config, projectRoot, finalOptions.manifestPath);
         }
         return config;
-    });
+    }));
     return config;
 };
 exports.withGlanceWidgetFiles = withGlanceWidgetFiles;

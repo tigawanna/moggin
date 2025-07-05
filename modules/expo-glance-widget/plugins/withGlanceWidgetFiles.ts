@@ -57,10 +57,10 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
   ]);
 
   // Modify Android manifest to include widget receivers
-  config = withAndroidManifest(config, (config) => {
+  config = withAndroidManifest(config, async (config) => {
     const projectRoot = config.modRequest?.projectRoot;
     if (projectRoot) {
-      WidgetSync.addReceiversToManifest(config, projectRoot, finalOptions.manifestPath);
+      await WidgetSync.addReceiversToManifest(config, projectRoot, finalOptions.manifestPath);
     }
     return config;
   });

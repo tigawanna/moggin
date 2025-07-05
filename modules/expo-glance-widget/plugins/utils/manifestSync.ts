@@ -1,5 +1,6 @@
 import path from 'path';
 import { FileUtils, Logger } from './fs';
+import { Parser } from 'xml2js';
 
 /**
  * Utility functions for syncing and processing Android manifest files
@@ -31,16 +32,16 @@ export class ManifestSync {  /**
     Logger.success(`Synced manifest: ${path.relative(projectRoot, defaultFile)}`);
   }
   /**
-   * Adds widget receivers from the widget manifest to the main Android manifest
+   * Adds widget receivers and permissions from the widget manifest to the main Android manifest
    * @param config - Expo config object
    * @param projectRoot - Root directory of the Expo project
    * @param manifestPath - Path to the widget manifest file (can be relative or absolute)
    */
-  static addReceiversToMainManifest(
+  static async addReceiversToMainManifest(
     config: any,
     projectRoot: string,
     manifestPath: string
-  ): void {
+  ): Promise<void> {
     const resolvedManifestPath = this.resolveManifestPath(projectRoot, manifestPath);
     
     if (!resolvedManifestPath) {
@@ -50,10 +51,14 @@ export class ManifestSync {  /**
 
     try {
       const widgetManifestContent = FileUtils.readFileSync(resolvedManifestPath);
-      const receivers = this.extractReceiversFromManifest(widgetManifestContent);
+      const parser = new Parser();
+      const widgetManifest = await parser.parseStringPromise(widgetManifestContent);
 
-      if (receivers.length === 0) {
-        Logger.info(`No <receiver> elements found in widget manifest`);
+      const receivers = widgetManifest?.manifest?.application?.[0]?.receiver || [];
+      const permissions = widgetManifest?.manifest?.['uses-permission'] || [];
+
+      if (receivers.length === 0 && permissions.length === 0) {
+        Logger.info(`No <receiver> or <uses-permission> elements found in widget manifest`);
         return;
       }
 
@@ -65,94 +70,31 @@ export class ManifestSync {  /**
           mainApplication.receiver = [];
         }
 
-        receivers.forEach((receiver, index) => {
+        receivers.forEach((receiver: any, index: number) => {
           Logger.success(`Adding receiver ${index + 1}: ${receiver.$?.['android:name'] || 'unnamed'}`);
           mainApplication.receiver!.push(receiver);
         });
 
         Logger.mobile(`Added ${receivers.length} widget receiver(s) to Android manifest`);
       }
+
+      // Add permissions to the main manifest
+      if (config?.modResults?.manifest) {
+        if (!config.modResults.manifest['uses-permission']) {
+          config.modResults.manifest['uses-permission'] = [];
+        }
+
+        permissions.forEach((permission: any, index: number) => {
+          Logger.success(`Adding permission ${index + 1}: ${permission.$?.['android:name'] || 'unnamed'}`);
+          config.modResults.manifest['uses-permission']!.push(permission);
+        });
+
+        Logger.mobile(`Added ${permissions.length} permission(s) to Android manifest`);
+      }
+
     } catch (error) {
       Logger.error(`Error processing widget manifest: ${error}`);
     }
-  }
-
-  /**
-   * Extracts receiver elements from an Android manifest XML string
-   * @param manifestContent - XML content of the manifest
-   * @returns Array of receiver objects
-   */
-  private static extractReceiversFromManifest(manifestContent: string): any[] {
-    const receivers: any[] = [];
-    
-    // Simple regex to extract receiver blocks (basic implementation)
-    // In a production environment, you might want to use a proper XML parser
-    const receiverRegex = /<receiver[^>]*>[\s\S]*?<\/receiver>/g;
-    const matches = manifestContent.match(receiverRegex);
-
-    if (matches) {
-      matches.forEach(receiverXml => {
-        // Parse basic receiver attributes and children
-        const receiver = this.parseReceiverXml(receiverXml);
-        if (receiver) {
-          receivers.push(receiver);
-        }
-      });
-    }
-
-    return receivers;
-  }
-
-  /**
-   * Basic XML parser for receiver elements
-   * @param receiverXml - XML string for a receiver element
-   * @returns Parsed receiver object
-   */
-  private static parseReceiverXml(receiverXml: string): any {
-    // This is a simplified parser - in production, use a proper XML parser
-    const nameMatch = receiverXml.match(/android:name="([^"]*)"/);
-    const exportedMatch = receiverXml.match(/android:exported="([^"]*)"/);
-
-    const receiver: any = {
-      $: {}
-    };
-
-    if (nameMatch) {
-      receiver.$['android:name'] = nameMatch[1];
-    }
-
-    if (exportedMatch) {
-      receiver.$['android:exported'] = exportedMatch[1];
-    }
-
-    // Extract intent-filter and meta-data (simplified)
-    const intentFilterRegex = /<intent-filter[^>]*>[\s\S]*?<\/intent-filter>/g;
-    const metaDataRegex = /<meta-data[^>]*\/>/g;
-
-    const intentFilters = receiverXml.match(intentFilterRegex);
-    const metaDataElements = receiverXml.match(metaDataRegex);
-
-    if (intentFilters) {
-      receiver['intent-filter'] = intentFilters.map(filter => {
-        const actionMatch = filter.match(/<action[^>]*android:name="([^"]*)"[^>]*\/>/);
-        return {
-          action: actionMatch ? [{ $: { 'android:name': actionMatch[1] } }] : []
-        };
-      });
-    }
-
-    if (metaDataElements) {
-      receiver['meta-data'] = metaDataElements.map(metaData => {
-        const nameMatch = metaData.match(/android:name="([^"]*)"/);
-        const resourceMatch = metaData.match(/android:resource="([^"]*)"/);
-        
-        const result: any = { $: {} };
-        if (nameMatch) result.$['android:name'] = nameMatch[1];
-        if (resourceMatch) result.$['android:resource'] = resourceMatch[1];
-        
-        return result;
-      });
-    }    return receiver;
   }
 
   /**

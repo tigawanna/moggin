@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.appwidget.AppWidgetManager
 import android.os.Bundle
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,67 +30,103 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.work.Constraints
 import kotlinx.coroutines.flow.map
+import androidx.work.*
+import java.util.concurrent.TimeUnit
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
+import kotlinx.coroutines.CoroutineScope
+import androidx.compose.material3.TextField
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.datastore.preferences.core.edit
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.text.font.FontWeight
+import com.anonymous.moggin.utils.WakatimeDataFetcher.updateWidget
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Locale
+import kotlinx.coroutines.flow.first
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Initialize periodic work
+        setupPeriodicWork()
+        
         setContent {
             BidiiTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val wakatimeHoursFlow = applicationContext.dataStore.data.map { preferences ->
-                        preferences[BidiiWidgetConstants.WAKATIME_HOURS_KEY] ?: BidiiWidgetConstants.DEFAULT_HOURS_DISPLAY
-                    }
-                    val wakatimeHours by wakatimeHoursFlow.collectAsState(initial = BidiiWidgetConstants.DEFAULT_HOURS_DISPLAY)
 
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(innerPadding),
-                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "Widget should display: $wakatimeHours",
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-                        SetTimeButton(context = applicationContext)
+                        // Current Widget Data Display (Top)
+                        CurrentWidgetDataDisplay(context = applicationContext)
+                        
+                        // API Key Management Section (Middle)
+                        ApiKeyManagement(context = applicationContext)
+                        
+                        // DataStore Keys Display (Bottom)
+                        DataStoreKeysDisplay(context = applicationContext)
+                        
+                        // Manual Actions
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            SetTimeButton(context = applicationContext)
+                            ManualSyncButton(context = applicationContext)
+                        }
                     }
                 }
             }
         }
     }
-}
+    
+    private fun setupPeriodicWork() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-private suspend fun updateWidget(context: Context, data: String) {
-    if (data.isBlank()) {
-        Log.w("MainActivity", "Invalid data for widget update")
-        return
-    }
+        val workRequest = PeriodicWorkRequestBuilder<WakatimeWorker>(15, TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .build()
 
-    // Use IO dispatcher for DataStore and other background tasks
-    withContext(Dispatchers.IO) {
-        try {
-            // 1. Update application state (DataStore)
-            context.dataStore.edit { settings ->
-                settings[BidiiWidgetConstants.WAKATIME_HOURS_KEY] = data
-            }
-
-            // 2. Update all instances of the widget.
-            // The updateAll() method is a convenient and efficient way to refresh all
-            // placed instances of a widget.
-            Log.d("MainActivity", "Updating all BidiiHoursWidget instances.")
-            BidiiHoursWidget().updateAll(context)
-
-        } catch (e: Exception) {
-            // Log any errors during the update process
-            Log.e("MainActivity", "Failed to update widget", e)
-        }
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            BidiiWidgetConstants.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
     }
 }
 
@@ -107,6 +144,267 @@ fun SetTimeButton(context: Context, modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         Text(text = "Set Time to $hours")
+    }
+}
+
+@Composable
+fun ManualSyncButton(context: Context, modifier: Modifier = Modifier) {
+    val scope = rememberCoroutineScope()
+
+    Button(
+        onClick = {
+            scope.launch {
+                // Trigger one-time work request for immediate sync
+                val workRequest = OneTimeWorkRequestBuilder<WakatimeWorker>()
+                    .setConstraints(
+                        Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build()
+                    )
+                    .build()
+
+                WorkManager.getInstance(context).enqueue(workRequest)
+                Log.d("MainActivity", "Manual sync triggered")
+            }
+        },
+        modifier = modifier
+    ) {
+        Text(text = "Sync Now")
+    }
+}
+
+@Composable
+fun CurrentWidgetDataDisplay(context: Context) {
+    val scope = rememberCoroutineScope()
+    var currentData by remember { mutableStateOf("Loading...") }
+    var totalTime by remember { mutableStateOf("00 hrs : 00 mins") }
+    var currentProject by remember { mutableStateOf("No project") }
+    var lastSync by remember { mutableStateOf("Never") }
+    var isRefreshing by remember { mutableStateOf(false) }
+    
+    val refreshData = {
+        scope.launch {
+            isRefreshing = true
+            try {
+                val result = com.anonymous.moggin.utils.WakatimeDataFetcher.fetchWakatimeData(context)
+                currentData = if (result.success && result.freshHours != null) {
+                    "Fresh Data: ${result.freshHours}"
+                } else if (result.error != null) {
+                    "Widget: ${result.widgetHours} | Error: ${result.error}"
+                } else {
+                    "Widget: ${result.widgetHours} | No fresh data"
+                }
+                
+                // Update individual data fields
+                totalTime = result.totalTime ?: "00 hrs : 00 mins"
+                currentProject = result.currentProject ?: "No project"
+                lastSync = result.lastSync ?: "Never"
+                
+            } catch (e: Exception) {
+                currentData = "Error: ${e.message}"
+            } finally {
+                isRefreshing = false
+            }
+        }
+    }
+    
+    val refreshAndUpdateWidget = {
+        scope.launch {
+            isRefreshing = true
+            try {
+                val result = com.anonymous.moggin.utils.WakatimeDataFetcher.fetchAndUpdateWidget(context)
+                currentData = if (result.success && result.freshHours != null) {
+                    "Updated! Total: ${result.totalTime}"
+                } else if (result.error != null) {
+                    "Widget: ${result.widgetHours} | Error: ${result.error}"
+                } else {
+                    "Widget: ${result.widgetHours} | Update failed"
+                }
+                
+                // Update individual data fields
+                totalTime = result.totalTime ?: "00 hrs : 00 mins"
+                currentProject = result.currentProject ?: "No project"
+                lastSync = result.lastSync ?: "Never"
+
+            } catch (e: Exception) {
+                currentData = "Error: ${e.message}"
+            } finally {
+                isRefreshing = false
+            }
+        }
+    }
+    
+    LaunchedEffect(Unit) {
+        refreshData()
+    }
+    
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Current Wakatime Data",
+            style = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        
+        // Display aggregated data
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = totalTime,
+                style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            
+            Text(
+                text = "📁 $currentProject",
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            
+            Text(
+                text = "🔄 $lastSync",
+                style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            
+            Text(
+                text = currentData,
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+        
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = { refreshData() },
+                enabled = !isRefreshing
+            ) {
+                Text(if (isRefreshing) "Loading..." else "Refresh Data")
+            }
+            
+            Button(
+                onClick = { refreshAndUpdateWidget() },
+                enabled = !isRefreshing
+            ) {
+                Text(if (isRefreshing) "Updating..." else "Update Widget")
+            }
+        }
+    }
+}
+
+@Composable
+fun ApiKeyManagement(context: Context) {
+    var apiKey by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Wakatime API Key",
+            style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedTextField(
+                value = apiKey,
+                onValueChange = { apiKey = it },
+                label = { Text("API Key") },
+                placeholder = { Text("waka_...") },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.weight(1f),
+                singleLine = true
+            )
+            
+            Button(
+                onClick = {
+                    scope.launch {
+                        context.dataStore.edit { preferences ->
+                            preferences[BidiiWidgetConstants.WAKATIME_API_KEY] = apiKey
+                        }
+                        apiKey = "" // Clear input after saving
+                    }
+                },
+                enabled = apiKey.isNotBlank()
+            ) {
+                Text("Save")
+            }
+        }
+    }
+}
+
+@Composable
+fun DataStoreKeysDisplay(context: Context) {
+    val scope = rememberCoroutineScope()
+    var dataStoreEntries by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
+    
+    LaunchedEffect(Unit) {
+        scope.launch {
+            try {
+                context.dataStore.data.collect { preferences ->
+                    dataStoreEntries = preferences.asMap().map { (key, value) ->
+                        key.name to value.toString()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("DataStoreKeysDisplay", "Error reading DataStore", e)
+            }
+        }
+    }
+    
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "DataStore Contents",
+            style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        
+        if (dataStoreEntries.isEmpty()) {
+            Text(
+                text = "No data stored yet",
+                style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.heightIn(max = 200.dp)
+            ) {
+                items(dataStoreEntries) { (key, value) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = key,
+                            style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = if (key.contains("api_key")) "***" else value,
+                            style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

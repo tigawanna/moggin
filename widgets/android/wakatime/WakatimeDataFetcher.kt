@@ -3,14 +3,17 @@ package com.anonymous.moggin.wakatime
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import com.anonymous.moggin.BidiiWidgetConstants
-import com.anonymous.moggin.dataStore
+
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import kotlinx.coroutines.Dispatchers
@@ -220,3 +223,6 @@ object WakatimeDataFetcher {
         }
     }
 }
+
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = BidiiWidgetConstants.DATASTORE_NAME)

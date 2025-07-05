@@ -103,15 +103,7 @@ export class WidgetSync {
   ): void {
     const projectAndroidRoot = path.relative(projectRoot, "android");
     FileUtils.ensureDir(projectAndroidRoot);
-    console.log("\n ==== copying with options ===\n", {
-      projectRoot,
-      platformRoot: projectRoot,
-      fileMatchPattern: fileMatchPattern || options.fileMatchPattern || "Widget",
-      packageName,
-      widgetFilesPath: options.widgetFilesPath,
-      includeDirectories: includeDirectories || options.includeDirectories,
-      defaultSourcePath: options.widgetFilesPath, // Use the provided path as the default source
-    });
+    // TODO check if the wigget sources is reachable if not use the default path
     // Copy widget Kotlin files
     WidgetClassSync.copyToBuild({
       projectRoot,

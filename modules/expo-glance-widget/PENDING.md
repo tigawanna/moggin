@@ -7,11 +7,12 @@ This project in `/module/expo-glance-widget` consists of
 - [x] copy all files from our target directory that will include kotlin classes and resource in the res dir and xml file like `AndroidManifest.xml`
 - [x] support a pattern to match widget files
 
-- [ ] copy files from a specific directory in the Android project to the Expo project
+- [x] copy files from a specific directory in the Android project to the Expo project
   - issues
-    - [ ] not copying all files in the specified directory
-    - [ ] ensure that the copied files have the correct package name
-    - [ ] ensure proper directory structure is maintained even in the `/widgets` directory that we copy into our project for it to be checked into source control because rarely will our widget project be in our expo project it'll be in an external android studio project directory
+    - [x] not copying all files in the specified directory
+    - [x] ensure that the copied files have the correct package name
+    - [x] ensure proper directory structure is maintained even in the `/widgets` directory that we copy into our project for it to be checked into source control because rarely will our widget project be in our expo project it'll be in an external android studio project directory
+    - [ ] ensure that widgetFiles is confirmed to exist if not use the syncDirectory
 
 config example
 
@@ -19,18 +20,18 @@ config example
 [
   withExpoGlanceWidgets as any,
   {
-    widgetFilesPath:
-      "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
-    manifestPath:
-      "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
-    resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
-    // Only copy from these specific directories
-    includeDirectories: ["wakatime"],
+        widgetFilesPath:
+          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
+        manifestPath:
+          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
+        resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
+        // Only copy from these specific directories
+        includeDirectories: ["wakatime"],
   },
 ],
 ```
 
-- [ ] when renaming packages also look for imports
+- [x] when renaming packages also look for imports
 
 example:
 
@@ -50,7 +51,7 @@ import com.yourexpoapp.MainActivity
 import com.yourexpoapp.R
 ```
 
-- [ ] merge `AndroidManifest.xml` into the expo project's one  
+- [x] merge `AndroidManifest.xml` into the expo project's one
   - this was initially only copying receivers but now we can merge permissions as well
 
 ### native module to update the datastore that our widget depends on

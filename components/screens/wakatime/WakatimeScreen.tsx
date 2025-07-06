@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Chip, ProgressBar, Surface, Text, useTheme } from 'react-native-paper';
+import { WakatimeWidgetKey } from './WakatimeWidgetKey';
 
 type WakatimeDetailStats = {
   todayStats: {
@@ -105,6 +106,7 @@ export function WakatimeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
+        <WakatimeWidgetKey/>
         {/* Today's Summary */}
         <Card style={styles.card}>
           <Card.Content>

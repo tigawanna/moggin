@@ -1,3 +1,4 @@
+import { updateWakatimeWidgetKey } from "@/lib/datastore/store";
 import { observable } from "@legendapp/state";
 import { ObservablePersistLocalStorage } from "@legendapp/state/persist-plugins/local-storage";
 import { use$ } from "@legendapp/state/react";
@@ -72,6 +73,7 @@ export function useApiKeysStore() {
 
   const setWakatimeApiKey = (value: string | null) => {
     settings$.wakatimeApiKey.set(value);
+    updateWakatimeWidgetKey(value);
   };
 
   const setSpotifyAccessToken = (value: string | null) => {

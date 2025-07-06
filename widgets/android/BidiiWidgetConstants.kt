@@ -4,7 +4,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 object BidiiWidgetConstants {
     const val DATASTORE_NAME = "bidii_widget_datastore"
-    const val DEFAULT_HOURS_DISPLAY = "00 hrs : 00 mins"
+    const val DEFAULT_HOURS_DISPLAY = "-- hrs : -- mins"
     const val WORK_NAME = "wakatime_sync"
     
     // WorkManager enforces a minimum interval of 15 minutes for PeriodicWorkRequest

@@ -1,4 +1,4 @@
-package com.anonymous.moggin
+package com.tigawanna.moggin
 
 import android.app.Application
 import android.util.Log
@@ -8,7 +8,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.anonymous.moggin.wakatime.WakatimeWidgetWorker
+import com.tigawanna.moggin.wakatime.WakatimeWidgetWorker
 import java.util.concurrent.TimeUnit
 
 class BidiiWidgetsApplication : Application(), Configuration.Provider {

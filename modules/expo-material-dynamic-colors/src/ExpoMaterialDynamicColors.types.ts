@@ -1,13 +1,5 @@
-import type { StyleProp, ViewStyle } from 'react-native';
 
-enum ElevationLevels {
-  "level0",
-  "level1",
-  "level2",
-  "level3",
-  "level4",
-  "level5",
-}
+type ElevationLevels = "level0" | "level1" | "level2" | "level3" | "level4" | "level5";
 
 export type SystemScheme = {
   primary: string;
@@ -63,13 +55,15 @@ export type MaterialDynamicColors = SystemScheme & {
   surfaceTint: string;
 
   elevation: {
-    [key in keyof typeof ElevationLevels]: string;
+    [key in ElevationLevels]: string;
   };
 };
 
 export type MaterialDynamicTheme = {
   light: MaterialDynamicColors;
   dark: MaterialDynamicColors;
-};
+  elevation: {
+    [key in ElevationLevels]: string;
+  };
 
-
+}

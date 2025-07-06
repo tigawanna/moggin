@@ -1,4 +1,4 @@
-package com.anonymous.moggin.wakatime
+package com.tigawanna.moggin.wakatime
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

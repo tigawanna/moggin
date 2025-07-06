@@ -1,968 +1,386 @@
-# Expo Glance Widget Module
+# Expo Glance Widget
 
-A comprehensive Expo module for creating Android Glance Widgets with shared preferences integration and automatic file synchronization.
+A modern Android widget module for Expo that provides seamless integration with Android's Glance widget system. This module allows you to create, sync, and manage Android widgets directly from your Expo/React Native application.
+
+## Table of Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [DataStore API](#datastore-api)
+- [Usage Examples](#usage-examples)
+- [Directory-Based Copying](#directory-based-copying)
+- [External Project Integration](#external-project-integration)
+- [Troubleshooting](#troubleshooting)
+- [Best Practices](#best-practices)
+- [API Reference](#api-reference)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
 
 ## Features
 
-✅ **Complete Android Glance Widget support**  
-✅ **DataStore API for modern data persistence (Recommended)**  
-✅ **SharedPreferences API for legacy compatibility**  
-✅ **JavaScript ↔ Kotlin data communication**  
-✅ **JSON, string, number, and boolean support**  
-✅ **Automatic Kotlin 2.0 & Compose setup**  
-✅ **Smart widget file copying with package name updates**  
-✅ **External file synchronization for version control**  
-✅ **Resource management with conflict detection**  
-✅ **Android manifest receiver integration**  
-✅ **Web support with localStorage fallback**  
+- 🔄 **Automatic Widget File Syncing**: Sync widget files from external Android Studio projects
+- 📦 **Package Name Updates**: Automatically updates package names to match your Expo project
+- 🎨 **Resource Management**: Handles widget resources (layouts, drawables, etc.)
+- 📱 **DataStore Integration**: Generic CRUD interface for widget data storage
+- 🔧 **Build System Integration**: Automatically configures Gradle for Kotlin Compose and Glance
+- 📋 **Manifest Merging**: Automatically merges widget receivers into your app manifest
+- 🎯 **Directory-Based Copying**: Selective copying from specific directories
+
+## Requirements
+
+- Expo SDK 53 or higher
+- Android API level 31 or higher (for Glance support)
+- Kotlin 2.0+ (automatically configured)
+- Compose Compiler 1.5.4+ (automatically configured)
 
 ## Installation
 
-```bash
-npm install expo-glance-widget
-```
+1. Install the module in your Expo project:
+   ```bash
+   npm install ./modules/expo-glance-widget
+   ```
 
-## Quick Start
+2. Add the plugin to your `app.config.ts`:
+   ```typescript
+   import { withExpoGlanceWidgets } from "./modules/expo-glance-widget/plugins";
+   
+   export default {
+     // ... your config
+     plugins: [
+       // ... other plugins
+       [
+         withExpoGlanceWidgets,
+         {
+           widgetFilesPath: "widgets/android",
+           manifestPath: "widgets/android/AndroidManifest.xml",
+           resPath: "widgets/android/res"
+         }
+       ]
+     ]
+   };
+   ```
 
-### 1. Configure the Plugin
+## Configuration
 
-Add the plugin to your `app.config.ts`:
-
-```typescript
-import { withExpoGlanceWidgets } from './modules/expo-glance-widget/plugins';
-
-export default {
-  plugins: [
-    [
-      withExpoGlanceWidgets,
-      {
-        widgetFilesPath: "widgets/android/",
-        manifestPath: "widgets/android/AndroidManifest.xml",
-        resPath: "widgets/android/res"
-      }
-    ]
-  ]
-};
-```
-
-### 2. Create Your Widget Files
-
-Create a basic widget structure:
-
-```
-widgets/
-└── android/
-    ├── MyWidget.kt
-    ├── AndroidManifest.xml
-    └── res/
-        └── xml/
-            └── my_widget_info.xml
-```
-
-### 3. Use DataStore in Your App (Recommended)
+### Basic Configuration
 
 ```typescript
-import { DataStore } from 'expo-glance-widget';
-
-// Set data that widgets can read using currentState()
-await DataStore.set('wakatime_hours', '08:45');
-await DataStore.set('widget_title', 'Hello World!');
-await DataStore.set('user_score', 1250);
-await DataStore.set('is_premium', true);
-
-// Complex data as JSON
-await DataStore.set('user_profile', JSON.stringify({
-  name: 'John Doe',
-  level: 42,
-  achievements: ['first_win', 'speed_demon']
-}));
+[
+  withExpoGlanceWidgets,
+  {
+    widgetFilesPath: "widgets/android",      // Path to widget source files
+    manifestPath: "widgets/android/AndroidManifest.xml",  // Widget manifest
+    resPath: "widgets/android/res"           // Widget resources
+  }
+]
 ```
 
-## DataStore API (Recommended)
+### Advanced Configuration
 
-DataStore is the modern replacement for SharedPreferences and works seamlessly with Glance widgets using `currentState()`. It provides better performance, type safety, and coroutines support.
+```typescript
+[
+  withExpoGlanceWidgets,
+  {
+    widgetFilesPath: "C:\\path\\to\\external\\project\\src\\main\\java\\com\\example",
+    manifestPath: "C:\\path\\to\\external\\project\\src\\main\\AndroidManifest.xml",
+    resPath: "C:\\path\\to\\external\\project\\src\\main\\res",
+    fileMatchPattern: "Widget|Provider",     // Match files containing these patterns
+    syncDirectory: "widgets/android",        // Where to sync external files
+    includeDirectories: ["wakatime", "ui"],  // Only copy from these directories
+    sourcePackageName: "com.example.widgets",
+    destinationPackageName: "com.yourapp.widgets"
+  }
+]
+```
+
+### Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `widgetFilesPath` | string | `"widgets/android"` | Path to widget Kotlin source files |
+| `manifestPath` | string | `"widgets/android/AndroidManifest.xml"` | Path to widget manifest file |
+| `resPath` | string | `"widgets/android/res"` | Path to widget resources |
+| `fileMatchPattern` | string | `"Widget"` | Pattern to match widget files |
+| `syncDirectory` | string | `"widgets/android"` | Directory for syncing external files |
+| `includeDirectories` | string[] | `undefined` | Specific directories to copy from |
+| `sourcePackageName` | string | Auto-detected | Source package name for updates |
+| `destinationPackageName` | string | Auto-detected | Target package name |
+
+## DataStore API
+
+The module provides a generic DataStore interface for storing and retrieving widget data:
 
 ### JavaScript/TypeScript API
 
-#### Basic Operations
-
 ```typescript
-import { DataStore } from 'expo-glance-widget';
+import ExpoGlanceWidgetModule from 'expo-glance-widget';
 
-// Set values
-await DataStore.set('key', 'value');
-await DataStore.set('count', 42);
-await DataStore.set('enabled', true);
+// Get a value
+const value = await ExpoGlanceWidgetModule.getDatastoreValue('myKey');
 
-// Get values
-const text = await DataStore.get('key'); // string | null
-const count = await DataStore.get('count'); // number | null
-const enabled = await DataStore.get('enabled'); // boolean | null
+// Update a value
+await ExpoGlanceWidgetModule.updateDatastoreValue('myKey', 'myValue');
 
-// Remove values
-await DataStore.remove('key');
+// Delete a value
+await ExpoGlanceWidgetModule.deleteDatastoreValue('myKey');
 
-// Clear all
-await DataStore.clear();
+// Get all keys (for debugging)
+const keys = await ExpoGlanceWidgetModule.getAllDatastoreKeys();
 
-// Get all key-value pairs
-const allData = await DataStore.getAll();
-console.log(allData); // { key: 'value', count: 42, enabled: true }
+// Get all values (for debugging)
+const values = await ExpoGlanceWidgetModule.getAllDatastoreValues();
 ```
 
-#### Working with JSON Data
-
-```typescript
-// Store complex objects
-const userData = {
-  id: 123,
-  name: 'Alice',
-  preferences: {
-    theme: 'dark',
-    notifications: true
-  },
-  scores: [100, 85, 92]
-};
-
-await DataStore.set('user_data', JSON.stringify(userData));
-
-// Retrieve and parse JSON
-const storedData = await DataStore.get('user_data');
-if (storedData) {
-  const parsed = JSON.parse(storedData as string);
-  console.log(parsed.name); // 'Alice'
-}
-```
-
-#### Updating Widgets Automatically
-
-Jetpack Glance widgets don't automatically update when DataStore changes. You can use the `setAndUpdateWidgets` method to update DataStore and trigger a widget update in one call:
-
-```typescript
-// Update DataStore and refresh widget in one call
-await DataStore.setAndUpdateWidgets(
-  'widget_title',           // key
-  'New Title',              // value
-  'com.example.MyWidget',   // fully qualified widget class name
-  { name: 'custom_store' }  // optional DataStore options
-);
-```
-
-This is useful when you want to ensure your widget is updated immediately after changing data, rather than waiting for the next scheduled update or user interaction.
-
-#### Convenience Functions
-
-```typescript
-import { 
-  setDataStore,
-  getDataStore,
-  removeDataStore,
-  clearDataStore,
-  getAllDataStore
-} from 'expo-glance-widget';
-
-// Direct function calls (same as DataStore methods)
-await setDataStore('key', 'value');
-const value = await getDataStore('key');
-```
-
-#### Custom DataStore Names
-
-```typescript
-// Use different DataStore instances
-const options = { name: 'widget_settings' };
-
-await DataStore.set('theme', 'dark', options);
-const theme = await DataStore.get('theme', options);
-
-// Set default options for all operations
-DataStore.setDefaultOptions({ name: 'my_app_widgets' });
-```
-
-### Kotlin API (In Widgets)
-
-#### Using currentState() (Recommended)
+### Kotlin Widget API
 
 ```kotlin
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.currentState
+import androidx.glance.appwidget.state.getAppWidgetState
 
-class MyWidget : GlanceAppWidget() {
-    // Define preference keys
-    private val wakatimeHoursKey = stringPreferencesKey("wakatime_hours")
-    private val userScoreKey = stringPreferencesKey("user_score")
+@Composable
+fun MyWidget() {
+    val context = LocalContext.current
+    val prefs = currentState<Preferences>()
     
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        provideContent {
-            // Read data set from JavaScript using currentState
-            val hours = currentState(key = wakatimeHoursKey) ?: "--:--"
-            val score = currentState(key = userScoreKey) ?: "0"
-            
-            GlanceTheme {
-                Column {
-                    Text(text = "Hours: $hours")
-                    Text(text = "Score: $score")
-                }
-            }
-        }
-    }
+    // Read value
+    val myValue = prefs[stringPreferencesKey("myKey")] ?: "default"
+    
+    // Your widget UI
+    Text(text = myValue)
 }
 ```
 
-#### Using DataStoreHelper Directly
+## Usage Examples
 
-```kotlin
-import expo.modules.glancewidget.DataStoreHelper
-
-class MyWidget : GlanceAppWidget() {
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val dataStore = DataStoreHelper.create(context)
-        
-        // Read data set from JavaScript
-        val title = dataStore.getString("widget_title", "Default Title")
-        val score = dataStore.getInt("user_score", 0)
-        val isPremium = dataStore.getBoolean("is_premium", false)
-        
-        // Parse JSON data
-        val userDataJson = dataStore.getString("user_data", "{}")
-        // Use Gson to parse JSON (already included in dependencies)
-        
-        provideContent {
-            GlanceTheme {
-                Column {
-                    Text(text = title ?: "Default Title")
-                    Text(text = "Score: $score")
-                    if (isPremium) {
-                        Text(text = "Premium User ⭐")
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-### 4. Use SharedPreferences in Your App (Legacy)
+### 1. Basic Widget Control Screen
 
 ```typescript
-import { SharedPreferences } from 'expo-glance-widget';
-
-// Set data that widgets can read
-await SharedPreferences.set('widget_title', 'Hello World!');
-await SharedPreferences.set('user_score', 1250);
-await SharedPreferences.set('is_premium', true);
-
-// Complex data as JSON
-await SharedPreferences.set('user_profile', {
-  name: 'John Doe',
-  level: 42,
-  achievements: ['first_win', 'speed_demon']
-});
-```
-
-## SharedPreferences API (Legacy)
-
-### JavaScript/TypeScript API
-
-#### Basic Operations
-
-```typescript
-import { SharedPreferences } from 'expo-glance-widget';
-
-// Set values
-await SharedPreferences.set('key', 'value');
-await SharedPreferences.set('count', 42);
-await SharedPreferences.set('enabled', true);
-
-// Get values
-const text = await SharedPreferences.get('key'); // string | null
-const count = await SharedPreferences.get('count'); // number | null
-const enabled = await SharedPreferences.get('enabled'); // boolean | null
-
-// Remove values
-await SharedPreferences.remove('key');
-
-// Clear all
-await SharedPreferences.clear();
-
-// Get all key-value pairs
-const allData = await SharedPreferences.getAll();
-console.log(allData); // { key: 'value', count: 42, enabled: true }
-```
-
-#### Working with JSON Data
-
-```typescript
-// Store complex objects
-const userData = {
-  id: 123,
-  name: 'Alice',
-  preferences: {
-    theme: 'dark',
-    notifications: true
-  },
-  scores: [100, 85, 92]
-};
-
-await SharedPreferences.set('user_data', JSON.stringify(userData));
-
-// Retrieve and parse JSON
-const storedData = await SharedPreferences.get('user_data');
-if (storedData) {
-  const parsed = JSON.parse(storedData as string);
-  console.log(parsed.name); // 'Alice'
-}
-```
-
-#### Convenience Functions
-
-```typescript
-import { 
-  setSharedPreference,
-  getSharedPreference,
-  removeSharedPreference,
-  clearSharedPreferences,
-  getAllSharedPreferences
-} from 'expo-glance-widget';
-
-// Direct function calls (same as SharedPreferences methods)
-await setSharedPreference('key', 'value');
-const value = await getSharedPreference('key');
-```
-
-#### Custom Preferences Files
-
-```typescript
-// Use different SharedPreferences files
-const options = { name: 'widget_settings' };
-
-await SharedPreferences.set('theme', 'dark', options);
-const theme = await SharedPreferences.get('theme', options);
-
-// Set default options for all operations
-SharedPreferences.setDefaultOptions({ name: 'my_app_widgets' });
-```
-
-### Kotlin API (In Widgets)
-
-```kotlin
-import expo.modules.glancewidget.SharedPreferencesHelper
-
-class MyWidget : GlanceAppWidget() {
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val sharedPrefs = SharedPreferencesHelper.create(context)
-        
-        // Read data set from JavaScript
-        val title = sharedPrefs.getString("widget_title", "Default Title")
-        val score = sharedPrefs.getInt("user_score", 0)
-        val isPremium = sharedPrefs.getBoolean("is_premium", false)
-        
-        // Parse JSON data
-        val userDataJson = sharedPrefs.getString("user_data", "{}")
-        // Use Gson to parse JSON (already included in dependencies)
-        
-        provideContent {
-            GlanceTheme {
-                Column {
-                    Text(text = title ?: "Default Title")
-                    Text(text = "Score: $score")
-                    if (isPremium) {
-                        Text(text = "Premium User ⭐")
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-## Complete Widget Example (DataStore)
-
-### JavaScript Side (App)
-
-```typescript
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { DataStore } from 'expo-glance-widget';
+import ExpoGlanceWidgetModule from 'expo-glance-widget';
 
 export default function WidgetControlScreen() {
-  const [title, setTitle] = useState('');
-  const [count, setCount] = useState(0);
-  const [wakatimeHours, setWakatimeHours] = useState('--:--');
+  const [widgetData, setWidgetData] = useState('');
+  const [inputValue, setInputValue] = useState('');
 
-  const updateWidget = async () => {
-    // Update widget data using DataStore
-    await DataStore.set('widget_title', title);
-    await DataStore.set('widget_count', count);
-    await DataStore.set('wakatime_hours', wakatimeHours);
-    await DataStore.set('last_update', new Date().toISOString());
-    
-    // Complex data example
-    await DataStore.set('widget_config', JSON.stringify({
-      theme: 'dark',
-      showIcon: true,
-      refreshInterval: 300000 // 5 minutes
-    }));
-    
-    console.log('Widget data updated with DataStore!');
+  useEffect(() => {
+    loadWidgetData();
+  }, []);
+
+  const loadWidgetData = async () => {
+    try {
+      const data = await ExpoGlanceWidgetModule.getDatastoreValue('widget_text');
+      setWidgetData(data || 'No data');
+    } catch (error) {
+      console.error('Failed to load widget data:', error);
+    }
   };
 
-  const generateRandomHours = () => {
-    const hours = Math.floor(Math.random() * 12);
-    const minutes = Math.floor(Math.random() * 60);
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  const updateWidget = async () => {
+    try {
+      await ExpoGlanceWidgetModule.updateDatastoreValue('widget_text', inputValue);
+      setWidgetData(inputValue);
+      setInputValue('');
+    } catch (error) {
+      console.error('Failed to update widget:', error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>DataStore Widget Control</Text>
-      
-      <View style={styles.section}>
-        <Text style={styles.label}>Widget Title:</Text>
-        <TextInput 
-          style={styles.input}
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Enter widget title"
-        />
-      </View>
-      
-      <View style={styles.section}>
-        <Text>Count: {count}</Text>
-        <Button title="+" onPress={() => setCount(count + 1)} />
-        <Button title="-" onPress={() => setCount(Math.max(0, count - 1))} />
-      </View>
-      
-      <View style={styles.section}>
-        <Text>Wakatime Hours: {wakatimeHours}</Text>
-        <Button title="Generate Random" onPress={() => setWakatimeHours(generateRandomHours())} />
-      </View>
-      
-      <Button title="Update Widget" onPress={updateWidget} />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  section: { marginBottom: 20 },
-  label: { fontSize: 16, marginBottom: 8 },
-  input: { borderWidth: 1, borderColor: '#ddd', padding: 10, borderRadius: 8 },
-});
-```
-
-### Kotlin Side (Widget using currentState)
-
-```kotlin
-package com.yourpackage.widgets
-
-import android.content.ComponentName
-import android.content.Context
-import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.*
-import androidx.glance.action.actionStartActivity
-import androidx.glance.action.clickable
-import androidx.glance.appwidget.*
-import androidx.glance.appwidget.components.*
-import androidx.glance.layout.*
-import androidx.glance.text.*
-import com.google.gson.Gson
-
-data class WidgetConfig(
-    val theme: String,
-    val showIcon: Boolean,
-    val refreshInterval: Long
-)
-
-class MyDataStoreWidget : GlanceAppWidget() {
-    // Define preference keys for DataStore
-    private val wakatimeHoursKey = stringPreferencesKey("wakatime_hours")
-    private val widgetTitleKey = stringPreferencesKey("widget_title")
-    private val widgetCountKey = stringPreferencesKey("widget_count")
-    private val lastUpdateKey = stringPreferencesKey("last_update")
-    private val widgetConfigKey = stringPreferencesKey("widget_config")
-
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        provideContent {
-            // Get values using currentState (DataStore integration)
-            val wakatimeHours = currentState(key = wakatimeHoursKey) ?: "--:--"
-            val widgetTitle = currentState(key = widgetTitleKey) ?: "My Widget"
-            val widgetCount = currentState(key = widgetCountKey) ?: "0"
-            val lastUpdate = currentState(key = lastUpdateKey) ?: "Never"
-            val widgetConfigJson = currentState(key = widgetConfigKey) ?: "{}"
-
-            // Parse JSON configuration
-            val config = try {
-                Gson().fromJson(widgetConfigJson, WidgetConfig::class.java)
-            } catch (e: Exception) {
-                WidgetConfig("light", true, 300000)
-            }
-
-            // Create action to open app
-            val componentName = ComponentName(context, MainActivity::class.java)
-            val launchAppAction = actionStartActivity(componentName)
-
-            GlanceTheme {
-                Scaffold(
-                    titleBar = {
-                        TitleBar(
-                            startIcon = if (config.showIcon) ImageProvider(R.drawable.main_app_icon) else null,
-                            title = widgetTitle
-                        )
-                    },
-                    backgroundColor = GlanceTheme.colors.widgetBackground
-                ) {
-                    Column(
-                        modifier = GlanceModifier
-                            .fillMaxSize()
-                            .clickable(launchAppAction),
-                        horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
-                        verticalAlignment = Alignment.Vertical.CenterVertically
-                    ) {
-                        // Main display
-                        Text(
-                            text = wakatimeHours,
-                            style = TextStyle(
-                                fontSize = 64.sp,
-                                color = GlanceTheme.colors.onSurface,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        
-                        Text(
-                            text = "Count: $widgetCount",
-                            style = TextStyle(fontSize = 16.sp)
-                        )
-                        
-                        Text(
-                            text = "Updated: ${formatTime(lastUpdate)}",
-                            style = TextStyle(
-                                fontSize = 12.sp,
-                                color = GlanceTheme.colors.onSurface.copy(alpha = 0.7f)
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-    
-    private fun formatTime(isoString: String): String {
-        return try {
-            if (isoString == "Never") return "Never"
-            isoString.substring(11, 16)
-        } catch (e: Exception) {
-            "Never"
-        }
-    }
-}
-
-class MyDataStoreWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = MyDataStoreWidget()
-}
-```
-
-## Complete Widget Example (SharedPreferences - Legacy)
-
-### JavaScript Side (App)
-
-```typescript
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
-import { SharedPreferences } from 'expo-glance-widget';
-
-export default function WidgetControlScreen() {
-  const [title, setTitle] = useState('');
-  const [count, setCount] = useState(0);
-
-  const updateWidget = async () => {
-    // Update widget data
-    await SharedPreferences.set('widget_title', title);
-    await SharedPreferences.set('widget_count', count);
-    await SharedPreferences.set('last_update', new Date().toISOString());
-    
-    // Complex data example
-    await SharedPreferences.set('widget_config', JSON.stringify({
-      theme: 'dark',
-      showIcon: true,
-      refreshInterval: 300000 // 5 minutes
-    }));
-    
-    console.log('Widget data updated!');
-  };
-
-  return (
-    <View style={{ padding: 20 }}>
-      <Text>Widget Title:</Text>
-      <TextInput 
-        value={title}
-        onChangeText={setTitle}
-        placeholder="Enter widget title"
+      <Text style={styles.title}>Widget Control</Text>
+      <Text style={styles.currentData}>Current Data: {widgetData}</Text>
+      <TextInput
+        style={styles.input}
+        value={inputValue}
+        onChangeText={setInputValue}
+        placeholder="Enter widget text"
       />
-      
-      <Text>Count: {count}</Text>
-      <Button title="+" onPress={() => setCount(count + 1)} />
-      <Button title="-" onPress={() => setCount(count - 1)} />
-      
       <Button title="Update Widget" onPress={updateWidget} />
     </View>
   );
 }
 ```
 
-### Kotlin Side (Widget)
+### 2. Kotlin Widget Example
 
 ```kotlin
-package com.yourpackage.widgets
-
-import android.content.Context
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.glance.*
-import androidx.glance.appwidget.*
-import androidx.glance.layout.*
-import androidx.glance.text.*
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import expo.modules.glancewidget.SharedPreferencesHelper
-
-data class WidgetConfig(
-    val theme: String,
-    val showIcon: Boolean,
-    val refreshInterval: Long
-)
-
-class MyWidget : GlanceAppWidget() {
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val sharedPrefs = SharedPreferencesHelper.create(context)
-        
-        // Get simple values
-        val title = sharedPrefs.getString("widget_title", "My Widget")
-        val count = sharedPrefs.getInt("widget_count", 0)
-        val lastUpdate = sharedPrefs.getString("last_update", "Never")
-        
-        // Parse JSON configuration
-        val configJson = sharedPrefs.getString("widget_config", "{}")
-        val gson = Gson()
-        val config = try {
-            gson.fromJson(configJson, WidgetConfig::class.java)
-        } catch (e: Exception) {
-            WidgetConfig("light", true, 300000)
-        }
-
-        provideContent {
-            GlanceTheme {
-                Column(
-                    modifier = GlanceModifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.Vertical.CenterVertically,
-                    horizontalAlignment = Alignment.Horizontal.CenterHorizontally
-                ) {
-                    if (config.showIcon) {
-                        Text(
-                            text = "📱",
-                            style = TextStyle(fontSize = 24.sp)
-                        )
-                    }
-                    
-                    Text(
-                        text = title ?: "Default Title",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    
-                    Text(
-                        text = "Count: $count",
-                        style = TextStyle(fontSize = 16.sp)
-                    )
-                    
-                    Text(
-                        text = "Updated: ${formatTime(lastUpdate)}",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = GlanceTheme.colors.onSurface.copy(alpha = 0.7f)
-                        )
-                    )
-                }
-            }
-        }
-    }
+@Composable
+fun ExampleWidget() {
+    val context = LocalContext.current
+    val prefs = currentState<Preferences>()
     
-    private fun formatTime(isoString: String?): String {
-        return try {
-            // Format ISO string to readable time
-            isoString?.substring(11, 16) ?: "Never"
-        } catch (e: Exception) {
-            "Never"
-        }
+    // Read values from DataStore
+    val title = prefs[stringPreferencesKey("widget_title")] ?: "Default Title"
+    val subtitle = prefs[stringPreferencesKey("widget_subtitle")] ?: "Default Subtitle"
+    
+    Column(
+        modifier = GlanceModifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = ColorProvider(Color.Black)
+            )
+        )
+        
+        Spacer(modifier = GlanceModifier.height(8.dp))
+        
+        Text(
+            text = subtitle,
+            style = TextStyle(
+                fontSize = 14.sp,
+                color = ColorProvider(Color.Gray)
+            )
+        )
     }
 }
-
-class MyWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = MyWidget()
-}
 ```
 
-## Plugin Configuration
+## Directory-Based Copying
 
-### All Configuration Options
+When working with external Android Studio projects, you can specify which directories to copy:
 
-```typescript
-export interface GlanceWidgetConfig {
-  // Widget class files
-  widgetFilesPath?: string;           // Path to widget Kotlin files
-  
-  // Android manifest
-  manifestPath?: string;              // Path to widget manifest
-  
-  // Resources
-  resPath?: string;                   // Path to widget resources
-  
-  // Advanced options
-  fileMatchPattern?: string;          // Custom pattern for widget files
-  syncDirectory?: string;             // Auto-sync directory name
-  includeDirectories?: string[];      // Specific directories to copy from
-  
-  // Build configuration
-  enableCompose?: boolean;            // Enable Compose dependencies
-  kotlinVersion?: string;             // Kotlin version (default: 2.0.0)
-  composeVersion?: string;            // Compose version
-}
-```
-
-### Configuration Examples
-
-#### Basic Configuration
 ```typescript
 [
   withExpoGlanceWidgets,
   {
-    widgetFilesPath: "widgets/android/",
-    manifestPath: "widgets/android/AndroidManifest.xml",
-    resPath: "widgets/android/res"
+    widgetFilesPath: "C:\\MyAndroidProject\\app\\src\\main\\java\\com\\example",
+    includeDirectories: ["wakatime", "ui", "utils"],  // Only copy these directories
+    // ... other config
   }
 ]
 ```
 
-#### Advanced Configuration
+This feature:
+- Preserves directory structure
+- Updates package names automatically
+- Handles nested directories
+- Maintains file relationships
+
+## External Project Integration
+
+### Step 1: Configure for External Project
+
 ```typescript
 [
   withExpoGlanceWidgets,
   {
-    // Custom widget file pattern
-    fileMatchPattern: "*Widget*.kt",
-    
-    // Custom sync directory
-    syncDirectory: "my-widgets",
-    
-    // Only copy from specific directories (preserves folder structure)
-    includeDirectories: ["widgets", "utils", "models"],
-    
-    // External Android Studio project
-    widgetFilesPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\java\\com\\mycompany\\",
-    manifestPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\AndroidManifest.xml",
-    resPath: "C:\\Projects\\MyWidgets\\app\\src\\main\\res",
-    
-    // Build options
-    kotlinVersion: "2.0.0",
-    enableCompose: true
+    widgetFilesPath: "C:\\Users\\username\\MyWidgetProject\\app\\src\\main\\java\\com\\example",
+    manifestPath: "C:\\Users\\username\\MyWidgetProject\\app\\src\\main\\AndroidManifest.xml",
+    resPath: "C:\\Users\\username\\MyWidgetProject\\app\\src\\main\\res",
+    syncDirectory: "widgets/android",  // Files will be synced here
+    includeDirectories: ["widgets", "data"]  // Only copy specific directories
   }
 ]
 ```
 
-#### Multiple Widget Sources
-```typescript
-[
-  withExpoGlanceWidgets,
-  {
-    // Comma-separated paths for multiple widget sources
-    widgetFilesPath: "widgets/weather/,widgets/calendar/,widgets/news/",
-    resPath: "widgets/weather/res,widgets/calendar/res,widgets/news/res"
-  }
-]
+### Step 2: Build Your Project
+
+```bash
+npm run prebuild:android
 ```
 
-## Directory-Based File Copying
-
-### Selective Directory Copying
-
-The plugin now supports copying only from specific directories while preserving the folder structure. This is useful when you have a large Android project but only want to copy specific widget-related directories.
-
-#### How it works:
-
-1. **Without `includeDirectories`**: Copies all widget files from the source directory
-2. **With `includeDirectories`**: Only copies files from the specified directories
-
-#### Example Structure:
-```
-MyAndroidProject/
-├── src/main/java/com/mycompany/
-│   ├── widgets/           # ← Include this
-│   │   ├── WeatherWidget.kt
-│   │   └── CalendarWidget.kt
-│   ├── utils/             # ← Include this
-│   │   └── WidgetUtils.kt
-│   ├── models/            # ← Include this
-│   │   └── WeatherData.kt
-│   ├── activities/        # ← Skip this
-│   │   └── MainActivity.kt
-│   └── services/          # ← Skip this
-│       └── MyService.kt
-```
-
-#### Configuration:
-```typescript
-[
-  withExpoGlanceWidgets,
-  {
-    widgetFilesPath: "MyAndroidProject/src/main/java/com/mycompany/",
-    includeDirectories: ["widgets", "utils", "models"],
-    // This will copy:
-    // - widgets/WeatherWidget.kt
-    // - widgets/CalendarWidget.kt  
-    // - utils/WidgetUtils.kt
-    // - models/WeatherData.kt
-    // But skip activities/ and services/ directories
-  }
-]
-```
-
-#### Result in your Expo project:
-```
-android/app/src/main/java/com/yourapp/
-├── widgets/
-│   ├── WeatherWidget.kt    # Package updated to com.yourapp.widgets
-│   └── CalendarWidget.kt   # Package updated to com.yourapp.widgets
-├── utils/
-│   └── WidgetUtils.kt      # Package updated to com.yourapp.utils
-└── models/
-    └── WeatherData.kt      # Package updated to com.yourapp.models
-```
-
-### Package Name Updates
-
-The plugin automatically updates package declarations in copied files to match your Expo project's package structure:
-
-- Source: `package com.mycompany.widgets`
-- Target: `package com.yourapp.widgets`
-
-This ensures that all imports and references work correctly in your Expo project.
-
-## Path Handling
-
-### Supported Path Types
-
-1. **Relative paths** (from your Expo project root):
-   ```typescript
-   widgetFilesPath: "widgets/android/"
-   widgetFilesPath: "../external-widgets/"
-   ```
-
-2. **Absolute paths** (anywhere on your system):
-   ```typescript
-   widgetFilesPath: "C:\\Users\\user\\AndroidStudioProjects\\MyApp\\widgets\\"
-   widgetFilesPath: "/home/user/android-projects/widgets/"
-   ```
-
-3. **Auto-sync directories** (created automatically):
-   ```typescript
-   syncDirectory: "widgets/android"  // Creates and uses this directory
-   ```
-
-### Smart File Detection
-
-The plugin automatically detects widget files by:
-- Looking for files containing `GlanceAppWidget`, `AppWidgetProvider`
-- Prioritizing files with "Widget" in the filename
-- Recursively searching directories
-- Validating actual widget code content
-
-## Data Types Reference
-
-### Supported SharedPreferences Types
-
-| JavaScript Type | Kotlin Type | Example |
-|----------------|-------------|---------|
-| `string` | `String` | `"Hello World"` |
-| `number` (int) | `Int` | `42` |
-| `number` (float) | `Float` | `3.14` |
-| `boolean` | `Boolean` | `true` |
-| `null` | `null` | `null` (removes key) |
-
-### JSON Data Patterns
-
-```typescript
-// Simple object
-await SharedPreferences.set('settings', JSON.stringify({
-  theme: 'dark',
-  fontSize: 16
-}));
-
-// Array data
-await SharedPreferences.set('scores', JSON.stringify([100, 85, 92]));
-
-// Complex nested data
-await SharedPreferences.set('user', JSON.stringify({
-  profile: {
-    name: 'John',
-    avatar: 'https://...'
-  },
-  stats: {
-    level: 25,
-    xp: 15000
-  }
-}));
-```
+The plugin will:
+1. Copy files from external project to `syncDirectory`
+2. Update package names to match your Expo project
+3. Preserve directory structure
+4. Merge resources and manifest entries
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **SharedPreferences not working**:
-   - Ensure you've run `expo run:android` after adding the plugin
-   - Check that the native module is properly installed
-   - Verify your package.json includes the module
+1. **Widget not appearing**: Check that the widget receiver is properly defined in your manifest
+2. **Build errors**: Ensure you're using Expo SDK 53+ and the correct Kotlin version
+3. **DataStore errors**: Verify your widget is properly accessing the DataStore context
+4. **Package name issues**: Check that package names are being updated correctly
 
-2. **Widget not updating**:
-   - Widgets update on their own schedule
-   - Use `AppWidgetManager.updateAppWidget()` to force updates
-   - Check widget receiver is properly registered
+### Debug Commands
 
-3. **JSON parsing errors**:
-   - Always validate JSON before parsing in Kotlin
-   - Use try-catch blocks around JSON operations
-   - Provide default values for missing data
+```bash
+# Check for compilation errors
+npm run build:android
 
-### Debug Tips
+# Clean and rebuild
+npm run prebuild:android
 
-```typescript
-// Check what's stored
-const allData = await SharedPreferences.getAll();
-console.log('All SharedPreferences data:', allData);
-
-// Verify specific keys
-const value = await SharedPreferences.get('your_key');
-console.log('Stored value:', value, typeof value);
+# Check widget files
+ls widgets/android/
 ```
 
-```kotlin
-// Kotlin debugging
-val sharedPrefs = SharedPreferencesHelper.create(context)
-val allData = sharedPrefs.getAll()
-Log.d("Widget", "All data: $allData")
-```
+### Plugin Debug Mode
 
-## Requirements
+Enable debug logging by checking the console output during build. The plugin will show:
+- File copy operations
+- Package name updates
+- Manifest merging
+- Resource copying
 
-- Expo SDK 50 or higher
-- Android target SDK 24 or higher
-- Kotlin 2.0 support (automatically configured)
+## Best Practices
+
+1. **Use Version Control**: Always commit the synced files in your `syncDirectory`
+2. **Test Locally**: Test widget functionality before deploying
+3. **Package Names**: Use consistent package naming across your project
+4. **Resource Management**: Keep widget resources organized and named clearly
+5. **Error Handling**: Always handle DataStore operations with try-catch blocks
+
+## API Reference
+
+### ExpoGlanceWidgetModule Methods
+
+#### `getDatastoreValue(key: string): Promise<string | null>`
+Retrieves a value from the DataStore.
+
+#### `updateDatastoreValue(key: string, value: string): Promise<void>`
+Updates or creates a value in the DataStore.
+
+#### `deleteDatastoreValue(key: string): Promise<void>`
+Deletes a value from the DataStore.
+
+#### `getAllDatastoreKeys(): Promise<string[]>`
+Returns all keys in the DataStore (for debugging).
+
+#### `getAllDatastoreValues(): Promise<Record<string, string>>`
+Returns all key-value pairs in the DataStore (for debugging).
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
 
 ## License
 
-MIT
+MIT License - see LICENSE file for details.
+
+## Documentation
+
+- **[Quick Start Guide](./QUICKSTART.md)** - Get started in 5 minutes
+- **[API Reference](./API.md)** - Complete method documentation
+- **[Migration Guide](./MIGRATION.md)** - Upgrade from v1.x to v2.0
+- **[Troubleshooting](./TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Changelog](./CHANGELOG.md)** - Version history and changes
+- **[Examples](./example/)** - Real-world usage examples
+
+## Support
+
+For issues and questions:
+1. Check the [Troubleshooting Guide](./TROUBLESHOOTING.md)
+2. Review the [API Reference](./API.md) for method usage
+3. Look at the [Examples](./example/) directory for code samples
+4. Read the [Migration Guide](./MIGRATION.md) if upgrading
+5. Open an issue on GitHub with detailed information about your setup

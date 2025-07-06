@@ -1,4 +1,4 @@
-import ExpoGlanceWidgetModule from 'expo-glance-widget';
+import ExpoGlanceWidgetModule from '../src/ExpoGlanceWidgetModule';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 

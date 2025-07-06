@@ -13,14 +13,19 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
+    icon: {
+      light: "./assets/icons/ios-light.png",
+      dark: "./assets/icons/ios-dark.png",
+    },
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/images/adaptive-icon.png",
+      foregroundImage: "./assets/icons/adaptive-icon.png",
+      monochromeImage: "./assets/icons/adaptive-icon.png",
       backgroundColor: "#ffffff",
     },
     edgeToEdgeEnabled: true,
-    package: "com.anonymous.moggin",
+    package: "com.tigawanna.moggin",
   },
   web: {
     bundler: "metro",
@@ -32,10 +37,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "expo-splash-screen",
       {
-        image: "./assets/images/splash-icon.png",
+        image: "./assets/icons/splash-icon-light.png",
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#ffffff",
+        dark: {
+          image: "./assets/icons/splash-icon-dark.png",
+          imageWidth: 200,
+          resizeMode: "contain",
+          backgroundColor: "#000000",
+        },
       },
     ],
     // Expo Glance Widgets plugin for Android widget support

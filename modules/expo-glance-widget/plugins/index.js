@@ -573,9 +573,9 @@ var require_color_name = __commonJS({
   }
 });
 
-// node_modules/color-convert/conversions.js
+// node_modules/ansi-styles/node_modules/color-convert/conversions.js
 var require_conversions = __commonJS({
-  "node_modules/color-convert/conversions.js"(exports2, module2) {
+  "node_modules/ansi-styles/node_modules/color-convert/conversions.js"(exports2, module2) {
     "use strict";
     var cssKeywords = require_color_name();
     var reverseKeywords = {};
@@ -1245,9 +1245,9 @@ var require_conversions = __commonJS({
   }
 });
 
-// node_modules/color-convert/route.js
+// node_modules/ansi-styles/node_modules/color-convert/route.js
 var require_route = __commonJS({
-  "node_modules/color-convert/route.js"(exports2, module2) {
+  "node_modules/ansi-styles/node_modules/color-convert/route.js"(exports2, module2) {
     "use strict";
     var conversions = require_conversions();
     function buildGraph() {
@@ -1316,9 +1316,9 @@ var require_route = __commonJS({
   }
 });
 
-// node_modules/color-convert/index.js
+// node_modules/ansi-styles/node_modules/color-convert/index.js
 var require_color_convert = __commonJS({
-  "node_modules/color-convert/index.js"(exports2, module2) {
+  "node_modules/ansi-styles/node_modules/color-convert/index.js"(exports2, module2) {
     "use strict";
     var conversions = require_conversions();
     var route = require_route();
@@ -30959,9 +30959,9 @@ var require_escape_string_regexp = __commonJS({
   }
 });
 
-// node_modules/@babel/highlight/node_modules/color-name/index.js
+// node_modules/color-convert/node_modules/color-name/index.js
 var require_color_name2 = __commonJS({
-  "node_modules/@babel/highlight/node_modules/color-name/index.js"(exports2, module2) {
+  "node_modules/color-convert/node_modules/color-name/index.js"(exports2, module2) {
     "use strict";
     module2.exports = {
       "aliceblue": [240, 248, 255],
@@ -31116,9 +31116,9 @@ var require_color_name2 = __commonJS({
   }
 });
 
-// node_modules/@babel/highlight/node_modules/color-convert/conversions.js
+// node_modules/color-convert/conversions.js
 var require_conversions2 = __commonJS({
-  "node_modules/@babel/highlight/node_modules/color-convert/conversions.js"(exports2, module2) {
+  "node_modules/color-convert/conversions.js"(exports2, module2) {
     "use strict";
     var cssKeywords = require_color_name2();
     var reverseKeywords = {};
@@ -31830,9 +31830,9 @@ var require_conversions2 = __commonJS({
   }
 });
 
-// node_modules/@babel/highlight/node_modules/color-convert/route.js
+// node_modules/color-convert/route.js
 var require_route2 = __commonJS({
-  "node_modules/@babel/highlight/node_modules/color-convert/route.js"(exports2, module2) {
+  "node_modules/color-convert/route.js"(exports2, module2) {
     "use strict";
     var conversions = require_conversions2();
     function buildGraph() {
@@ -31901,9 +31901,9 @@ var require_route2 = __commonJS({
   }
 });
 
-// node_modules/@babel/highlight/node_modules/color-convert/index.js
+// node_modules/color-convert/index.js
 var require_color_convert2 = __commonJS({
-  "node_modules/@babel/highlight/node_modules/color-convert/index.js"(exports2, module2) {
+  "node_modules/color-convert/index.js"(exports2, module2) {
     "use strict";
     var conversions = require_conversions2();
     var route = require_route2();

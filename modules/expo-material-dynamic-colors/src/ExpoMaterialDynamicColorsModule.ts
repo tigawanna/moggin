@@ -1,12 +1,10 @@
-import { NativeModule, requireNativeModule } from 'expo';
+import { requireNativeModule } from 'expo';
 
-import { ExpoMaterialDynamicColorsModuleEvents } from './ExpoMaterialDynamicColors.types';
+import { MaterialDynamicTheme } from './ExpoMaterialDynamicColors.types';
 
-declare class ExpoMaterialDynamicColorsModule extends NativeModule<ExpoMaterialDynamicColorsModuleEvents> {
-  PI: number;
-  hello(): string;
-  setValueAsync(value: string): Promise<void>;
-}
+// declare class ExpoMaterialDynamicColorsModule extends NativeModule<MaterialDynamicTheme> {
+
+// }
 
 // This call loads the native module object from the JSI.
-export default requireNativeModule<ExpoMaterialDynamicColorsModule>('ExpoMaterialDynamicColors');
+export default requireNativeModule<MaterialDynamicTheme>('ExpoMaterialDynamicColors');

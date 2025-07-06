@@ -1,3 +1,7 @@
+apply plugin: "com.facebook.react.rootproject"
+
+
+
 apply plugin: 'com.android.library'
 
 group = 'expo.modules.materialdynamiccolors'

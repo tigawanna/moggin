@@ -5,7 +5,9 @@
   "scripts": {
     "start": "expo start",
     "plugins:build": "tsc -p tsconfig.plugins.json",
+    "plugins:bundle": "tsup modules/expo-glance-widget/plugins/index.ts --format cjs --out-dir modules/expo-glance-widget/plugins",
     "reset-project": "node ./scripts/reset-project.js",
+    "remove-js-files":"tsx scripts/remove-js.ts modules/expo-glance-widget/plugins",
     "android": "expo run:android",
     "prebuild:android": "npm run plugins:build && expo prebuild -p android --clean",
     "build:android": "npm run prebuild:android && expo run:android",
@@ -55,6 +57,7 @@
     "eslint-config-expo": "~9.2.0",
     "jest": "^30.0.4",
     "ts-jest": "^29.4.0",
+    "tsup": "^8.5.0",
     "tsx": "^4.20.3",
     "typescript": "~5.8.3"
   },

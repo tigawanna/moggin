@@ -1,4 +1,4 @@
-package com.anonymous.moggin
+package com.tigawanna.moggin
 
 import androidx.datastore.preferences.core.stringPreferencesKey
 

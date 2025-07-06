@@ -1,4 +1,4 @@
-package com.anonymous.moggin.wakatime
+package com.tigawanna.moggin.wakatime
 
 import android.content.Context
 import android.os.Build
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import com.anonymous.moggin.BidiiWidgetConstants
+import com.tigawanna.moggin.BidiiWidgetConstants
 
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState

@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 
 class ExpoMaterialDynamicColorsModule : Module() {
   override fun definition() = ModuleDefinition {
-    Name("ExpoMaterial3Theme")
+    Name("ExpoMaterialDynamicColors")
 
     Function("getSystemTheme") {
       return@Function getDynamicColorPalette()
@@ -27,7 +27,7 @@ class ExpoMaterialDynamicColorsModule : Module() {
   }
 
   private fun getDynamicColorPalette(): Map<String, Map<String, String>>? {
-    Log.d("ExpoMaterial3Theme", "Get dynamic color palette")
+    Log.d("ExpoMaterialDynamicColors", "Get dynamic color palette")
 
     val currentSdk = Build.VERSION.SDK_INT
     val minSdk = Build.VERSION_CODES.S
@@ -37,12 +37,12 @@ class ExpoMaterialDynamicColorsModule : Module() {
       val resources = this.getApplicationResources()
 
       if (resources == null) {
-        Log.w("ExpoMaterial3Theme", "could not get resources for dynamic color module")
+        Log.w("ExpoMaterialDynamicColors", "could not get resources for dynamic color module")
         return null
       }
       return this.getCorePalette(resources)
     } else {
-      Log.w("ExpoMaterial3Theme", "SDK version $minSdk is required to run this native module, got $currentSdk")
+      Log.w("ExpoMaterialDynamicColors", "SDK version $minSdk is required to run this native module, got $currentSdk")
       null
     }
   }
@@ -52,7 +52,7 @@ class ExpoMaterialDynamicColorsModule : Module() {
 
   private fun getApplicationResources(): Resources? {
     if (context.resources == null) {
-      Log.d("ExpoMaterial3Theme", "React context resources was null, could not get resource list")
+      Log.d("ExpoMaterialDynamicColors", "React context resources was null, could not get resource list")
       return null
     }
     return context.resources

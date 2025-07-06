@@ -32,6 +32,8 @@ export function useThemeSetup(dynamicColors?: boolean) {
   const darkThemeColors = dynamicColors
     ? materialYouThemeOrMyTheme(material3Theme).dark
     : Colors.dark;
+  // const lightThemeColors = Colors.light;
+  // const darkThemeColors = Colors.dark;
 
   // Create combined themes (Material You or fallback)
   const lightBasedTheme = merge(LightTheme, {

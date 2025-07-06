@@ -1,4 +1,4 @@
-package com.anonymous.moggin.wakatime
+package com.tigawanna.moggin.wakatime
 
 import android.content.Context
 import android.content.Intent
@@ -39,9 +39,9 @@ import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.layout.padding
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.height
-import com.anonymous.moggin.BidiiWidgetConstants
-import com.anonymous.moggin.MainActivity
-import com.anonymous.moggin.R
+import com.tigawanna.moggin.BidiiWidgetConstants
+import com.tigawanna.moggin.MainActivity
+import com.tigawanna.moggin.R
 
 class RefreshWidgetAction : ActionCallback {
     override suspend fun onAction(

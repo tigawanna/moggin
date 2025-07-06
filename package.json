@@ -6,6 +6,8 @@
     "start": "expo start",
     "plugins:build": "tsc -p tsconfig.plugins.json",
     "plugins:bundle": "tsup modules/expo-glance-widget/plugins/index.ts --format cjs --out-dir modules/expo-glance-widget/plugins",
+    "module:bundle": "tsup modules/expo-material-dynamic-colors/src/index.ts --format cjs --out-dir modules/expo-material-dynamic-colors/src/",
+    
     "reset-project": "node ./scripts/reset-project.js",
     "remove-js-files": "tsx scripts/remove-js.ts modules/expo-glance-widget/plugins",
     "android": "expo run:android",

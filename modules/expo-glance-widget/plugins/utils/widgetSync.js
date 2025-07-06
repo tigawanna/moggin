@@ -19,10 +19,8 @@ class WidgetSync {
      * @param projectRoot - Root directory of the Expo project
      * @param options - Plugin configuration options
      * @param packageName - Target package name for the Expo project
-     * @param fileMatchPattern - Pattern to match widget files
-     * @param includeDirectories - Array of directories to include
      */
-    static syncToDefaults(projectRoot, options, packageName, fileMatchPattern, includeDirectories) {
+    static syncToDefaults(projectRoot, options, packageName) {
         fs_1.Logger.debug('Checking if widget files need to be synced to defaults...');
         // Check if user is using non-default paths
         const usingCustomPaths = options.widgetFilesPath !== withPlugins_1.DEFAULT_OPTIONS.widgetFilesPath ||
@@ -30,6 +28,10 @@ class WidgetSync {
             options.resPath !== withPlugins_1.DEFAULT_OPTIONS.resPath;
         if (!usingCustomPaths) {
             fs_1.Logger.debug('Using default paths, no sync needed');
+            return;
+        }
+        if (options.widgetFilesPath === withPlugins_1.DEFAULT_OPTIONS.widgetFilesPath) {
+            fs_1.Logger.warn(`\n🚩🚩🚩🚩 Skipping sync to defaults: widgetFilesPath is the same as the default: "${withPlugins_1.DEFAULT_OPTIONS.widgetFilesPath}\n\n".`);
             return;
         }
         fs_1.Logger.info('Custom widget paths detected, syncing to default locations for version control...');
@@ -41,10 +43,10 @@ class WidgetSync {
         widgetFilesSync_1.WidgetFilesSync.syncToDefaults({
             projectRoot,
             platformRoot: projectRoot,
-            fileMatchPattern: fileMatchPattern || options.fileMatchPattern || "Widget",
+            fileMatchPattern: options.fileMatchPattern || "Widget",
             packageName,
             widgetFilesPath: options.widgetFilesPath,
-            includeDirectories: includeDirectories || options.includeDirectories,
+            includeDirectories: options.includeDirectories,
             defaultSourcePath: options.syncDirectory, // Use the provided path as the default source
         });
         // Sync manifest file

@@ -29,15 +29,11 @@ export class WidgetSync {
    * @param projectRoot - Root directory of the Expo project
    * @param options - Plugin configuration options
    * @param packageName - Target package name for the Expo project
-   * @param fileMatchPattern - Pattern to match widget files
-   * @param includeDirectories - Array of directories to include
    */
   static syncToDefaults(
     projectRoot: string,
     options: WithExpoGlanceWidgetsProps,
     packageName: string,
-    fileMatchPattern?: string,
-    includeDirectories?: string[]
   ): void {
     Logger.debug('Checking if widget files need to be synced to defaults...');
   
@@ -51,6 +47,11 @@ export class WidgetSync {
       Logger.debug('Using default paths, no sync needed');
       return;
     }
+    if(options.widgetFilesPath === DEFAULT_OPTIONS.widgetFilesPath) {
+      Logger.warn(`\n🚩🚩🚩🚩 Skipping sync to defaults: widgetFilesPath is the same as the default: "${DEFAULT_OPTIONS.widgetFilesPath}\n\n".`);
+      return
+    }
+
 
     Logger.info('Custom widget paths detected, syncing to default locations for version control...');
 
@@ -62,10 +63,10 @@ export class WidgetSync {
     WidgetFilesSync.syncToDefaults({
       projectRoot,
       platformRoot: projectRoot,
-      fileMatchPattern: fileMatchPattern || options.fileMatchPattern || "Widget",
+      fileMatchPattern:options.fileMatchPattern || "Widget",
       packageName,
       widgetFilesPath: options.widgetFilesPath,
-      includeDirectories: includeDirectories || options.includeDirectories,
+      includeDirectories:options.includeDirectories,
       defaultSourcePath: options.syncDirectory, // Use the provided path as the default source
     });
 

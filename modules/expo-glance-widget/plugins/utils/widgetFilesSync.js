@@ -16,8 +16,8 @@ class WidgetFilesSync {
      */
     static syncToDefaults({ projectRoot, widgetFilesPath, includeDirectories, defaultSourcePath = "widgets/android", packageName, fileMatchPattern = "Widget", }) {
         fs_1.Logger.info(`\n\n==================== Syncing widget files to default location ====================\n\n`);
-        if (fs_1.FileUtils.exists(widgetFilesPath)) {
-            fs_1.Logger.warn(`widgetFilesPath should be a directory, but found a file: ${widgetFilesPath}`);
+        if (!fs_1.FileUtils.exists(widgetFilesPath)) {
+            fs_1.Logger.warn(`widgetFilesPath does not exist: ${widgetFilesPath}`);
             return;
         }
         const resolvedSource = this.resolveWidgetPath(projectRoot, widgetFilesPath);

@@ -37,8 +37,8 @@ export class WidgetFilesSync {
     Logger.info(
       `\n\n==================== Syncing widget files to default location ====================\n\n`
     );
-    if (FileUtils.exists(widgetFilesPath)) {
-      Logger.warn(`widgetFilesPath should be a directory, but found a file: ${widgetFilesPath}`);
+    if (!FileUtils.exists(widgetFilesPath)) {
+      Logger.warn(`widgetFilesPath does not exist: ${widgetFilesPath}`);
       return;
     }
     const resolvedSource = this.resolveWidgetPath(projectRoot, widgetFilesPath);

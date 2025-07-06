@@ -46,6 +46,7 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
         throw new Error(`ExpoGlanceWidgets: app.config must provide a value for android.package.`);
       }
 
+      
       // First, sync external widget files to default locations for version control
       WidgetSync.syncToDefaults(projectRoot, finalOptions, packageName);
 

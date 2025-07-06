@@ -47,6 +47,7 @@ export class FileUtils {
    * @returns True if file exists
    */
   static exists(filePath: string): boolean {
+    // console.log(" 🚧🚧🚧 verifying existance of  ==== ", filePath);
     return fs.existsSync(filePath);
   }
 

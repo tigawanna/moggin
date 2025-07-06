@@ -32,7 +32,7 @@ export interface WithExpoGlanceWidgetsProps {
  * Default configuration options for Expo Glance Widgets
  */
 export const DEFAULT_OPTIONS: WithExpoGlanceWidgetsProps = {
-  widgetFilesPath: "widgets/android/MyWidget.kt",
+  widgetFilesPath: "widgets/android",
   manifestPath: "widgets/android/AndroidManifest.xml",
   resPath: "widgets/android/res",
   fileMatchPattern: "Widget", // Default: match files containing "Widget" in the name
@@ -62,7 +62,7 @@ function getDefaultedOptions(
         `ExpoGlanceWidgets: widgetFilesPath does not exist: ${mergedOptions.widgetFilesPath}`
       );
     }
-    Logger.warn(`Using default widgetFilesPath: ${DEFAULT_OPTIONS.widgetFilesPath}`);
+    Logger.warn(`Using default widgetFilesPath: ${DEFAULT_OPTIONS.widgetFilesPath}\n`);
     mergedOptions.widgetFilesPath = DEFAULT_OPTIONS.widgetFilesPath;
   }
 
@@ -74,7 +74,7 @@ function getDefaultedOptions(
         `ExpoGlanceWidgets: manifestPath does not exist: ${mergedOptions.manifestPath}`
       );
     }
-    Logger.warn(`Using default manifestPath: ${DEFAULT_OPTIONS.manifestPath}`);
+    Logger.warn(`Using default manifestPath: ${DEFAULT_OPTIONS.manifestPath}\n`);
     mergedOptions.manifestPath = DEFAULT_OPTIONS.manifestPath;
   }
   
@@ -83,7 +83,7 @@ function getDefaultedOptions(
     if (!FileUtils.exists(DEFAULT_OPTIONS.resPath)) {
       throw new Error(`ExpoGlanceWidgets: resPath does not exist: ${mergedOptions.resPath}`);
     }
-    Logger.warn(`Using default resPath: ${DEFAULT_OPTIONS.resPath}`);
+    Logger.warn(`Using default resPath: ${DEFAULT_OPTIONS.resPath}\n`);
     mergedOptions.resPath = DEFAULT_OPTIONS.resPath;
   }
 

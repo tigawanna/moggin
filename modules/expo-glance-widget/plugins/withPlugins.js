@@ -13,7 +13,7 @@ const fs_1 = require("./utils/fs");
  * Default configuration options for Expo Glance Widgets
  */
 exports.DEFAULT_OPTIONS = {
-    widgetFilesPath: "widgets/android/MyWidget.kt",
+    widgetFilesPath: "widgets/android",
     manifestPath: "widgets/android/AndroidManifest.xml",
     resPath: "widgets/android/res",
     fileMatchPattern: "Widget", // Default: match files containing "Widget" in the name
@@ -35,7 +35,7 @@ function getDefaultedOptions(options) {
         if (!fs_1.FileUtils.exists(exports.DEFAULT_OPTIONS.widgetFilesPath)) {
             throw new Error(`ExpoGlanceWidgets: widgetFilesPath does not exist: ${mergedOptions.widgetFilesPath}`);
         }
-        fs_1.Logger.warn(`Using default widgetFilesPath: ${exports.DEFAULT_OPTIONS.widgetFilesPath}`);
+        fs_1.Logger.warn(`Using default widgetFilesPath: ${exports.DEFAULT_OPTIONS.widgetFilesPath}\n`);
         mergedOptions.widgetFilesPath = exports.DEFAULT_OPTIONS.widgetFilesPath;
     }
     if (!fs_1.FileUtils.exists(mergedOptions.manifestPath)) {
@@ -44,7 +44,7 @@ function getDefaultedOptions(options) {
         if (!fs_1.FileUtils.exists(exports.DEFAULT_OPTIONS.manifestPath)) {
             throw new Error(`ExpoGlanceWidgets: manifestPath does not exist: ${mergedOptions.manifestPath}`);
         }
-        fs_1.Logger.warn(`Using default manifestPath: ${exports.DEFAULT_OPTIONS.manifestPath}`);
+        fs_1.Logger.warn(`Using default manifestPath: ${exports.DEFAULT_OPTIONS.manifestPath}\n`);
         mergedOptions.manifestPath = exports.DEFAULT_OPTIONS.manifestPath;
     }
     if (!fs_1.FileUtils.exists(mergedOptions.resPath)) {
@@ -52,7 +52,7 @@ function getDefaultedOptions(options) {
         if (!fs_1.FileUtils.exists(exports.DEFAULT_OPTIONS.resPath)) {
             throw new Error(`ExpoGlanceWidgets: resPath does not exist: ${mergedOptions.resPath}`);
         }
-        fs_1.Logger.warn(`Using default resPath: ${exports.DEFAULT_OPTIONS.resPath}`);
+        fs_1.Logger.warn(`Using default resPath: ${exports.DEFAULT_OPTIONS.resPath}\n`);
         mergedOptions.resPath = exports.DEFAULT_OPTIONS.resPath;
     }
     // Auto-detect external sources and adjust sync directory

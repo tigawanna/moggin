@@ -24,7 +24,7 @@ const withGlanceWidgetFiles = (config, options = {}) => {
     const finalOptions = { ...withPlugins_1.DEFAULT_OPTIONS, ...options };
     // Copy widget source files and resources
     config = (0, config_plugins_1.withDangerousMod)(config, [
-        'android',
+        "android",
         async (newConfig) => {
             const { modRequest } = newConfig;
             const projectRoot = modRequest.projectRoot;

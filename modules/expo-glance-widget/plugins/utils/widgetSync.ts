@@ -3,7 +3,7 @@ import { DEFAULT_OPTIONS } from '../withPlugins';
 import { FileUtils, Logger } from './fs';
 import { ManifestSync } from './manifestSync';
 import { ResourceSync } from './resourceSync';
-import { WidgetClassSync } from './widgetClassSync';
+import { WidgetFilesSync } from './widgetFilesSync';
 
 export interface WithExpoGlanceWidgetsProps {
   /** Path to the widget Kotlin class file or directory */
@@ -59,7 +59,7 @@ export class WidgetSync {
     const targetManifestPath = `${targetSyncDir}/AndroidManifest.xml`;  
     const targetResPath = `${targetSyncDir}/res`;
 // Sync widget class files
-    WidgetClassSync.syncToDefaults({
+    WidgetFilesSync.syncToDefaults({
       projectRoot,
       platformRoot: projectRoot,
       fileMatchPattern: fileMatchPattern || options.fileMatchPattern || "Widget",
@@ -103,9 +103,8 @@ export class WidgetSync {
   ): void {
     const projectAndroidRoot = path.relative(projectRoot, "android");
     FileUtils.ensureDir(projectAndroidRoot);
-    // TODO check if the wigget sources is reachable if not use the default path
-    // Copy widget Kotlin files
-    WidgetClassSync.copyToBuild({
+  // Copy widget Kotlin files
+    WidgetFilesSync.copyToBuild({
       projectRoot,
       projectAndroidRoot,
       platformRoot: projectRoot,

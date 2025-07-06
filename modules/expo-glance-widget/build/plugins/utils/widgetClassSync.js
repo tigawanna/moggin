@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WidgetClassSync = void 0;
+exports.WidgetFilesSync = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = require("./fs");
 /**
  * Utility functions for syncing widget class files
  */
-class WidgetClassSync {
+class WidgetFilesSync {
     /**
      * Syncs widget Kotlin class files to default location with package name updates
      * @param projectRoot - Root directory of the Expo project
@@ -391,4 +391,4 @@ class WidgetClassSync {
         return null;
     }
 }
-exports.WidgetClassSync = WidgetClassSync;
+exports.WidgetFilesSync = WidgetFilesSync;

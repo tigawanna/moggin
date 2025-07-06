@@ -1,23 +1,22 @@
 import {
-    AndroidConfig,
-    ConfigPlugin,
-    withAndroidManifest,
-    withDangerousMod,
-} from '@expo/config-plugins';
-import { WidgetSync, WithExpoGlanceWidgetsProps } from './utils/widgetSync';
-import { DEFAULT_OPTIONS } from './withPlugins';
-import { importWidgetFiles } from './utils/importWidgetFiles';
-import path from 'path';
+  AndroidConfig,
+  ConfigPlugin,
+  withAndroidManifest,
+  withDangerousMod,
+} from "@expo/config-plugins";
+import { WidgetSync, WithExpoGlanceWidgetsProps } from "./utils/widgetSync";
+import { DEFAULT_OPTIONS } from "./withPlugins";
+
 /**
  * Main config plugin that copies widget files and modifies Android manifest
- * 
+ *
  * Features:
  * 1. Syncs external widget files to local default directories for version control
  * 2. Updates package names to match the current Expo project package
  * 3. Copies widget Kotlin source files to Android package structure
  * 4. Copies widget resources to main Android resources directory
  * 5. Extracts and adds widget receivers from manifest to main Android manifest
- * 
+ *
  * When using custom paths (e.g., pointing to Android Studio project):
  * - Files are first copied to default local directories (widgets/android/)
  * - Package names are automatically updated to match your Expo app package
@@ -32,7 +31,7 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
 
   // Copy widget source files and resources
   config = withDangerousMod(config, [
-    'android',
+    "android",
     async (newConfig) => {
       const { modRequest } = newConfig;
       const projectRoot = modRequest.projectRoot;
@@ -40,13 +39,11 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
       const packageName = AndroidConfig.Package.getPackage(config);
 
 
-      
-      console.log("=====   ✅✅✅✅✅✅✅✅✅✅ ========",modRequest)
+
+      console.log("=====   ✅✅✅✅✅✅✅✅✅✅ ========", modRequest);
       console.log("=====   ✅✅✅✅✅✅✅✅✅✅ ========", packageName);
       if (!packageName) {
-        throw new Error(
-          `ExpoGlanceWidgets: app.config must provide a value for android.package.`
-        );
+        throw new Error(`ExpoGlanceWidgets: app.config must provide a value for android.package.`);
       }
 
       // First, sync external widget files to default locations for version control
@@ -54,7 +51,6 @@ export const withGlanceWidgetFiles: ConfigPlugin<Partial<WithExpoGlanceWidgetsPr
 
       // Copy widget files to Android build directories
       WidgetSync.copyToBuild(projectRoot, platformRoot, finalOptions, packageName);
-
 
       return newConfig;
     },

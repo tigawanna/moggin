@@ -5,6 +5,6 @@
     android:minHeight="100dp"
     android:resizeMode="horizontal|vertical"
     android:initialLayout="@layout/glance_default_loading_layout"
-    android:previewImage="@drawable/main_app_icon"
+    android:previewImage="@drawable/wakatime_hours_widget"
     />
 

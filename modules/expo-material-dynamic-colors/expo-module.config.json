@@ -1,8 +1,5 @@
 {
-  "platforms": ["apple", "android", "web"],
-  "apple": {
-    "modules": ["ExpoMaterialDynamicColorsModule"]
-  },
+  "platforms": ["android"],
   "android": {
     "modules": ["expo.modules.materialdynamiccolors.ExpoMaterialDynamicColorsModule"]
   }

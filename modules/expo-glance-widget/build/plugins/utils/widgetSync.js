@@ -5,7 +5,7 @@ const withPlugins_1 = require("../withPlugins");
 const fs_1 = require("./fs");
 const manifestSync_1 = require("./manifestSync");
 const resourceSync_1 = require("./resourceSync");
-const widgetClassSync_1 = require("./widgetClassSync");
+const WidgetFilesSync_1 = require("./WidgetFilesSync");
 /**
  * Central utility for syncing external widget files to local directories
  */
@@ -35,7 +35,7 @@ class WidgetSync {
         const targetManifestPath = `${targetSyncDir}/AndroidManifest.xml`;
         const targetResPath = `${targetSyncDir}/res`;
         // Sync widget class files
-        widgetClassSync_1.WidgetClassSync.syncToDefaults(projectRoot, options.widgetFilesPath, targetWidgetPath, packageName, options.fileMatchPattern || "Widget");
+        WidgetFilesSync_1.WidgetFilesSync.syncToDefaults(projectRoot, options.widgetFilesPath, targetWidgetPath, packageName, options.fileMatchPattern || "Widget");
         // Sync manifest file
         manifestSync_1.ManifestSync.syncToDefaults(projectRoot, options.manifestPath, targetManifestPath);
         // Sync resource files
@@ -52,7 +52,7 @@ class WidgetSync {
      */
     static copyToBuild(projectRoot, platformRoot, options, packageName, fileMatchPattern, includeDirectories) {
         // Copy widget Kotlin files
-        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, options.widgetFilesPath, packageName, fileMatchPattern || options.fileMatchPattern || "Widget", includeDirectories || options.includeDirectories);
+        WidgetFilesSync_1.WidgetFilesSync.copyToBuild(projectRoot, platformRoot, options.widgetFilesPath, packageName, fileMatchPattern || options.fileMatchPattern || "Widget", includeDirectories || options.includeDirectories);
         // Copy resource files
         resourceSync_1.ResourceSync.copyToBuild(projectRoot, platformRoot, options.resPath);
     }

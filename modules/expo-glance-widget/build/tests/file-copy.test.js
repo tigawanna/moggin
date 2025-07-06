@@ -35,8 +35,8 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
-const widgetClassSync_1 = require("../plugins/utils/widgetClassSync");
-describe('WidgetClassSync', () => {
+const WidgetFilesSync_1 = require("../plugins/utils/WidgetFilesSync");
+describe('WidgetFilesSync', () => {
     const tempDir = path.join(__dirname, 'temp');
     const projectRoot = tempDir;
     const platformRoot = path.join(tempDir, 'android');
@@ -57,7 +57,7 @@ describe('WidgetClassSync', () => {
         fs.rmSync(tempDir, { recursive: true, force: true });
     });
     it('should copy files from includeDirectories and update package names', () => {
-        widgetClassSync_1.WidgetClassSync.copyToBuild(projectRoot, platformRoot, widgetFilesPath, packageName, 'Widget', ['wakatime']);
+        WidgetFilesSync_1.WidgetFilesSync.copyToBuild(projectRoot, platformRoot, widgetFilesPath, packageName, 'Widget', ['wakatime']);
         const expectedWakaTimeWidgetPath = path.join(platformRoot, 'app/src/main/java/com/example/myapp/wakatime/WakaTimeWidget.kt');
         expect(fs.existsSync(expectedWakaTimeWidgetPath)).toBe(true);
         const wakatimeWidgetContent = fs.readFileSync(expectedWakaTimeWidgetPath, 'utf-8');

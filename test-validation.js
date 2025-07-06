@@ -46,7 +46,7 @@ class MockLogger {
 }
 
 /**
- * Test function that mimics the validation logic from WidgetClassSync
+ * Test function that mimics the validation logic from WidgetFilesSync
  */
 function testPathValidation(projectRoot, widgetPath) {
   console.log(`\n=== Testing Path: ${widgetPath} ===`);

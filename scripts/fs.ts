@@ -1,23 +1,23 @@
-import { WidgetClassSync } from "@/modules/expo-glance-widget/plugins/utils/widgetClassSync";
+import { WidgetFilesSync } from "@/modules/expo-glance-widget/plugins/utils/WidgetFilesSync";
 
 function listFiles(directory: string) {
   try {
     console.log("=== Testing with '.' as projectRoot ===");
-    const resolvedPath1 = WidgetClassSync.resolveWidgetPath(
+    const resolvedPath1 = WidgetFilesSync.resolveWidgetPath(
       ".",
       "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii"
     );
     console.log("Resolved Path 1:", resolvedPath1);
     
     console.log("\n=== Testing with full projectRoot path ===");
-    const resolvedPath2 = WidgetClassSync.resolveWidgetPath(
+    const resolvedPath2 = WidgetFilesSync.resolveWidgetPath(
       "C:\\Users\\user\\Desktop\\code\\expo\\moggin",
       "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii"
     );
     console.log("Resolved Path 2:", resolvedPath2);
     
     console.log("\n=== Testing with relative path ===");
-    const resolvedPath3 = WidgetClassSync.resolveWidgetPath(
+    const resolvedPath3 = WidgetFilesSync.resolveWidgetPath(
       "C:\\Users\\user\\Desktop\\code\\expo\\moggin",
       "widgets/android/MyWidget.kt"
     );

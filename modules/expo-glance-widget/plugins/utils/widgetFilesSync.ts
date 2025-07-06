@@ -22,7 +22,7 @@ interface CopyToProps {
 /**
  * Utility functions for syncing widget class files
  */
-export class WidgetClassSync {
+export class WidgetFilesSync {
   /**
    * Syncs widget Kotlin class files to default location with package name updates
    */
@@ -37,6 +37,10 @@ export class WidgetClassSync {
     Logger.info(
       `\n\n==================== Syncing widget files to default location ====================\n\n`
     );
+    if (FileUtils.exists(widgetFilesPath)) {
+      Logger.warn(`widgetFilesPath should be a directory, but found a file: ${widgetFilesPath}`);
+      return;
+    }
     const resolvedSource = this.resolveWidgetPath(projectRoot, widgetFilesPath);
 
     if (!resolvedSource) {
@@ -50,8 +54,12 @@ export class WidgetClassSync {
 
     const sourceDir = path.dirname(resolvedSource);
 
+    if (!FileUtils.exists(sourceDir)) {
+      Logger.warn(`Source directory does not exist: ${sourceDir}`);
+      return;
+    }
     const destinationBaseDir = path.join(projectRoot, defaultSourcePath);
-    // console.log(`n\n\ ==== Syncing widget files from: ${sourceDir} to ${destinationBaseDir}\n\n`);
+
     importWidgetFiles({
       includeDirectories: includeDirectories || [],
       widgetsSourceBasePath: sourceDir,
@@ -59,32 +67,6 @@ export class WidgetClassSync {
       filesMatchPattern: fileMatchPattern,
       destinationPackageName: packageName,
     });
-    // Ensure default directory exists
-    // FileUtils.ensureDir(defaultTargetDir);
-
-    // const sourceDir = path.dirname(resolvedSource);
-    // const ktFiles = this.findWidgetFiles(sourceDir, fileMatchPattern);
-
-    // if (ktFiles.length === 0) {
-    //   Logger.warn(`No widget Kotlin files found in: ${sourceDir}`);
-    //   return;
-    // }
-
-    // Logger.mobile(`Syncing ${ktFiles.length} Kotlin files to ${defaultPath} directory...`);
-
-    // ktFiles.forEach((fileName: string) => {
-    //   const sourcePath = path.join(sourceDir, fileName);
-    //   const targetPath = path.join(defaultTargetDir, fileName);
-
-    //   FileUtils.copyFileSync(sourcePath, targetPath);
-
-    //   // Update package name in the synced file to match Expo project
-    //   this.updatePackageDeclaration(targetPath, packageName);
-
-    //   Logger.success(
-    //     `Synced: ${fileName} → ${path.relative(projectRoot, targetPath)} (package updated)`
-    //   );
-    // });
   }
 
   /**
@@ -102,15 +84,17 @@ export class WidgetClassSync {
     Logger.info(
       `\n\n\==================== Copying widget files to build location ====================\n\n`
     );
+
     const resolvedSource = this.resolveWidgetPath(projectRoot, widgetFilesPath);
 
-    if (!resolvedSource) {
+    if (!resolvedSource || !FileUtils.exists(resolvedSource)) {
       Logger.warn(`No valid widget files found at: ${widgetFilesPath}`);
       return;
     }
 
     const sourceDir = path.dirname(resolvedSource);
-    const destinationBaseDir = path.join(projectRoot, projectAndroidRoot, "app/src/main/java");
+    const packageNameAsPath = packageName.replace(/\./g, "/");
+    const destinationBaseDir = path.join(projectRoot, projectAndroidRoot, "app/src/main/java", packageNameAsPath);
 
     importWidgetFiles({
       includeDirectories: includeDirectories || [],
@@ -119,79 +103,6 @@ export class WidgetClassSync {
       filesMatchPattern: fileMatchPattern,
       destinationPackageName: packageName,
     });
-    // Ensure base destination directory exists
-    // FileUtils.ensureDir(destinationBaseDir);
-
-    // let allWidgetFiles: { sourcePath: string; relativePath: string }[] = [];
-
-    // if (includeDirectories.length > 0) {
-    //   // Copy only from specified directories
-    //   Logger.mobile(`Copying from specified directories: ${includeDirectories.join(", ")}`);
-
-    //   includeDirectories.forEach((dirName) => {
-    //     const targetDir = path.join(sourceDir, dirName);
-
-    //     if (!FileUtils.exists(targetDir) || !FileUtils.isDirectory(targetDir)) {
-    //       Logger.warn(`Specified directory does not exist: ${dirName}`);
-    //       return;
-    //     }
-
-    //     // Find widget files in this specific directory and its subdirectories
-    //     const widgetFiles = this.findWidgetFilesInDirectory(targetDir, fileMatchPattern);
-
-    //     widgetFiles.forEach((file) => {
-    //       // Calculate relative path from the source directory to preserve subdirectory structure
-    //       const relativePath = path.relative(sourceDir, file);
-
-    //       allWidgetFiles.push({
-    //         sourcePath: file,
-    //         relativePath: relativePath,
-    //       });
-    //     });
-    //   });
-    // } else {
-    //   // Fallback: only copy files from the immediate source directory (no subdirectories)
-    //   Logger.mobile(`No target directories specified, copying from source directory only`);
-
-    //   const widgetFiles = this.findWidgetFiles(sourceDir, fileMatchPattern);
-    //   widgetFiles.forEach((fileName) => {
-    //     allWidgetFiles.push({
-    //       sourcePath: path.join(sourceDir, fileName),
-    //       relativePath: fileName,
-    //     });
-    //   });
-    // }
-
-    // if (allWidgetFiles.length === 0) {
-    //   Logger.warn(`No widget files found matching pattern "${fileMatchPattern}"`);
-    //   return;
-    // }
-
-    // Logger.mobile(`Copying ${allWidgetFiles.length} Kotlin widget files...`);
-
-    // allWidgetFiles.forEach(({ sourcePath, relativePath }) => {
-    //   const destinationFile = path.join(destinationBaseDir, relativePath);
-    //   const destinationDir = path.dirname(destinationFile);
-
-    //   // Ensure destination subdirectory exists
-    //   FileUtils.ensureDir(destinationDir);
-
-    //   if (FileUtils.exists(destinationFile)) {
-    //     Logger.warn(`File already exists, overwriting: ${relativePath}`);
-    //   }
-
-    //   Logger.success(`Copying: ${relativePath}`);
-    //   FileUtils.copyFileSync(sourcePath, destinationFile);
-
-    //   // Calculate package name including subdirectories
-    //   const subPath = path.relative(destinationBaseDir, destinationDir);
-    //   const fullPackageName = subPath
-    //     ? `${packageName}.${subPath.replace(/[\\/]/g, ".")}` // Convert path separators to dots
-    //     : packageName;
-
-    //   // Update package declaration in the copied file
-    //   this.updatePackageDeclaration(destinationFile, fullPackageName);
-    // });
   }
 
   /**

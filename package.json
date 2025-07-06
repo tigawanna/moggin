@@ -15,6 +15,12 @@
     "web": "expo start --web",
     "lint": "expo lint"
   },
+  "exports": {
+    "expo-material-dynamic-colors": {
+      "import": "./modules/expo-material-dynamic-colors/src/index.ts",
+      "require": "./modules/expo-material-dynamic-colors/src/index.ts"
+    }
+  },
   "dependencies": {
     "-": "^0.0.1",
     "@expo/vector-icons": "^14.1.0",

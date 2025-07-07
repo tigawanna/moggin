@@ -7,7 +7,7 @@ import { Surface } from "react-native-paper";
 export default function HomeScreen() {
   return (
     <Surface style={styles.container}>
-      <TestDatastore />
+      {/* <TestDatastore /> */}
       <Overview />
     </Surface>
   );

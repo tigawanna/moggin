@@ -1,5 +1,5 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
-import { withExpoGlanceWidgets } from "./modules/expo-glance-widget/plugins";
+import {withExpoGlanceWidgets} from "./modules/expo-glance-widget/plugins";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -54,10 +54,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       withExpoGlanceWidgets as any,
       {
         widgetFilesPath:
-          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
+          "./widgets/android",
         manifestPath:
-          "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
-        resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
+          "./widgets/android/AndroidManifest.xml",
+        resPath: "./widgets/android/res",
+        // widgetFilesPath:
+        //   "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
+        // manifestPath:
+        //   "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
+        // resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
         // Only copy from these specific directories
         includeDirectories: ["wakatime"],
       },
@@ -66,9 +71,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     typedRoutes: true,
   },
-  extra: {
-    eas: {
-      projectId: "bef58162-7beb-4614-9e99-06ac846b57e1",
+    extra: {
+      eas: {
+        projectId: "bef58162-7beb-4614-9e99-06ac846b57e1",
+      },
     },
-  },
+  
 });

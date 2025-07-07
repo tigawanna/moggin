@@ -2,14 +2,16 @@ import { useSettingsStore } from "@/stores/use-app-settings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Card, SegmentedButtons, Text, useTheme } from "react-native-paper";
+import { Dimensions, StyleSheet, View } from "react-native";
+import { Button, Card, ProgressBar, Text, useTheme } from "react-native-paper";
 import { useWakatimeMiniStats } from "./use-wakatime-mini";
+
+const { width: screenWidth } = Dimensions.get('window');
 
 export function WakatimeMiniScreen() {
   const { settings } = useSettingsStore();
   const { wakatimeApiKey } = settings;
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
   const router = useRouter();
   const { colors } = useTheme();
   
@@ -29,6 +31,21 @@ export function WakatimeMiniScreen() {
     selectedDate,
     wakatimeApiKey
   });
+
+  // Prepare chart data for the last 5 days
+  const chartData = lastFiveDays.map((day, index) => {
+    // For demo purposes, generate some sample data
+    // In real implementation, you'd get this from your wakatime data
+    const baseHours = parseFloat(wakatimeData?.todayHours || "2") || 2;
+    const variance = Math.random() * 2 - 1; // Random variance between -1 and 1
+    const hours = Math.max(0, baseHours + variance + (index * 0.5));
+    
+    return {
+      x: day.label,
+      y: hours,
+      date: day.value
+    };
+  }).reverse(); // Reverse to show chronologically
 
 
   // If no API key is configured, show the add API key prompt
@@ -101,25 +118,38 @@ export function WakatimeMiniScreen() {
 
   // Show data when everything is available
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} mode="elevated">
       <Card.Content>
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
           <MaterialCommunityIcons name="clock-outline" size={24} color={colors.primary} />
           <Text variant="titleMedium" style={{ marginLeft: 8 }}>
             Wakatime Stats
           </Text>
         </View>
-        
-        <View style={styles.dateSelector}>
-          <SegmentedButtons
-            value={selectedDate}
-            onValueChange={setSelectedDate}
-            buttons={lastFiveDays.map((day) => ({
-              value: day.value,
-              label: day.label,
-            }))}
-            style={{ marginBottom: 16 }}
-          />
+
+        {/* Chart showing last 5 days */}
+        <View style={styles.chartContainer}>
+          <Text variant="bodyMedium" style={styles.chartTitle}>
+            Last 5 Days Activity
+          </Text>
+          <View style={styles.simpleChart}>
+            {chartData.map((day, index) => (
+              <View key={index} style={styles.chartBar}>
+                <Text variant="bodySmall" style={styles.chartBarLabel}>
+                  {day.x}
+                </Text>
+                <View style={styles.chartBarContainer}>
+                  <ProgressBar
+                    progress={day.y / Math.max(...chartData.map(d => d.y))}
+                    style={styles.chartBarProgress}
+                  />
+                </View>
+                <Text variant="bodySmall" style={styles.chartBarValue}>
+                  {day.y.toFixed(1)}h
+                </Text>
+              </View>
+            ))}
+          </View>
         </View>
 
         <View style={styles.statsContainer}>
@@ -144,11 +174,55 @@ const styles = StyleSheet.create({
   card: {
     marginHorizontal: 2,
     marginBottom: 2,
-    paddingVertical:12
+    paddingVertical: 12,
+    elevation: 4,
   },
   dateSelector: {
     width: "100%",
     marginBottom: 12,
+  },
+  chartContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+    backgroundColor: 'transparent',
+  },
+  chartTitle: {
+    opacity: 0.7,
+    marginBottom: 8,
+    fontSize: 12,
+  },
+  simpleChart: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    height: 100,
+    paddingHorizontal: 16,
+  },
+  chartBar: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 2,
+  },
+  chartBarLabel: {
+    fontSize: 10,
+    opacity: 0.7,
+    marginBottom: 4,
+  },
+  chartBarContainer: {
+    height: 60,
+    width: 16,
+    justifyContent: 'flex-end',
+    marginBottom: 4,
+  },
+  chartBarProgress: {
+    height: '100%',
+    width: 16,
+    transform: [{ rotate: '-90deg' }],
+    transformOrigin: 'center',
+  },
+  chartBarValue: {
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   statsContainer: {
     width: "100%", 

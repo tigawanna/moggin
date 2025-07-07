@@ -106,7 +106,7 @@ export function WakatimeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <WakatimeWidgetKey/>
+        {/* <WakatimeWidgetKey/> */}
         {/* Today's Summary */}
         <Card style={styles.card}>
           <Card.Content>

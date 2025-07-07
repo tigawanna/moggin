@@ -1,9 +1,9 @@
 import { ConfigPlugin } from "expo/config-plugins";
 import path from "path";
+import { FileUtils, Logger } from "./utils/fs";
 import withComposeProjectLevelDependancyPlugin from "./withComposeProjectLevelDependancyPlugin";
 import { withGlanceAppLevelGradleConfig } from "./withGlanceAppLevelGradleConfig";
 import { withGlanceWidgetFiles } from "./withGlanceWidgetFiles";
-import { FileUtils, Logger } from "./utils/fs";
 
 
 /**
@@ -52,39 +52,50 @@ function getDefaultedOptions(
     ...options,
   };
 
+  // Normalize all paths for cross-platform compatibility and CI environments
+  mergedOptions.widgetFilesPath = path.resolve(mergedOptions.widgetFilesPath);
+  mergedOptions.manifestPath = path.resolve(mergedOptions.manifestPath);
+  mergedOptions.resPath = path.resolve(mergedOptions.resPath);
+  if (mergedOptions.syncDirectory) {
+    mergedOptions.syncDirectory = path.resolve(mergedOptions.syncDirectory);
+  }
+
   // check if the specified widgetSources exist and use defult paths if not
   if (!FileUtils.exists(mergedOptions.widgetFilesPath)) {
     Logger.warn(
       `ExpoGlanceWidgets: widgetFilesPath does not exist: ${mergedOptions.widgetFilesPath}`
     );
-    if (!FileUtils.exists(DEFAULT_OPTIONS.widgetFilesPath)) {
+    const defaultWidgetPath = path.resolve(DEFAULT_OPTIONS.widgetFilesPath);
+    if (!FileUtils.exists(defaultWidgetPath)) {
       throw new Error(
         `ExpoGlanceWidgets: widgetFilesPath does not exist: ${mergedOptions.widgetFilesPath}`
       );
     }
-    Logger.warn(`Using default widgetFilesPath: ${DEFAULT_OPTIONS.widgetFilesPath}\n`);
-    mergedOptions.widgetFilesPath = DEFAULT_OPTIONS.widgetFilesPath;
+    Logger.warn(`Using default widgetFilesPath: ${defaultWidgetPath}\n`);
+    mergedOptions.widgetFilesPath = defaultWidgetPath;
   }
 
   if (!FileUtils.exists(mergedOptions.manifestPath)) {
     Logger.warn(`ExpoGlanceWidgets: manifestPath does not exist: ${mergedOptions.manifestPath}`);
     // If the manifest path doesn't exist, use the default one
-    if (!FileUtils.exists(DEFAULT_OPTIONS.manifestPath)) {
+    const defaultManifestPath = path.resolve(DEFAULT_OPTIONS.manifestPath);
+    if (!FileUtils.exists(defaultManifestPath)) {
       throw new Error(
         `ExpoGlanceWidgets: manifestPath does not exist: ${mergedOptions.manifestPath}`
       );
     }
-    Logger.warn(`Using default manifestPath: ${DEFAULT_OPTIONS.manifestPath}\n`);
-    mergedOptions.manifestPath = DEFAULT_OPTIONS.manifestPath;
+    Logger.warn(`Using default manifestPath: ${defaultManifestPath}\n`);
+    mergedOptions.manifestPath = defaultManifestPath;
   }
   
   if (!FileUtils.exists(mergedOptions.resPath)) {
     Logger.warn(`ExpoGlanceWidgets: resPath does not exist: ${mergedOptions.resPath}`);
-    if (!FileUtils.exists(DEFAULT_OPTIONS.resPath)) {
+    const defaultResPath = path.resolve(DEFAULT_OPTIONS.resPath);
+    if (!FileUtils.exists(defaultResPath)) {
       throw new Error(`ExpoGlanceWidgets: resPath does not exist: ${mergedOptions.resPath}`);
     }
-    Logger.warn(`Using default resPath: ${DEFAULT_OPTIONS.resPath}\n`);
-    mergedOptions.resPath = DEFAULT_OPTIONS.resPath;
+    Logger.warn(`Using default resPath: ${defaultResPath}\n`);
+    mergedOptions.resPath = defaultResPath;
   }
 
   // Auto-detect external sources and adjust sync directory

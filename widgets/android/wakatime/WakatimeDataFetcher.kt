@@ -105,6 +105,8 @@ object WakatimeDataFetcher {
             val apiKey = context.dataStore.data.map { preferences ->
                 preferences[BidiiWidgetConstants.WAKATIME_API_KEY] ?: ""
             }.first()
+
+            Log.d("WakatimeDataFetcher", "API Key: $apiKey")
             
             if (apiKey.isBlank()) {
                 return WakatimeDataResult(
@@ -213,6 +215,8 @@ object WakatimeDataFetcher {
                             currentPrefs[BidiiWidgetConstants.WAKATIME_CURRENT_PROJECT_KEY] ?: "No project"
                         prefs[BidiiWidgetConstants.WAKATIME_LAST_SYNC_KEY] = 
                             currentPrefs[BidiiWidgetConstants.WAKATIME_LAST_SYNC_KEY] ?: "Never"
+                        prefs[BidiiWidgetConstants.WAKATIME_API_KEY] =
+                            currentPrefs[BidiiWidgetConstants.WAKATIME_API_KEY] ?: "❌"
                     }
                     BidiiHoursWidget().update(context, id)
                 }

@@ -50,7 +50,7 @@ class RefreshWidgetAction : ActionCallback {
         parameters: ActionParameters
     ) {
         Log.d("RefreshWidgetAction", "Refresh button clicked")
-        
+
         // Launch coroutine to fetch and update widget data
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -78,14 +78,14 @@ class LaunchMainActivityAction : ActionCallback {
 }
 class BidiiHoursWidget : GlanceAppWidget() {
     override var stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
-    
+
     companion object {
         // Predefined sizes for responsive layout
         private val SMALL_SQUARE = DpSize(150.dp, 90.dp)
         private val HORIZONTAL_RECTANGLE = DpSize(200.dp, 90.dp)
         private val BIG_SQUARE = DpSize(250.dp, 180.dp)
 
-        
+
         // Size-based styling
         fun getTimeTextSize(size: DpSize): androidx.compose.ui.unit.TextUnit {
             return when {
@@ -104,10 +104,10 @@ class BidiiHoursWidget : GlanceAppWidget() {
         }
 
 
-        
+
         private fun getResponsiveModifiers(size: DpSize): GlanceModifier {
             val isWide = size.width >= HORIZONTAL_RECTANGLE.width
-            
+
             return GlanceModifier.then(
                 if (isWide) {
                     // Wide layout modifiers
@@ -133,17 +133,24 @@ class BidiiHoursWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val prefs = currentState<Preferences>()
+            // Log all preferences
+            prefs.asMap().forEach { (key, value) ->
+                Log.d("BidiiHoursWidget", "Pref: ${key.name} = $value")
+            }
+
+
             // Size will be one of the predefined sizes
             val size = LocalSize.current
-            
+
             val totalTime = prefs[BidiiWidgetConstants.WAKATIME_TOTAL_TIME_KEY]
-                ?: "00 hrs : 00 mins"
-            
+                ?: "-- hrs : -- mins"
+
             val currentProject = prefs[BidiiWidgetConstants.WAKATIME_CURRENT_PROJECT_KEY]
                 ?: "----"
-            
+
             val lastSync = prefs[BidiiWidgetConstants.WAKATIME_LAST_SYNC_KEY]
                 ?: "--:--"
+            val wakatimeToken = prefs[BidiiWidgetConstants.WAKATIME_API_KEY]?:"❌"
 
 //            val launchAppAction = actionStartActivity(
 //                ComponentName(context, MainActivity::class.java)
@@ -181,6 +188,7 @@ class BidiiHoursWidget : GlanceAppWidget() {
                         totalTime = totalTime,
                         currentProject = currentProject,
                         lastSync = lastSync,
+                        wakatimeToken=wakatimeToken,
                         timeTextSize = timeTextSize,
                         descriptorTextSize = descriptorTextSize,
                         isWideWidget = isWideWidget,
@@ -198,6 +206,7 @@ class BidiiHoursWidget : GlanceAppWidget() {
         totalTime: String,
         currentProject: String,
         lastSync: String,
+        wakatimeToken: String,
         timeTextSize: androidx.compose.ui.unit.TextUnit,
         descriptorTextSize: androidx.compose.ui.unit.TextUnit,
         isWideWidget: Boolean,
@@ -253,7 +262,7 @@ class BidiiHoursWidget : GlanceAppWidget() {
                     )
                 }
             }
-            
+
             Spacer(modifier = GlanceModifier.height(4.dp))
             Column(
                 horizontalAlignment = Alignment.Horizontal.CenterHorizontally
@@ -275,6 +284,15 @@ class BidiiHoursWidget : GlanceAppWidget() {
                     style = TextStyle(
                         fontSize = descriptorTextSize,
                         color = GlanceTheme.colors.onSurfaceVariant
+                    )
+                )
+                Spacer(modifier = GlanceModifier.height(2.dp))
+
+                Text(
+                    text = wakatimeToken,
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        color = GlanceTheme.colors.onSurfaceVariant,
                     )
                 )
             }

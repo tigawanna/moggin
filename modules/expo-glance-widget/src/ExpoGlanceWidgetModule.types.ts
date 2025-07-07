@@ -7,3 +7,8 @@ export type WidgetCreationResult = {
   error?: string;
 };
 
+export type DatastoreData = {
+  keys: string[];
+  values: Record<string, string>;
+};
+

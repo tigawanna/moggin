@@ -80,17 +80,22 @@ class ExpoGlanceWidgetModule : Module() {
                 }
             }
         }
-
-
-        // Function to get all values from DataStore
-        AsyncFunction("getAllDatastoreValues") { promise: Promise ->
+        // Function to get all keys and values from DataStore
+        AsyncFunction("getAllDatastoreData") { promise: Promise ->
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val preferences = context.dataStore.data.first()
+                    val keys = preferences.asMap().keys.map { it.name }
                     val values = preferences.asMap().mapKeys { it.key.name }.mapValues { it.value.toString() }
-                    promise.resolve(values)
+                    
+                    val result = mapOf(
+                        "keys" to keys,
+                        "values" to values
+                    )
+                    
+                    promise.resolve(result)
                 } catch (e: Exception) {
-                    promise.reject("DATASTORE_ERROR", "Failed to get values: ${e.message}", e)
+                    promise.reject("DATASTORE_ERROR", "Failed to get datastore data: ${e.message}", e)
                 }
             }
         }

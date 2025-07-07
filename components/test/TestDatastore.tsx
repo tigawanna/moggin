@@ -1,4 +1,4 @@
-import { getAllDatastoreKeys } from '@/lib/datastore/store';
+import { getAllDatastoreData } from '@/lib/datastore/store';
 import { useQuery } from '@tanstack/react-query';
 import { StyleSheet } from 'react-native'
 import { Text,Surface } from 'react-native-paper';
@@ -7,9 +7,8 @@ export function TestDatastore(){
     const { data, error, isPending } = useQuery({
         queryKey: ['all-datastore-keys'],
         queryFn: async () => {
-            // Simulate a datastore operation
             // Replace with actual datastore logic
-            return getAllDatastoreKeys();
+            return getAllDatastoreData();
         },
         refetchOnWindowFocus: false,
     })
@@ -18,7 +17,11 @@ return (
     <Text variant='titleLarge'>TestDatastore</Text>
     {isPending && <Text>Loading...</Text>}
     {error && <Text>Error: {error.message}</Text>}
-    {data && <Text>Data: {JSON.stringify(data)}</Text>}
+    {data && (
+        <>
+            <Text>Values: {JSON.stringify(data.values)}</Text>
+        </>
+    )}
 </Surface>
 );
 }

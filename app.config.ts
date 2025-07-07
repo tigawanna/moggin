@@ -1,6 +1,24 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
 import {withExpoGlanceWidgets} from "./modules/expo-glance-widget/plugins";
 
+const defaultWidgetSources = {
+  widgetFilesPath:
+    "./widgets/android",
+  manifestPath:
+    "./widgets/android/AndroidManifest.xml",
+  resPath: "./widgets/android/res",
+};
+const externalWidgetSources = {
+  widgetFilesPath:
+  "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
+manifestPath:
+  "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
+resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
+}
+const isDev = process.env.NODE_ENV === "development";
+
+const widgetSources = isDev ? externalWidgetSources : defaultWidgetSources;
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: "moggin",
@@ -53,16 +71,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       withExpoGlanceWidgets as any,
       {
-        widgetFilesPath:
-          "./widgets/android",
-        manifestPath:
-          "./widgets/android/AndroidManifest.xml",
-        resPath: "./widgets/android/res",
-        // widgetFilesPath:
-        //   "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
-        // manifestPath:
-        //   "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
-        // resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
+        ...widgetSources,
         // Only copy from these specific directories
         includeDirectories: ["wakatime"],
       },

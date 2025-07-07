@@ -21,10 +21,9 @@ const counter = await ExpoGlanceWidgetModule.getDatastoreValue('counter');
 await ExpoGlanceWidgetModule.deleteDatastoreValue('old_key');
 
 // Get all keys and values (useful for debugging)
-const allKeys = await ExpoGlanceWidgetModule.getAllDatastoreKeys();
-const allValues = await ExpoGlanceWidgetModule.getAllDatastoreValues();
-console.log('All keys:', allKeys);
-console.log('All values:', allValues);
+const datastoreData = await ExpoGlanceWidgetModule.getAllDatastoreData();
+console.log('All keys:', datastoreData.keys);
+console.log('All values:', datastoreData.values);
 ```
 
 ## Usage from Kotlin Widget
@@ -94,8 +93,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Bid
 | `getDatastoreValue` | Get a value by key | `key: string` | `Promise<string \| null>` |
 | `updateDatastoreValue` | Set/update a value | `key: string, value: string` | `Promise<void>` |
 | `deleteDatastoreValue` | Delete a value by key | `key: string` | `Promise<void>` |
-| `getAllDatastoreKeys` | Get all keys | None | `Promise<string[]>` |
-| `getAllDatastoreValues` | Get all key-value pairs | None | `Promise<Record<string, string>>` |
+| `getAllDatastoreData` | Get all keys and values | None | `Promise<{keys: string[], values: Record<string, string>}>` |
 
 ## Error Handling
 

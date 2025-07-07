@@ -128,11 +128,10 @@ await ExpoGlanceWidgetModule.updateDatastoreValue('myKey', 'myValue');
 // Delete a value
 await ExpoGlanceWidgetModule.deleteDatastoreValue('myKey');
 
-// Get all keys (for debugging)
-const keys = await ExpoGlanceWidgetModule.getAllDatastoreKeys();
-
-// Get all values (for debugging)
-const values = await ExpoGlanceWidgetModule.getAllDatastoreValues();
+// Get all keys and values (for debugging)
+const datastoreData = await ExpoGlanceWidgetModule.getAllDatastoreData();
+console.log('Keys:', datastoreData.keys);
+console.log('Values:', datastoreData.values);
 ```
 
 ### Kotlin Widget API
@@ -349,11 +348,15 @@ Updates or creates a value in the DataStore.
 #### `deleteDatastoreValue(key: string): Promise<void>`
 Deletes a value from the DataStore.
 
-#### `getAllDatastoreKeys(): Promise<string[]>`
-Returns all keys in the DataStore (for debugging).
+#### `getAllDatastoreData(): Promise<{keys: string[], values: Record<string, string>}>`
+Returns all keys and values from the DataStore (for debugging).
 
-#### `getAllDatastoreValues(): Promise<Record<string, string>>`
-Returns all key-value pairs in the DataStore (for debugging).
+**Example:**
+```typescript
+const datastoreData = await ExpoGlanceWidgetModule.getAllDatastoreData();
+console.log('Keys:', datastoreData.keys); // ["user_name", "last_update"]
+console.log('Values:', datastoreData.values); // { "user_name": "John", "last_update": "2024-01-01" }
+```
 
 ## Contributing
 

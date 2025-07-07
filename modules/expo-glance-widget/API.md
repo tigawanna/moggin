@@ -57,30 +57,18 @@ Deletes a value from the Android DataStore.
 await ExpoGlanceWidgetModule.deleteDatastoreValue('user_name');
 ```
 
-##### `getAllDatastoreKeys(): Promise<string[]>`
+##### `getAllDatastoreData(): Promise<{keys: string[], values: Record<string, string>}>`
 
-Returns all keys stored in the DataStore. Useful for debugging.
+Returns all keys and values from the Android DataStore. Useful for debugging.
 
 **Returns:** 
-- `Promise<string[]>`: Array of all keys
+- `Promise<{keys: string[], values: Record<string, string>}>`: Object containing arrays of keys and key-value pairs
 
 **Example:**
 ```typescript
-const keys = await ExpoGlanceWidgetModule.getAllDatastoreKeys();
-console.log(keys); // ["user_name", "last_update", "theme"]
-```
-
-##### `getAllDatastoreValues(): Promise<Record<string, string>>`
-
-Returns all key-value pairs from the DataStore. Useful for debugging.
-
-**Returns:** 
-- `Promise<Record<string, string>>`: Object containing all key-value pairs
-
-**Example:**
-```typescript
-const values = await ExpoGlanceWidgetModule.getAllDatastoreValues();
-console.log(values); // { "user_name": "John", "theme": "dark" }
+const datastoreData = await ExpoGlanceWidgetModule.getAllDatastoreData();
+console.log('All keys:', datastoreData.keys); // ["user_name", "last_update", "theme"]
+console.log('All values:', datastoreData.values); // { "user_name": "John", "theme": "dark" }
 ```
 
 ## Plugin Configuration API

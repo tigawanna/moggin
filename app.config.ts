@@ -1,5 +1,5 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
-import {withExpoGlanceWidgets} from "./modules/expo-glance-widget/plugins";
+import { withExpoGlanceWidgets } from "./modules/expo-glance-widget/plugins";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -65,5 +65,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   experiments: {
     typedRoutes: true,
+  },
+  extra: {
+    eas: {
+      projectId: "bef58162-7beb-4614-9e99-06ac846b57e1",
+    },
   },
 });

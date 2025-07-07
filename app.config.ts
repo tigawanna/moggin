@@ -3,10 +3,10 @@ import {withExpoGlanceWidgets} from "./modules/expo-glance-widget/plugins";
 
 const defaultWidgetSources = {
   widgetFilesPath:
-    "./widgets/android",
+    "widgets/android",
   manifestPath:
-    "./widgets/android/AndroidManifest.xml",
-  resPath: "./widgets/android/res",
+    "widgets/android/AndroidManifest.xml",
+  resPath: "widgets/android/res",
 };
 const externalWidgetSources = {
   widgetFilesPath:
@@ -15,9 +15,9 @@ manifestPath:
   "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
 resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
 }
-const isDev = process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV === "development"
 
-const widgetSources = isDev ? externalWidgetSources : defaultWidgetSources;
+const widgetSources = !isDev ? externalWidgetSources : defaultWidgetSources;
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,

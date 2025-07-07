@@ -37883,6 +37883,128 @@ module.exports = __toCommonJS(index_exports);
 // modules/expo-glance-widget/plugins/withPlugins.ts
 var import_path7 = __toESM(require("path"));
 
+// modules/expo-glance-widget/plugins/utils/fs.ts
+var fs = __toESM(require("fs"));
+var import_path = __toESM(require("path"));
+var FileUtils = class {
+  /**
+   * Copy file safely, creating destination directory if needed
+   * @param src - Source file path
+   * @param dest - Destination file path
+   */
+  static copyFileSync(src, dest) {
+    const destDir = import_path.default.dirname(dest);
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+    fs.copyFileSync(src, dest);
+  }
+  /**
+   * Check if path exists and is a directory
+   * @param filePath - Path to check
+   * @returns True if path exists and is a directory
+   */
+  static isDirectory(filePath) {
+    try {
+      return fs.lstatSync(filePath).isDirectory();
+    } catch {
+      return false;
+    }
+  }
+  /**
+   * Ensure directory exists, creating it recursively if needed
+   * @param dirPath - Directory path to ensure
+   */
+  static ensureDir(dirPath) {
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+  }
+  /**
+   * Check if file exists
+   * @param filePath - File path to check
+   * @returns True if file exists
+   */
+  static exists(filePath) {
+    return fs.existsSync(filePath);
+  }
+  /**
+   * Read file content as UTF-8 string
+   * @param filePath - Path to file
+   * @returns File content as string
+   */
+  static readFileSync(filePath) {
+    return fs.readFileSync(filePath, "utf-8");
+  }
+  /**
+   * Write string content to file
+   * @param filePath - Path to file
+   * @param content - Content to write
+   */
+  static writeFileSync(filePath, content) {
+    fs.writeFileSync(filePath, content, "utf-8");
+  }
+  /**
+   * Read directory contents
+   * @param dirPath - Directory path
+   * @returns Array of file/directory names
+   */
+  static readdirSync(dirPath) {
+    return fs.readdirSync(dirPath);
+  }
+  /**
+   * Recursively copy files and directories with callback support
+   * @param sourceDir - Source directory
+   * @param destDir - Destination directory
+   * @param onSuccess - Callback called when a file is successfully copied
+   * @param onSkip - Callback called when a file is skipped (already exists)
+   */
+  static copyRecursively(sourceDir, destDir, onSuccess, onSkip) {
+    this.ensureDir(destDir);
+    const items = this.readdirSync(sourceDir);
+    items.forEach((item) => {
+      const sourcePath = import_path.default.join(sourceDir, item);
+      const destPath = import_path.default.join(destDir, item);
+      if (this.isDirectory(sourcePath)) {
+        this.copyRecursively(sourcePath, destPath, onSuccess, onSkip);
+      } else {
+        if (this.exists(destPath)) {
+          onSkip?.(destPath, sourcePath);
+          return;
+        }
+        this.copyFileSync(sourcePath, destPath);
+        onSuccess?.(destPath);
+      }
+    });
+  }
+};
+var Logger = class {
+  static info(message) {
+    console.log(`\u2139\uFE0F  ${message}`);
+  }
+  static success(message) {
+    console.log(`\u2705 ${message}`);
+  }
+  static warn(message) {
+    console.warn(`\u26A0\uFE0F  ${message}`);
+  }
+  static error(message) {
+    console.error(`\u274C ${message}`);
+  }
+  static debug(message) {
+    console.log(`\u{1F50D} ${message}`);
+  }
+  static file(message) {
+    console.log(`\u{1F4C1} ${message}`);
+  }
+  static mobile(message) {
+    console.log(`\u{1F4F1} ${message}`);
+  }
+  static manifest(message) {
+    console.log(`\u{1F4C4} ${message}`);
+  }
+};
+
 // modules/expo-glance-widget/plugins/withComposeProjectLevelDependancyPlugin.ts
 var import_config_plugins = require("expo/config-plugins");
 var withComposeProjectLevelDependancyPlugin = (config, options) => {
@@ -38033,128 +38155,6 @@ var import_config_plugins3 = __toESM(require_build4());
 
 // modules/expo-glance-widget/plugins/utils/widgetSync.ts
 var import_path6 = __toESM(require("path"));
-
-// modules/expo-glance-widget/plugins/utils/fs.ts
-var fs = __toESM(require("fs"));
-var import_path = __toESM(require("path"));
-var FileUtils = class {
-  /**
-   * Copy file safely, creating destination directory if needed
-   * @param src - Source file path
-   * @param dest - Destination file path
-   */
-  static copyFileSync(src, dest) {
-    const destDir = import_path.default.dirname(dest);
-    if (!fs.existsSync(destDir)) {
-      fs.mkdirSync(destDir, { recursive: true });
-    }
-    fs.copyFileSync(src, dest);
-  }
-  /**
-   * Check if path exists and is a directory
-   * @param filePath - Path to check
-   * @returns True if path exists and is a directory
-   */
-  static isDirectory(filePath) {
-    try {
-      return fs.lstatSync(filePath).isDirectory();
-    } catch {
-      return false;
-    }
-  }
-  /**
-   * Ensure directory exists, creating it recursively if needed
-   * @param dirPath - Directory path to ensure
-   */
-  static ensureDir(dirPath) {
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-  }
-  /**
-   * Check if file exists
-   * @param filePath - File path to check
-   * @returns True if file exists
-   */
-  static exists(filePath) {
-    return fs.existsSync(filePath);
-  }
-  /**
-   * Read file content as UTF-8 string
-   * @param filePath - Path to file
-   * @returns File content as string
-   */
-  static readFileSync(filePath) {
-    return fs.readFileSync(filePath, "utf-8");
-  }
-  /**
-   * Write string content to file
-   * @param filePath - Path to file
-   * @param content - Content to write
-   */
-  static writeFileSync(filePath, content) {
-    fs.writeFileSync(filePath, content, "utf-8");
-  }
-  /**
-   * Read directory contents
-   * @param dirPath - Directory path
-   * @returns Array of file/directory names
-   */
-  static readdirSync(dirPath) {
-    return fs.readdirSync(dirPath);
-  }
-  /**
-   * Recursively copy files and directories with callback support
-   * @param sourceDir - Source directory
-   * @param destDir - Destination directory
-   * @param onSuccess - Callback called when a file is successfully copied
-   * @param onSkip - Callback called when a file is skipped (already exists)
-   */
-  static copyRecursively(sourceDir, destDir, onSuccess, onSkip) {
-    this.ensureDir(destDir);
-    const items = this.readdirSync(sourceDir);
-    items.forEach((item) => {
-      const sourcePath = import_path.default.join(sourceDir, item);
-      const destPath = import_path.default.join(destDir, item);
-      if (this.isDirectory(sourcePath)) {
-        this.copyRecursively(sourcePath, destPath, onSuccess, onSkip);
-      } else {
-        if (this.exists(destPath)) {
-          onSkip?.(destPath, sourcePath);
-          return;
-        }
-        this.copyFileSync(sourcePath, destPath);
-        onSuccess?.(destPath);
-      }
-    });
-  }
-};
-var Logger = class {
-  static info(message) {
-    console.log(`\u2139\uFE0F  ${message}`);
-  }
-  static success(message) {
-    console.log(`\u2705 ${message}`);
-  }
-  static warn(message) {
-    console.warn(`\u26A0\uFE0F  ${message}`);
-  }
-  static error(message) {
-    console.error(`\u274C ${message}`);
-  }
-  static debug(message) {
-    console.log(`\u{1F50D} ${message}`);
-  }
-  static file(message) {
-    console.log(`\u{1F4C1} ${message}`);
-  }
-  static mobile(message) {
-    console.log(`\u{1F4F1} ${message}`);
-  }
-  static manifest(message) {
-    console.log(`\u{1F4C4} ${message}`);
-  }
-};
 
 // modules/expo-glance-widget/plugins/utils/manifestSync.ts
 var import_path2 = __toESM(require("path"));
@@ -39363,38 +39363,47 @@ function getDefaultedOptions(options) {
     ...DEFAULT_OPTIONS,
     ...options
   };
+  mergedOptions.widgetFilesPath = import_path7.default.resolve(mergedOptions.widgetFilesPath);
+  mergedOptions.manifestPath = import_path7.default.resolve(mergedOptions.manifestPath);
+  mergedOptions.resPath = import_path7.default.resolve(mergedOptions.resPath);
+  if (mergedOptions.syncDirectory) {
+    mergedOptions.syncDirectory = import_path7.default.resolve(mergedOptions.syncDirectory);
+  }
   if (!FileUtils.exists(mergedOptions.widgetFilesPath)) {
     Logger.warn(
       `ExpoGlanceWidgets: widgetFilesPath does not exist: ${mergedOptions.widgetFilesPath}`
     );
-    if (!FileUtils.exists(DEFAULT_OPTIONS.widgetFilesPath)) {
+    const defaultWidgetPath = import_path7.default.resolve(DEFAULT_OPTIONS.widgetFilesPath);
+    if (!FileUtils.exists(defaultWidgetPath)) {
       throw new Error(
         `ExpoGlanceWidgets: widgetFilesPath does not exist: ${mergedOptions.widgetFilesPath}`
       );
     }
-    Logger.warn(`Using default widgetFilesPath: ${DEFAULT_OPTIONS.widgetFilesPath}
+    Logger.warn(`Using default widgetFilesPath: ${defaultWidgetPath}
 `);
-    mergedOptions.widgetFilesPath = DEFAULT_OPTIONS.widgetFilesPath;
+    mergedOptions.widgetFilesPath = defaultWidgetPath;
   }
   if (!FileUtils.exists(mergedOptions.manifestPath)) {
     Logger.warn(`ExpoGlanceWidgets: manifestPath does not exist: ${mergedOptions.manifestPath}`);
-    if (!FileUtils.exists(DEFAULT_OPTIONS.manifestPath)) {
+    const defaultManifestPath = import_path7.default.resolve(DEFAULT_OPTIONS.manifestPath);
+    if (!FileUtils.exists(defaultManifestPath)) {
       throw new Error(
         `ExpoGlanceWidgets: manifestPath does not exist: ${mergedOptions.manifestPath}`
       );
     }
-    Logger.warn(`Using default manifestPath: ${DEFAULT_OPTIONS.manifestPath}
+    Logger.warn(`Using default manifestPath: ${defaultManifestPath}
 `);
-    mergedOptions.manifestPath = DEFAULT_OPTIONS.manifestPath;
+    mergedOptions.manifestPath = defaultManifestPath;
   }
   if (!FileUtils.exists(mergedOptions.resPath)) {
     Logger.warn(`ExpoGlanceWidgets: resPath does not exist: ${mergedOptions.resPath}`);
-    if (!FileUtils.exists(DEFAULT_OPTIONS.resPath)) {
+    const defaultResPath = import_path7.default.resolve(DEFAULT_OPTIONS.resPath);
+    if (!FileUtils.exists(defaultResPath)) {
       throw new Error(`ExpoGlanceWidgets: resPath does not exist: ${mergedOptions.resPath}`);
     }
-    Logger.warn(`Using default resPath: ${DEFAULT_OPTIONS.resPath}
+    Logger.warn(`Using default resPath: ${defaultResPath}
 `);
-    mergedOptions.resPath = DEFAULT_OPTIONS.resPath;
+    mergedOptions.resPath = defaultResPath;
   }
   const isExternalWidgetPath = import_path7.default.isAbsolute(mergedOptions.widgetFilesPath) || mergedOptions.widgetFilesPath.startsWith("../");
   const isExternalManifestPath = import_path7.default.isAbsolute(mergedOptions.manifestPath) || mergedOptions.manifestPath.startsWith("../");

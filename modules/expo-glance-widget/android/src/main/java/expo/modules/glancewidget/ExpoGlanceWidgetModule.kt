@@ -81,18 +81,6 @@ class ExpoGlanceWidgetModule : Module() {
             }
         }
 
-        // Function to get all keys from DataStore
-        AsyncFunction("getAllDatastoreKeys") { promise: Promise ->
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val preferences = context.dataStore.data.first()
-                    val keys = preferences.asMap().keys.map { it.name }
-                    promise.resolve(keys)
-                } catch (e: Exception) {
-                    promise.reject("DATASTORE_ERROR", "Failed to get keys: ${e.message}", e)
-                }
-            }
-        }
 
         // Function to get all values from DataStore
         AsyncFunction("getAllDatastoreValues") { promise: Promise ->
@@ -107,42 +95,6 @@ class ExpoGlanceWidgetModule : Module() {
             }
         }
 
-
-
-        // Function("createWidget") {
-        //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        //         val appWidgetManager = AppWidgetManager.getInstance(activity)
-        //         val provider = ComponentName(activity,BidiiHoursWidgetReceiver::class.java)
-        //         if (appWidgetManager.isRequestPinAppWidgetSupported) {
-        //             val launchIntent = activity.packageManager.getLaunchIntentForPackage(activity.packageName)
-        //             val successCallback = launchIntent?.let {
-        //                 PendingIntent.getBroadcast(
-        //                     activity, 0, it,
-        //                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-        //                 )
-        //             }
-        //             appWidgetManager.requestPinAppWidget(provider, null, successCallback)
-        //         }
-        //     }
-        // }
-
-        // Function("updateWidget") { data: String ->
-        //     val activity = activity
-        //     CoroutineScope(Dispatchers.IO).launch {
-        //         try{
-        //         val glanceIds =
-        //             GlanceAppWidgetManager(activity).getGlanceIds(com.anonymous.moggin.BidiiHoursWidget::class.java)
-        //         glanceIds.forEach { id ->
-        //             updateAppWidgetState(activity, id) {
-        //                 it[stringPreferencesKey("now")] = data
-        //             }
-        //             com.anonymous.moggin.BidiiHoursWidget().update(activity, id)
-        //         }
-
-        //         } catch (e: Exception) {
-        //             e.printStackTrace()
-        //         }
-        //     }
-        // }
     }
+
 }

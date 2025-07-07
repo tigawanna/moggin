@@ -18,3 +18,7 @@ export function updateWakatimeWidgetKey(key: string | null) {
 export function getWakatimeWidgetKey() {
   return DatastoreModel.getDatastoreValue(datastoreKeys.wakatimeApiKey);
 }
+
+export function getAllDatastoreKeys() {
+  return DatastoreModel.getAllDatastoreKeys();
+}

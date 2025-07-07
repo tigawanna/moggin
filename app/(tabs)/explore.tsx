@@ -1,98 +1,149 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, ScrollView } from "react-native";
-import { Button, Card, Surface, Text, useTheme, Chip, Avatar } from "react-native-paper";
+import { useRouter } from "expo-router";
+import { ScrollView, StyleSheet } from "react-native";
+import { Avatar, Button, Card, Chip, List, Surface, Text, useTheme } from "react-native-paper";
 
 export default function ExploreScreen() {
   const theme = useTheme();
+  const router = useRouter();
+
+  const handleWakatimeLeaderboard = () => {
+    // Navigate to Wakatime leaderboard browsing
+    router.push("/(tabs)/wakatime-leaderboard" as any);
+  };
+
+  const handleGitHubLeaderboard = () => {
+    // Navigate to GitHub leaderboard browsing
+    router.push("/(tabs)/github-leaderboard" as any);
+  };
 
   return (
     <ScrollView style={styles.container}>
+      <Surface style={styles.header} elevation={0}>
+        <Text variant="headlineMedium" style={styles.title}>
+          Explore
+        </Text>
+        <Text variant="bodyMedium" style={styles.subtitle}>
+          Discover leaderboards and trending content
+        </Text>
+      </Surface>
+
+      <Text variant="titleMedium" style={styles.sectionTitle}>
+        Leaderboards
+      </Text>
+
+      <Card style={styles.card} mode="elevated">
+        <Card.Content>
+          <List.Item
+            title="Wakatime Leaderboards"
+            description="Browse coding time leaderboards and rankings"
+            left={(props) => <MaterialCommunityIcons name="clock-outline" size={24} color={theme.colors.primary} />}
+            right={(props) => <List.Icon icon="chevron-right" />}
+            onPress={handleWakatimeLeaderboard}
+          />
+        </Card.Content>
+      </Card>
+
+      <Card style={styles.card} mode="elevated">
+        <Card.Content>
+          <List.Item
+            title="GitHub Leaderboards"
+            description="Explore GitHub users, repositories, and trends"
+            left={(props) => <MaterialCommunityIcons name="github" size={24} color={theme.colors.primary} />}
+            right={(props) => <List.Icon icon="chevron-right" />}
+            onPress={handleGitHubLeaderboard}
+          />
+        </Card.Content>
+      </Card>
+
+      <Text variant="titleMedium" style={styles.sectionTitle}>
+        Trending Categories
+      </Text>
+
       <Surface style={styles.chipContainer} elevation={0}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.chipScroll}>
-          <Chip style={styles.chip} icon="food" onPress={() => {}}>
-            Food
+          <Chip style={styles.chip} icon="trending-up" onPress={() => {}}>
+            Trending
           </Chip>
-          <Chip style={styles.chip} icon="hiking" onPress={() => {}}>
-            Outdoor
+          <Chip style={styles.chip} icon="star" onPress={() => {}}>
+            Most Starred
           </Chip>
-          <Chip style={styles.chip} icon="palette" onPress={() => {}}>
-            Arts
+          <Chip style={styles.chip} icon="source-fork" onPress={() => {}}>
+            Most Forked
           </Chip>
-          <Chip style={styles.chip} icon="music" onPress={() => {}}>
-            Music
+          <Chip style={styles.chip} icon="fire" onPress={() => {}}>
+            Hot Repos
           </Chip>
-          <Chip style={styles.chip} icon="coffee" onPress={() => {}}>
-            Cafés
+          <Chip style={styles.chip} icon="account-group" onPress={() => {}}>
+            Active Users
           </Chip>
         </ScrollView>
       </Surface>
 
       <Text variant="titleMedium" style={styles.sectionTitle}>
-        Popular Near You
+        Featured Content
       </Text>
 
       <Card style={styles.card} mode="elevated">
-        <Card.Cover source={{ uri: "https://picsum.photos/700/300?random=1" }} />
         <Card.Content style={styles.cardContent}>
-          <MaterialCommunityIcons name="star" size={24} color={theme.colors.primary} />
+          <MaterialCommunityIcons name="trending-up" size={24} color={theme.colors.primary} />
           <Text variant="titleMedium" style={styles.cardTitle}>
-            Mountain Trail Hike
+            Trending Repositories
           </Text>
-          <Text variant="bodyMedium">Experience breathtaking views just 20 minutes away</Text>
+          <Text variant="bodyMedium">Discover the most popular repositories this week</Text>
         </Card.Content>
         <Card.Actions>
-          <Button mode="text">View Details</Button>
-          <Button mode="contained-tonal" icon="bookmark-outline">
-            Save
+          <Button mode="text">View All</Button>
+          <Button mode="contained-tonal" icon="star">
+            Star Favorites
           </Button>
         </Card.Actions>
       </Card>
 
       <Card style={styles.card} mode="elevated">
-        <Card.Cover source={{ uri: "https://picsum.photos/700/300?random=2" }} />
         <Card.Content style={styles.cardContent}>
-          <MaterialCommunityIcons name="food" size={24} color={theme.colors.primary} />
+          <MaterialCommunityIcons name="account-group" size={24} color={theme.colors.primary} />
           <Text variant="titleMedium" style={styles.cardTitle}>
-            Riverside Café
+            Top Contributors
           </Text>
-          <Text variant="bodyMedium">Local favorite with seasonal menu and waterfront views</Text>
+          <Text variant="bodyMedium">See who&apos;s making the biggest impact in the community</Text>
         </Card.Content>
         <Card.Actions>
-          <Button mode="text">View Details</Button>
-          <Button mode="contained-tonal" icon="bookmark-outline">
-            Save
+          <Button mode="text">View Rankings</Button>
+          <Button mode="contained-tonal" icon="account-plus">
+            Follow
           </Button>
         </Card.Actions>
       </Card>
 
       <Text variant="titleMedium" style={styles.sectionTitle}>
-        Events This Week
+        Language Spotlight
       </Text>
 
       <Card style={styles.card} mode="elevated">
         <Card.Content style={styles.cardContent}>
           <Surface style={styles.eventHeader} elevation={0}>
-            <Avatar.Icon size={48} icon="music" />
+            <Avatar.Icon size={48} icon="language-typescript" />
             <Surface style={styles.eventInfo} elevation={0}>
               <Text variant="titleMedium" style={styles.cardTitle}>
-                Local Jazz Festival
+                TypeScript Rising
               </Text>
               <Text variant="bodySmall" style={styles.dateText}>
-                Saturday, 7:00 PM
+                +24% usage this month
               </Text>
             </Surface>
           </Surface>
           <Text variant="bodyMedium">
-            Enjoy performances from the city&apos;s best jazz musicians
+            TypeScript continues to grow in popularity among developers
           </Text>
         </Card.Content>
         <Card.Actions>
-          <Button mode="text">View Details</Button>
-          <Button mode="contained" icon="calendar">
-            RSVP
+          <Button mode="text">View Stats</Button>
+          <Button mode="contained" icon="chart-line">
+            Explore Trends
           </Button>
         </Card.Actions>
       </Card>
@@ -107,6 +158,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginVertical: 16,
+    paddingBottom: 8,
   },
   title: {
     fontWeight: "bold",
@@ -133,6 +185,7 @@ const styles = StyleSheet.create({
   card: {
     marginVertical: 8,
     borderRadius: 12,
+    elevation: 4,
   },
   cardContent: {
     gap: 8,

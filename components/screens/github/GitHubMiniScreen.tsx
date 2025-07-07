@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { Button, Card, Chip, Text, useTheme } from "react-native-paper";
+import { Avatar, Button, Card, Chip, Text, useTheme } from "react-native-paper";
 
 export function GitHubMiniScreen() {
   const { githubApiKey } = useApiKeysStore();
@@ -117,7 +117,7 @@ export function GitHubMiniScreen() {
 
   // Show data when everything is available
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} mode="elevated">
       <Card.Content>
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
           <MaterialCommunityIcons name="github" size={24} color={colors.primary} />
@@ -126,15 +126,64 @@ export function GitHubMiniScreen() {
           </Text>
         </View>
 
-        <View style={styles.statsContainer}>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-            <Text variant="bodyMedium" style={{ flex: 1 }}>Total Repos:</Text>
-            <Text variant="bodyMedium" style={{ fontWeight: "bold" }}>{githubData.totalRepos}</Text>
+        <View style={styles.profileSection}>
+          <View style={styles.profileHeader}>
+            <Avatar.Image 
+              size={64} 
+              source={{ uri: "https://github.com/tigawanna.png" }}
+              style={styles.avatar}
+            />
+            <View style={styles.profileInfo}>
+              <Text variant="headlineSmall" style={styles.profileName}>
+                Dennis kinuthia
+              </Text>
+              <Text variant="bodyMedium" style={styles.profileHandle}>
+                @tigawanna
+              </Text>
+            </View>
+          </View>
+          <Text variant="bodyMedium" style={styles.profileBio}>
+            Javascript/Typescript developer, React enthusiast
+          </Text>
+        </View>
+
+        <View style={styles.statsRow}>
+          <View style={styles.statItem}>
+            <Text variant="headlineLarge" style={styles.statValue}>
+              {githubData.totalRepos}
+            </Text>
+            <Text variant="bodyMedium" style={styles.statLabel}>
+              Repositories
+            </Text>
           </View>
           
-          <Text variant="bodyMedium" style={{ marginTop: 12, marginBottom: 8, flex: 1 }}>
-            Recent Repositories:
-          </Text>
+          <View style={styles.statItem}>
+            <Text variant="headlineLarge" style={styles.statValue}>
+              243
+            </Text>
+            <Text variant="bodyMedium" style={styles.statLabel}>
+              Followers
+            </Text>
+          </View>
+          
+          <View style={styles.statItem}>
+            <Text variant="headlineLarge" style={styles.statValue}>
+              327
+            </Text>
+            <Text variant="bodyMedium" style={styles.statLabel}>
+              Following
+            </Text>
+          </View>
+        </View>
+
+        <Text variant="bodyMedium" style={styles.joinedText}>
+          Joined GitHub on Sep 29, 2020
+        </Text>
+
+        <Text variant="titleSmall" style={styles.sectionTitle}>
+          Recent Repositories:
+        </Text>
+        <View style={styles.reposContainer}>
           {githubData.recentRepos.slice(0, 2).map((repo: any, index: number) => (
             <View key={index} style={styles.repoItem}>
               <View style={{ flex: 1 }}>
@@ -144,7 +193,9 @@ export function GitHubMiniScreen() {
                 </Text>
               </View>
               {repo.language && (
-                <Chip mode="outlined" compact>{repo.language}</Chip>
+                <Chip mode="outlined" compact style={styles.languageChip}>
+                  {repo.language}
+                </Chip>
               )}
             </View>
           ))}
@@ -164,6 +215,64 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
     marginBottom: 2,
     paddingVertical: 12,
+    elevation: 4,
+  },
+  profileSection: {
+    marginBottom: 16,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  avatar: {
+    marginRight: 12,
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  profileHandle: {
+    opacity: 0.7,
+    marginBottom: 0,
+  },
+  profileBio: {
+    opacity: 0.8,
+    fontStyle: 'italic',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statValue: {
+    fontWeight: 'bold',
+    fontSize: 28,
+  },
+  statLabel: {
+    opacity: 0.7,
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  joinedText: {
+    opacity: 0.6,
+    fontSize: 12,
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  reposContainer: {
+    gap: 4,
   },
   statsContainer: {
     gap: 8,
@@ -173,5 +282,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 4,
+  },
+  languageChip: {
+    backgroundColor: 'transparent',
+    elevation: 2,
+    height: 28,
   },
 });

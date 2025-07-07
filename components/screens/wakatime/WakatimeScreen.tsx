@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Chip, ProgressBar, Surface, Text, useTheme } from 'react-native-paper';
-import { WakatimeWidgetKey } from './WakatimeWidgetKey';
 
 type WakatimeDetailStats = {
   todayStats: {
@@ -108,7 +107,7 @@ export function WakatimeScreen() {
       >
         {/* <WakatimeWidgetKey/> */}
         {/* Today's Summary */}
-        <Card style={styles.card}>
+        <Card style={styles.card} mode="elevated">
           <Card.Content>
             <View style={styles.cardHeader}>
               <MaterialCommunityIcons name="clock-outline" size={24} color={colors.primary} />
@@ -135,7 +134,7 @@ export function WakatimeScreen() {
         </Card>
 
         {/* Week Summary */}
-        <Card style={styles.card}>
+        <Card style={styles.card} mode="elevated">
           <Card.Content>
             <View style={styles.cardHeader}>
               <MaterialCommunityIcons name="calendar-week" size={24} color={colors.primary} />
@@ -169,7 +168,7 @@ export function WakatimeScreen() {
 
         {/* Projects Breakdown */}
         {stats.todayStats?.projects && stats.todayStats.projects.length > 0 && (
-          <Card style={styles.card}>
+          <Card style={styles.card} mode="elevated">
             <Card.Content>
               <View style={styles.cardHeader}>
                 <MaterialCommunityIcons name="folder-outline" size={24} color={colors.primary} />
@@ -197,7 +196,7 @@ export function WakatimeScreen() {
 
         {/* Languages Breakdown */}
         {stats.todayStats?.languages && stats.todayStats.languages.length > 0 && (
-          <Card style={styles.card}>
+          <Card style={styles.card} mode="elevated">
             <Card.Content>
               <View style={styles.cardHeader}>
                 <MaterialCommunityIcons name="code-tags" size={24} color={colors.primary} />
@@ -210,7 +209,7 @@ export function WakatimeScreen() {
                 {stats.todayStats.languages.slice(0, 8).map((language, index) => (
                   <Chip 
                     key={index} 
-                    mode="outlined" 
+                    elevation={2}
                     style={styles.chip}
                     textStyle={styles.chipText}
                   >
@@ -226,7 +225,7 @@ export function WakatimeScreen() {
         <View style={styles.twoColumnContainer}>
           {/* Editors */}
           {stats.todayStats?.editors && stats.todayStats.editors.length > 0 && (
-            <Card style={styles.halfCard}>
+            <Card style={styles.halfCard} mode="elevated">
               <Card.Content>
                 <View style={styles.cardHeader}>
                   <MaterialCommunityIcons name="application-edit-outline" size={20} color={colors.primary} />
@@ -251,7 +250,7 @@ export function WakatimeScreen() {
 
           {/* Operating Systems */}
           {stats.todayStats?.operating_systems && stats.todayStats.operating_systems.length > 0 && (
-            <Card style={styles.halfCard}>
+            <Card style={styles.halfCard} mode="elevated">
               <Card.Content>
                 <View style={styles.cardHeader}>
                   <MaterialCommunityIcons name="monitor" size={20} color={colors.primary} />
@@ -295,10 +294,12 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 16,
+    elevation: 4,
   },
   halfCard: {
     flex: 1,
     marginBottom: 16,
+    elevation: 4,
   },
   twoColumnContainer: {
     flexDirection: 'row',
@@ -315,15 +316,17 @@ const styles = StyleSheet.create({
   },
   summaryContainer: {
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 24,
   },
   totalTime: {
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 48,
   },
   totalLabel: {
     opacity: 0.7,
-    marginTop: 4,
+    marginTop: 8,
+    fontSize: 16,
   },
   weekContainer: {
     gap: 8,
@@ -366,9 +369,11 @@ const styles = StyleSheet.create({
   },
   chip: {
     marginBottom: 4,
+    elevation: 2,
   },
   chipText: {
-    fontSize: 12,
+    fontSize: 13,
+    fontWeight: '500',
   },
   miniStat: {
     flexDirection: 'row',

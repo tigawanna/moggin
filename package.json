@@ -7,7 +7,6 @@
     "plugins:build": "tsc -p tsconfig.plugins.json",
     "plugins:bundle": "tsup modules/expo-glance-widget/plugins/index.ts --format cjs --out-dir modules/expo-glance-widget/plugins",
     "module:bundle": "tsup modules/expo-material-dynamic-colors/src/index.ts --format cjs --out-dir modules/expo-material-dynamic-colors/src/",
-    
     "reset-project": "node ./scripts/reset-project.js",
     "remove-js-files": "tsx scripts/remove-js.ts modules/expo-glance-widget/plugins",
     "android": "expo run:android",
@@ -26,6 +25,7 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@shopify/react-native-skia": "^2.1.1",
     "@tanstack/react-query": "^5.81.5",
     "colors": "^1.4.0",
     "deepmerge": "^4.3.1",
@@ -50,12 +50,13 @@
     "react-native": "0.79.4",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-paper": "^5.14.5",
-    "react-native-reanimated": "~3.17.4",
+    "react-native-reanimated": "~3.17.5",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
     "ts-node": "^10.9.2",
+    "victory-native": "^41.17.4",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {

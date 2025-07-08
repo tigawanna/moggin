@@ -5,8 +5,9 @@ import { useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { Button, Card, ProgressBar, Text, useTheme } from "react-native-paper";
 import { useWakatimeMiniStats } from "./use-wakatime-mini";
+import { WakatimeWeeklyChart } from "./WakatimeWeeklyChart";
 
-const { width: screenWidth } = Dimensions.get('window');
+// const { width: screenWidth } = Dimensions.get('window');
 
 export function WakatimeMiniScreen() {
   const { settings } = useSettingsStore();
@@ -14,39 +15,38 @@ export function WakatimeMiniScreen() {
   const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
   const router = useRouter();
   const { colors } = useTheme();
-  
+
   // Get the last five days for the date selector
-  const lastFiveDays = Array.from({ length: 5 }).map((_, index) => {
-    const date = new Date();
-    date.setDate(date.getDate() - index);
-    const value = date.toISOString().split("T")[0];
-    return {
-      value,
-      label: index === 0 ? "Today" : `${date.getMonth() + 1}/${date.getDate()}`,
-    };
-  });
+  // const lastFiveDays = Array.from({ length: 5 }).map((_, index) => {
+  //   const date = new Date();
+  //   date.setDate(date.getDate() - index);
+  //   const value = date.toISOString().split("T")[0];
+  //   return {
+  //     value,
+  //     label: index === 0 ? "Today" : `${date.getMonth() + 1}/${date.getDate()}`,
+  //   };
+  // });
 
   // Wakatime query using the durations endpoint
   const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeMiniStats({
     selectedDate,
-    wakatimeApiKey
+    wakatimeApiKey,
   });
 
   // Prepare chart data for the last 5 days
-  const chartData = lastFiveDays.map((day, index) => {
-    // For demo purposes, generate some sample data
-    // In real implementation, you'd get this from your wakatime data
-    const baseHours = parseFloat(wakatimeData?.todayHours || "2") || 2;
-    const variance = Math.random() * 2 - 1; // Random variance between -1 and 1
-    const hours = Math.max(0, baseHours + variance + (index * 0.5));
-    
-    return {
-      x: day.label,
-      y: hours,
-      date: day.value
-    };
-  }).reverse(); // Reverse to show chronologically
+  // const chartData = lastFiveDays.map((day, index) => {
+  //   // For demo purposes, generate some sample data
+  //   // In real implementation, you'd get this from your wakatime data
+  //   const baseHours = parseFloat(wakatimeData?.todayHours || "2") || 2;
+  //   const variance = Math.random() * 2 - 1; // Random variance between -1 and 1
+  //   const hours = Math.max(0, baseHours + variance + (index * 0.5));
 
+  //   return {
+  //     x: day.label,
+  //     y: hours,
+  //     date: day.value
+  //   };
+  // }).reverse(); // Reverse to show chronologically
 
   // If no API key is configured, show the add API key prompt
   if (!wakatimeApiKey) {
@@ -69,7 +69,6 @@ export function WakatimeMiniScreen() {
           </Button>
         </Card.Actions>
       </Card>
-      
     );
   }
 
@@ -122,41 +121,19 @@ export function WakatimeMiniScreen() {
       <Card.Content>
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
           <MaterialCommunityIcons name="clock-outline" size={24} color={colors.primary} />
-          <Text variant="titleMedium" style={{ marginLeft: 8 }}>
+          <Text variant="titleMedium" style={{ marginLeft: 8 , fontSize: 20 }}>
             Wakatime Stats
           </Text>
         </View>
 
         {/* Chart showing last 5 days */}
-        <View style={styles.chartContainer}>
-          <Text variant="bodyMedium" style={styles.chartTitle}>
-            Last 5 Days Activity
-          </Text>
-          <View style={styles.simpleChart}>
-            {chartData.map((day, index) => (
-              <View key={index} style={styles.chartBar}>
-                <Text variant="bodySmall" style={styles.chartBarLabel}>
-                  {day.x}
-                </Text>
-                <View style={styles.chartBarContainer}>
-                  <ProgressBar
-                    progress={day.y / Math.max(...chartData.map(d => d.y))}
-                    style={styles.chartBarProgress}
-                  />
-                </View>
-                <Text variant="bodySmall" style={styles.chartBarValue}>
-                  {day.y.toFixed(1)}h
-                </Text>
-              </View>
-            ))}
-          </View>
-        </View>
+        <WakatimeWeeklyChart selectedDate={selectedDate} wakatimeApiKey={wakatimeApiKey} />
 
         <View style={styles.statsContainer}>
           <Text variant="bodyLarge" style={styles.hoursValue}>
-            {wakatimeData.todayHours}
+            Today: {wakatimeData.todayHours}
           </Text>
-          <Text variant="bodyMedium" style={{ opacity: 0.7 }}>
+          <Text variant="bodyMedium" style={{ opacity: 0.7,width: "100%" }}>
             {wakatimeData.totalDurations} coding sessions
           </Text>
         </View>
@@ -181,26 +158,19 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 12,
   },
-  chartContainer: {
-    alignItems: 'center',
-    marginBottom: 16,
-    backgroundColor: 'transparent',
-  },
-  chartTitle: {
-    opacity: 0.7,
-    marginBottom: 8,
-    fontSize: 12,
-  },
+
   simpleChart: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-    height: 100,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    height: 200,
     paddingHorizontal: 16,
+    gap: 4,
+    width: "100%",
   },
   chartBar: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 2,
   },
   chartBarLabel: {
@@ -211,28 +181,30 @@ const styles = StyleSheet.create({
   chartBarContainer: {
     height: 60,
     width: 16,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
     marginBottom: 4,
   },
   chartBarProgress: {
-    height: '100%',
+    height: "100%",
     width: 16,
-    transform: [{ rotate: '-90deg' }],
-    transformOrigin: 'center',
+    gap: 4,
+    margin: 2,
+    transform: [{ rotate: "-90deg" }],
+    transformOrigin: "center",
   },
   chartBarValue: {
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   statsContainer: {
-    width: "100%", 
-    alignItems: "center", 
-    gap: 8, 
-    paddingVertical: 2
+    width: "100%",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 2,
   },
   hoursValue: {
     width: "100%",
     fontSize: 35,
     fontWeight: "bold",
-  }
+  },
 });

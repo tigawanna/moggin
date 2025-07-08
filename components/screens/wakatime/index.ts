@@ -1,10 +1,10 @@
-export { EditorsAndOSCards } from './EditorsAndOSCards';
-export { LanguagesCard } from './LanguagesCard';
-export { NoApiKeyCard } from './NoApiKeyCard';
-export { ProjectsCard } from './ProjectsCard';
-export { TodayActivityCard } from './TodayActivityCard';
+export { EditorsAndOSCards } from './wakatime-screen/EditorsAndOSCards';
+export { LanguagesCard } from './wakatime-screen/LanguagesCard';
+export { NoApiKeyCard } from './wakatime-screen/NoApiKeyCard';
+export { ProjectsCard } from './wakatime-screen/ProjectsCard';
+export { TodayActivityCard } from './wakatime-screen/TodayActivityCard';
+export { WeekSummaryCard } from './wakatime-screen/WeekSummaryCard';
 export { WakatimeMiniScreen } from './WakatimeMiniScreen';
 export { WakatimeScreen } from './WakatimeScreen';
 export { WakatimeWeeklyChart } from './WakatimeWeeklyChart';
-export { WeekSummaryCard } from './WeekSummaryCard';
 

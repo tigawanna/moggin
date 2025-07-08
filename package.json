@@ -1,6 +1,6 @@
 {
   "name": "moggin",
-  "main": "app/index",
+  "main": "app/index.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",

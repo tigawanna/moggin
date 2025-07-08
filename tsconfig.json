@@ -11,5 +11,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app.config.js", "tsconfig.plugins.json", "modules/expo-glance-widget/plugins/withAndroidPlugin.mts"  ]
+, "app.config.js", "tsconfig.plugins.json", "modules/expo-glance-widget/plugins/withAndroidPlugin.mts", "app/index.js"  ]
 }

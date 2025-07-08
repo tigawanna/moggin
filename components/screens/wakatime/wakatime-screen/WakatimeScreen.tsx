@@ -4,12 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
 
-import { EditorsAndOSCards } from './wakatime-screen/EditorsAndOSCards';
-import { LanguagesCard } from './wakatime-screen/LanguagesCard';
-import { NoApiKeyCard } from './wakatime-screen/NoApiKeyCard';
-import { ProjectsCard } from './wakatime-screen/ProjectsCard';
-import { TodayActivityCard } from './wakatime-screen/TodayActivityCard';
-import { WeekSummaryCard } from './wakatime-screen/WeekSummaryCard';
+import { EditorsAndOSCards } from './EditorsAndOSCards';
+import { LanguagesCard } from './LanguagesCard';
+import { NoApiKeyCard } from './NoApiKeyCard';
+import { ProjectsCard } from './ProjectsCard';
+import { TodayActivityCard } from './TodayActivityCard';
+import { WeekSummaryCard } from './WeekSummaryCard';
 
 type WakatimeDetailStats = {
   todayStats: {
@@ -90,10 +90,7 @@ export function WakatimeScreen() {
         }
       >
         {/* Today's Activity */}
-        <TodayActivityCard 
-          stats={stats.todayStats}
-          loading={loading}
-        />
+        <TodayActivityCard />
 
         {/* Week Summary */}
         <WeekSummaryCard 

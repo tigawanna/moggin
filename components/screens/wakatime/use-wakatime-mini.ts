@@ -27,19 +27,18 @@ export function wakatimeUserTimeQueryoptions({
 
       if (result.data) {
         // Calculate total duration from durations array
-        const totalSeconds = result.data.reduce((total: number, duration: any) => {
+        const totalSeconds = result.data.data.reduce((total: number, duration: any) => {
           return total + (duration.duration || 0);
         }, 0);
 
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
-
+        // console.log("Wakatime daily duration result:", result.data);
         return {
           date: selectedDate,
           todayHours: `${hours}h ${minutes}m`,
-          totalDurations: result.data.length,
-          currentProject: result.data[0]?.project || "No project",
-          topLanguage: result.data[0]?.language || "No language",
+          totalDurations: result.data.data.length,
+          currentProject: result.data.data[0]?.project || "No project",
         };
       }
       return null;

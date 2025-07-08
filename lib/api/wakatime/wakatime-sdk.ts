@@ -11,7 +11,7 @@ export class WakatimeSDK {
     this.baseUrl = "https://wakatime.com";
   }
 
-  private async fetchData(endpoint: string, params: Record<string, any> = {}) {
+  private async fetchData<T= any>(endpoint: string, params: Record<string, any> = {}) {
     const url = new URL(`${this.baseUrl}${endpoint}`);
     params.api_key = this.apiKey;
     Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
@@ -22,9 +22,10 @@ export class WakatimeSDK {
         error: `Error: ${response.status} ${response.statusText}`,
       };
     }
-    const { data } = await response.json();
+    const dataRes = (await response.json()) as T
+    // console.log("WakatimeSDK fetchData response: === ", dataRes);
     return {
-      data,
+      data: dataRes,
       error: null,
     };
   }
@@ -66,12 +67,13 @@ export class WakatimeSDK {
   async getCurrentUser() {
     return this.fetchData("/api/v1/users/current");
   }
+
   async getUserStats(params: { start?: string; end?: string; project?: string }) {
     return this.fetchData("/api/v1/users/current/stats", params);
   }
 
   async getUserDurations(params: { date: string }) {
-    return this.fetchData("/api/v1/users/current/durations", params);
+    return this.fetchData<UserDailyDurations>("/api/v1/users/current/durations", params);
   }
   async getUserHeartbeats(params: { start?: string; end?: string }) {
     return this.fetchData("/api/v1/users/current/heartbeats", params);
@@ -108,6 +110,22 @@ export const wakatimeSDK$ = computed(() => {
 export function useWakatimeSDK() {
   const sdk = use$(() => wakatimeSDK$.get());
   return sdk;
+}
+
+
+
+export interface UserDailyDurations {
+  data: UserDailyDurationsData[];
+  end: string;
+  start: string;
+  timezone: string;
+}
+
+export interface UserDailyDurationsData {
+  color: any;
+  duration: number;
+  project: string;
+  time: number;
 }
 
 

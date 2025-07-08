@@ -2,11 +2,10 @@ import { useSettingsStore } from "@/stores/use-app-settings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Card, Text, useTheme } from "react-native-paper";
-import { useWakatimeDailyDuaration } from "./use-wakatime-mini";
+import { Dimensions, StyleSheet, View } from "react-native";
+import { Button, Card, ProgressBar, Text, useTheme } from "react-native-paper";
+import { useWakatimeMiniStats } from "./use-wakatime-mini";
 import { WakatimeWeeklyChart } from "./WakatimeWeeklyChart";
-import { TodayActivityCard } from "./wakatime-screen/TodayActivityCard";
 
 // const { width: screenWidth } = Dimensions.get('window');
 
@@ -17,15 +16,39 @@ export function WakatimeMiniScreen() {
   const router = useRouter();
   const { colors } = useTheme();
 
+  // Get the last five days for the date selector
+  // const lastFiveDays = Array.from({ length: 5 }).map((_, index) => {
+  //   const date = new Date();
+  //   date.setDate(date.getDate() - index);
+  //   const value = date.toISOString().split("T")[0];
+  //   return {
+  //     value,
+  //     label: index === 0 ? "Today" : `${date.getMonth() + 1}/${date.getDate()}`,
+  //   };
+  // });
 
   // Wakatime query using the durations endpoint
-  const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeDailyDuaration({
+  const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeMiniStats({
     selectedDate,
     wakatimeApiKey,
   });
 
+  // Prepare chart data for the last 5 days
+  // const chartData = lastFiveDays.map((day, index) => {
+  //   // For demo purposes, generate some sample data
+  //   // In real implementation, you'd get this from your wakatime data
+  //   const baseHours = parseFloat(wakatimeData?.todayHours || "2") || 2;
+  //   const variance = Math.random() * 2 - 1; // Random variance between -1 and 1
+  //   const hours = Math.max(0, baseHours + variance + (index * 0.5));
 
-// If no API key is configured, show the add API key prompt
+  //   return {
+  //     x: day.label,
+  //     y: hours,
+  //     date: day.value
+  //   };
+  // }).reverse(); // Reverse to show chronologically
+
+  // If no API key is configured, show the add API key prompt
   if (!wakatimeApiKey) {
     return (
       <Card style={styles.card}>
@@ -106,15 +129,14 @@ export function WakatimeMiniScreen() {
         {/* Chart showing last 5 days */}
         <WakatimeWeeklyChart selectedDate={selectedDate} wakatimeApiKey={wakatimeApiKey} />
 
-        {/* <View style={styles.statsContainer}>
+        <View style={styles.statsContainer}>
           <Text variant="bodyLarge" style={styles.hoursValue}>
             Today: {wakatimeData.todayHours}
           </Text>
           <Text variant="bodyMedium" style={{ opacity: 0.7,width: "100%" }}>
             {wakatimeData.totalDurations} coding sessions
           </Text>
-        </View> */}
-        <TodayActivityCard/>
+        </View>
       </Card.Content>
       <Card.Actions>
         <Button mode="text" onPress={() => router.push("/wakatime")} icon="arrow-right">
@@ -179,5 +201,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     paddingVertical: 2,
-  }
+  },
+  hoursValue: {
+    width: "100%",
+    fontSize: 35,
+    fontWeight: "bold",
+  },
 });

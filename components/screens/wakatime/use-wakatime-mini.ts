@@ -2,7 +2,7 @@ import { useWakatimeSDK, wakatimeSDK$ } from "@/lib/api/wakatime/wakatime-sdk";
 import { getLastFiveDates } from "@/utils/date";
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
 
-interface UseWakatimeDailyDuarationProps {
+interface UseWakatimeMiniStatsProps {
   selectedDate: string;
   wakatimeApiKey: string | null;
 }
@@ -48,7 +48,7 @@ export function wakatimeUserTimeQueryoptions({
   });
 }
 
-export function useWakatimeDailyDuaration({ selectedDate, wakatimeApiKey }: UseWakatimeDailyDuarationProps) {
+export function useWakatimeMiniStats({ selectedDate, wakatimeApiKey }: UseWakatimeMiniStatsProps) {
   const { data, isLoading, refetch } = useQuery(
     wakatimeUserTimeQueryoptions({
       selectedDate,

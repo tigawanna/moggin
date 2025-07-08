@@ -1,6 +1,6 @@
 {
   "name": "moggin",
-  "main": "expo-router/entry",
+  "main": "app/index",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",

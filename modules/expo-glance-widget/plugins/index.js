@@ -10334,6 +10334,3852 @@ var require_IntentFilters = __commonJS({
   }
 });
 
+// node_modules/js-tokens/index.js
+var require_js_tokens = __commonJS({
+  "node_modules/js-tokens/index.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", {
+      value: true
+    });
+    exports2.default = /((['"])(?:(?!\2|\\).|\\(?:\r\n|[\s\S]))*(\2)?|`(?:[^`\\$]|\\[\s\S]|\$(?!\{)|\$\{(?:[^{}]|\{[^}]*\}?)*\}?)*(`)?)|(\/\/.*)|(\/\*(?:[^*]|\*(?!\/))*(\*\/)?)|(\/(?!\*)(?:\[(?:(?![\]\\]).|\\.)*\]|(?![\/\]\\]).|\\.)+\/(?:(?!\s*(?:\b|[\u0080-\uFFFF$\\'"~({]|[+\-!](?!=)|\.?\d))|[gmiyus]{1,6}\b(?![\u0080-\uFFFF$\\]|\s*(?:[+\-*%&|^<>!=?({]|\/(?![\/*])))))|(0[xX][\da-fA-F]+|0[oO][0-7]+|0[bB][01]+|(?:\d*\.\d+|\d+\.?)(?:[eE][+-]?\d+)?)|((?!\d)(?:(?!\s)[$\w\u0080-\uFFFF]|\\u[\da-fA-F]{4}|\\u\{[\da-fA-F]+\})+)|(--|\+\+|&&|\|\||=>|\.{3}|(?:[+\-\/%&|^]|\*{1,2}|<{1,2}|>{1,3}|!=?|={1,2})=?|[?~.,:;[\](){}])|(\s+)|(^$|[\s\S])/g;
+    exports2.matchToToken = function(match) {
+      var token2 = { type: "invalid", value: match[0], closed: void 0 };
+      if (match[1]) token2.type = "string", token2.closed = !!(match[3] || match[4]);
+      else if (match[5]) token2.type = "comment";
+      else if (match[6]) token2.type = "comment", token2.closed = !!match[7];
+      else if (match[8]) token2.type = "regex";
+      else if (match[9]) token2.type = "number";
+      else if (match[10]) token2.type = "name";
+      else if (match[11]) token2.type = "punctuator";
+      else if (match[12]) token2.type = "whitespace";
+      return token2;
+    };
+  }
+});
+
+// node_modules/@babel/helper-validator-identifier/lib/identifier.js
+var require_identifier = __commonJS({
+  "node_modules/@babel/helper-validator-identifier/lib/identifier.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", {
+      value: true
+    });
+    exports2.isIdentifierChar = isIdentifierChar;
+    exports2.isIdentifierName = isIdentifierName;
+    exports2.isIdentifierStart = isIdentifierStart;
+    var nonASCIIidentifierStartChars = "\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0560-\u0588\u05D0-\u05EA\u05EF-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u0860-\u086A\u0870-\u0887\u0889-\u088E\u08A0-\u08C9\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u09FC\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C5D\u0C60\u0C61\u0C80\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D04-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D54-\u0D56\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E86-\u0E8A\u0E8C-\u0EA3\u0EA5\u0EA7-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F8\u1700-\u1711\u171F-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1878\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4C\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1C80-\u1C8A\u1C90-\u1CBA\u1CBD-\u1CBF\u1CE9-\u1CEC\u1CEE-\u1CF3\u1CF5\u1CF6\u1CFA\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2118-\u211D\u2124\u2126\u2128\u212A-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3041-\u3096\u309B-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312F\u3131-\u318E\u31A0-\u31BF\u31F0-\u31FF\u3400-\u4DBF\u4E00-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6EF\uA717-\uA71F\uA722-\uA788\uA78B-\uA7CD\uA7D0\uA7D1\uA7D3\uA7D5-\uA7DC\uA7F2-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA8FE\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB69\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC";
+    var nonASCIIidentifierChars = "\xB7\u0300-\u036F\u0387\u0483-\u0487\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u0610-\u061A\u064B-\u0669\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u06F0-\u06F9\u0711\u0730-\u074A\u07A6-\u07B0\u07C0-\u07C9\u07EB-\u07F3\u07FD\u0816-\u0819\u081B-\u0823\u0825-\u0827\u0829-\u082D\u0859-\u085B\u0897-\u089F\u08CA-\u08E1\u08E3-\u0903\u093A-\u093C\u093E-\u094F\u0951-\u0957\u0962\u0963\u0966-\u096F\u0981-\u0983\u09BC\u09BE-\u09C4\u09C7\u09C8\u09CB-\u09CD\u09D7\u09E2\u09E3\u09E6-\u09EF\u09FE\u0A01-\u0A03\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A66-\u0A71\u0A75\u0A81-\u0A83\u0ABC\u0ABE-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AE2\u0AE3\u0AE6-\u0AEF\u0AFA-\u0AFF\u0B01-\u0B03\u0B3C\u0B3E-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B55-\u0B57\u0B62\u0B63\u0B66-\u0B6F\u0B82\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD7\u0BE6-\u0BEF\u0C00-\u0C04\u0C3C\u0C3E-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C62\u0C63\u0C66-\u0C6F\u0C81-\u0C83\u0CBC\u0CBE-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CE2\u0CE3\u0CE6-\u0CEF\u0CF3\u0D00-\u0D03\u0D3B\u0D3C\u0D3E-\u0D44\u0D46-\u0D48\u0D4A-\u0D4D\u0D57\u0D62\u0D63\u0D66-\u0D6F\u0D81-\u0D83\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DE6-\u0DEF\u0DF2\u0DF3\u0E31\u0E34-\u0E3A\u0E47-\u0E4E\u0E50-\u0E59\u0EB1\u0EB4-\u0EBC\u0EC8-\u0ECE\u0ED0-\u0ED9\u0F18\u0F19\u0F20-\u0F29\u0F35\u0F37\u0F39\u0F3E\u0F3F\u0F71-\u0F84\u0F86\u0F87\u0F8D-\u0F97\u0F99-\u0FBC\u0FC6\u102B-\u103E\u1040-\u1049\u1056-\u1059\u105E-\u1060\u1062-\u1064\u1067-\u106D\u1071-\u1074\u1082-\u108D\u108F-\u109D\u135D-\u135F\u1369-\u1371\u1712-\u1715\u1732-\u1734\u1752\u1753\u1772\u1773\u17B4-\u17D3\u17DD\u17E0-\u17E9\u180B-\u180D\u180F-\u1819\u18A9\u1920-\u192B\u1930-\u193B\u1946-\u194F\u19D0-\u19DA\u1A17-\u1A1B\u1A55-\u1A5E\u1A60-\u1A7C\u1A7F-\u1A89\u1A90-\u1A99\u1AB0-\u1ABD\u1ABF-\u1ACE\u1B00-\u1B04\u1B34-\u1B44\u1B50-\u1B59\u1B6B-\u1B73\u1B80-\u1B82\u1BA1-\u1BAD\u1BB0-\u1BB9\u1BE6-\u1BF3\u1C24-\u1C37\u1C40-\u1C49\u1C50-\u1C59\u1CD0-\u1CD2\u1CD4-\u1CE8\u1CED\u1CF4\u1CF7-\u1CF9\u1DC0-\u1DFF\u200C\u200D\u203F\u2040\u2054\u20D0-\u20DC\u20E1\u20E5-\u20F0\u2CEF-\u2CF1\u2D7F\u2DE0-\u2DFF\u302A-\u302F\u3099\u309A\u30FB\uA620-\uA629\uA66F\uA674-\uA67D\uA69E\uA69F\uA6F0\uA6F1\uA802\uA806\uA80B\uA823-\uA827\uA82C\uA880\uA881\uA8B4-\uA8C5\uA8D0-\uA8D9\uA8E0-\uA8F1\uA8FF-\uA909\uA926-\uA92D\uA947-\uA953\uA980-\uA983\uA9B3-\uA9C0\uA9D0-\uA9D9\uA9E5\uA9F0-\uA9F9\uAA29-\uAA36\uAA43\uAA4C\uAA4D\uAA50-\uAA59\uAA7B-\uAA7D\uAAB0\uAAB2-\uAAB4\uAAB7\uAAB8\uAABE\uAABF\uAAC1\uAAEB-\uAAEF\uAAF5\uAAF6\uABE3-\uABEA\uABEC\uABED\uABF0-\uABF9\uFB1E\uFE00-\uFE0F\uFE20-\uFE2F\uFE33\uFE34\uFE4D-\uFE4F\uFF10-\uFF19\uFF3F\uFF65";
+    var nonASCIIidentifierStart = new RegExp("[" + nonASCIIidentifierStartChars + "]");
+    var nonASCIIidentifier = new RegExp("[" + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "]");
+    nonASCIIidentifierStartChars = nonASCIIidentifierChars = null;
+    var astralIdentifierStartCodes = [0, 11, 2, 25, 2, 18, 2, 1, 2, 14, 3, 13, 35, 122, 70, 52, 268, 28, 4, 48, 48, 31, 14, 29, 6, 37, 11, 29, 3, 35, 5, 7, 2, 4, 43, 157, 19, 35, 5, 35, 5, 39, 9, 51, 13, 10, 2, 14, 2, 6, 2, 1, 2, 10, 2, 14, 2, 6, 2, 1, 4, 51, 13, 310, 10, 21, 11, 7, 25, 5, 2, 41, 2, 8, 70, 5, 3, 0, 2, 43, 2, 1, 4, 0, 3, 22, 11, 22, 10, 30, 66, 18, 2, 1, 11, 21, 11, 25, 71, 55, 7, 1, 65, 0, 16, 3, 2, 2, 2, 28, 43, 28, 4, 28, 36, 7, 2, 27, 28, 53, 11, 21, 11, 18, 14, 17, 111, 72, 56, 50, 14, 50, 14, 35, 39, 27, 10, 22, 251, 41, 7, 1, 17, 2, 60, 28, 11, 0, 9, 21, 43, 17, 47, 20, 28, 22, 13, 52, 58, 1, 3, 0, 14, 44, 33, 24, 27, 35, 30, 0, 3, 0, 9, 34, 4, 0, 13, 47, 15, 3, 22, 0, 2, 0, 36, 17, 2, 24, 20, 1, 64, 6, 2, 0, 2, 3, 2, 14, 2, 9, 8, 46, 39, 7, 3, 1, 3, 21, 2, 6, 2, 1, 2, 4, 4, 0, 19, 0, 13, 4, 31, 9, 2, 0, 3, 0, 2, 37, 2, 0, 26, 0, 2, 0, 45, 52, 19, 3, 21, 2, 31, 47, 21, 1, 2, 0, 185, 46, 42, 3, 37, 47, 21, 0, 60, 42, 14, 0, 72, 26, 38, 6, 186, 43, 117, 63, 32, 7, 3, 0, 3, 7, 2, 1, 2, 23, 16, 0, 2, 0, 95, 7, 3, 38, 17, 0, 2, 0, 29, 0, 11, 39, 8, 0, 22, 0, 12, 45, 20, 0, 19, 72, 200, 32, 32, 8, 2, 36, 18, 0, 50, 29, 113, 6, 2, 1, 2, 37, 22, 0, 26, 5, 2, 1, 2, 31, 15, 0, 328, 18, 16, 0, 2, 12, 2, 33, 125, 0, 80, 921, 103, 110, 18, 195, 2637, 96, 16, 1071, 18, 5, 26, 3994, 6, 582, 6842, 29, 1763, 568, 8, 30, 18, 78, 18, 29, 19, 47, 17, 3, 32, 20, 6, 18, 433, 44, 212, 63, 129, 74, 6, 0, 67, 12, 65, 1, 2, 0, 29, 6135, 9, 1237, 42, 9, 8936, 3, 2, 6, 2, 1, 2, 290, 16, 0, 30, 2, 3, 0, 15, 3, 9, 395, 2309, 106, 6, 12, 4, 8, 8, 9, 5991, 84, 2, 70, 2, 1, 3, 0, 3, 1, 3, 3, 2, 11, 2, 0, 2, 6, 2, 64, 2, 3, 3, 7, 2, 6, 2, 27, 2, 3, 2, 4, 2, 0, 4, 6, 2, 339, 3, 24, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 7, 1845, 30, 7, 5, 262, 61, 147, 44, 11, 6, 17, 0, 322, 29, 19, 43, 485, 27, 229, 29, 3, 0, 496, 6, 2, 3, 2, 1, 2, 14, 2, 196, 60, 67, 8, 0, 1205, 3, 2, 26, 2, 1, 2, 0, 3, 0, 2, 9, 2, 3, 2, 0, 2, 0, 7, 0, 5, 0, 2, 0, 2, 0, 2, 2, 2, 1, 2, 0, 3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1, 2, 0, 3, 3, 2, 6, 2, 3, 2, 3, 2, 0, 2, 9, 2, 16, 6, 2, 2, 4, 2, 16, 4421, 42719, 33, 4153, 7, 221, 3, 5761, 15, 7472, 16, 621, 2467, 541, 1507, 4938, 6, 4191];
+    var astralIdentifierCodes = [509, 0, 227, 0, 150, 4, 294, 9, 1368, 2, 2, 1, 6, 3, 41, 2, 5, 0, 166, 1, 574, 3, 9, 9, 7, 9, 32, 4, 318, 1, 80, 3, 71, 10, 50, 3, 123, 2, 54, 14, 32, 10, 3, 1, 11, 3, 46, 10, 8, 0, 46, 9, 7, 2, 37, 13, 2, 9, 6, 1, 45, 0, 13, 2, 49, 13, 9, 3, 2, 11, 83, 11, 7, 0, 3, 0, 158, 11, 6, 9, 7, 3, 56, 1, 2, 6, 3, 1, 3, 2, 10, 0, 11, 1, 3, 6, 4, 4, 68, 8, 2, 0, 3, 0, 2, 3, 2, 4, 2, 0, 15, 1, 83, 17, 10, 9, 5, 0, 82, 19, 13, 9, 214, 6, 3, 8, 28, 1, 83, 16, 16, 9, 82, 12, 9, 9, 7, 19, 58, 14, 5, 9, 243, 14, 166, 9, 71, 5, 2, 1, 3, 3, 2, 0, 2, 1, 13, 9, 120, 6, 3, 6, 4, 0, 29, 9, 41, 6, 2, 3, 9, 0, 10, 10, 47, 15, 343, 9, 54, 7, 2, 7, 17, 9, 57, 21, 2, 13, 123, 5, 4, 0, 2, 1, 2, 6, 2, 0, 9, 9, 49, 4, 2, 1, 2, 4, 9, 9, 330, 3, 10, 1, 2, 0, 49, 6, 4, 4, 14, 10, 5350, 0, 7, 14, 11465, 27, 2343, 9, 87, 9, 39, 4, 60, 6, 26, 9, 535, 9, 470, 0, 2, 54, 8, 3, 82, 0, 12, 1, 19628, 1, 4178, 9, 519, 45, 3, 22, 543, 4, 4, 5, 9, 7, 3, 6, 31, 3, 149, 2, 1418, 49, 513, 54, 5, 49, 9, 0, 15, 0, 23, 4, 2, 14, 1361, 6, 2, 16, 3, 6, 2, 1, 2, 4, 101, 0, 161, 6, 10, 9, 357, 0, 62, 13, 499, 13, 245, 1, 2, 9, 726, 6, 110, 6, 6, 9, 4759, 9, 787719, 239];
+    function isInAstralSet(code, set) {
+      let pos2 = 65536;
+      for (let i2 = 0, length = set.length; i2 < length; i2 += 2) {
+        pos2 += set[i2];
+        if (pos2 > code) return false;
+        pos2 += set[i2 + 1];
+        if (pos2 >= code) return true;
+      }
+      return false;
+    }
+    function isIdentifierStart(code) {
+      if (code < 65) return code === 36;
+      if (code <= 90) return true;
+      if (code < 97) return code === 95;
+      if (code <= 122) return true;
+      if (code <= 65535) {
+        return code >= 170 && nonASCIIidentifierStart.test(String.fromCharCode(code));
+      }
+      return isInAstralSet(code, astralIdentifierStartCodes);
+    }
+    function isIdentifierChar(code) {
+      if (code < 48) return code === 36;
+      if (code < 58) return true;
+      if (code < 65) return false;
+      if (code <= 90) return true;
+      if (code < 97) return code === 95;
+      if (code <= 122) return true;
+      if (code <= 65535) {
+        return code >= 170 && nonASCIIidentifier.test(String.fromCharCode(code));
+      }
+      return isInAstralSet(code, astralIdentifierStartCodes) || isInAstralSet(code, astralIdentifierCodes);
+    }
+    function isIdentifierName(name) {
+      let isFirst = true;
+      for (let i2 = 0; i2 < name.length; i2++) {
+        let cp = name.charCodeAt(i2);
+        if ((cp & 64512) === 55296 && i2 + 1 < name.length) {
+          const trail = name.charCodeAt(++i2);
+          if ((trail & 64512) === 56320) {
+            cp = 65536 + ((cp & 1023) << 10) + (trail & 1023);
+          }
+        }
+        if (isFirst) {
+          isFirst = false;
+          if (!isIdentifierStart(cp)) {
+            return false;
+          }
+        } else if (!isIdentifierChar(cp)) {
+          return false;
+        }
+      }
+      return !isFirst;
+    }
+  }
+});
+
+// node_modules/@babel/helper-validator-identifier/lib/keyword.js
+var require_keyword = __commonJS({
+  "node_modules/@babel/helper-validator-identifier/lib/keyword.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", {
+      value: true
+    });
+    exports2.isKeyword = isKeyword;
+    exports2.isReservedWord = isReservedWord;
+    exports2.isStrictBindOnlyReservedWord = isStrictBindOnlyReservedWord;
+    exports2.isStrictBindReservedWord = isStrictBindReservedWord;
+    exports2.isStrictReservedWord = isStrictReservedWord;
+    var reservedWords = {
+      keyword: ["break", "case", "catch", "continue", "debugger", "default", "do", "else", "finally", "for", "function", "if", "return", "switch", "throw", "try", "var", "const", "while", "with", "new", "this", "super", "class", "extends", "export", "import", "null", "true", "false", "in", "instanceof", "typeof", "void", "delete"],
+      strict: ["implements", "interface", "let", "package", "private", "protected", "public", "static", "yield"],
+      strictBind: ["eval", "arguments"]
+    };
+    var keywords = new Set(reservedWords.keyword);
+    var reservedWordsStrictSet = new Set(reservedWords.strict);
+    var reservedWordsStrictBindSet = new Set(reservedWords.strictBind);
+    function isReservedWord(word, inModule) {
+      return inModule && word === "await" || word === "enum";
+    }
+    function isStrictReservedWord(word, inModule) {
+      return isReservedWord(word, inModule) || reservedWordsStrictSet.has(word);
+    }
+    function isStrictBindOnlyReservedWord(word) {
+      return reservedWordsStrictBindSet.has(word);
+    }
+    function isStrictBindReservedWord(word, inModule) {
+      return isStrictReservedWord(word, inModule) || isStrictBindOnlyReservedWord(word);
+    }
+    function isKeyword(word) {
+      return keywords.has(word);
+    }
+  }
+});
+
+// node_modules/@babel/helper-validator-identifier/lib/index.js
+var require_lib = __commonJS({
+  "node_modules/@babel/helper-validator-identifier/lib/index.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", {
+      value: true
+    });
+    Object.defineProperty(exports2, "isIdentifierChar", {
+      enumerable: true,
+      get: function() {
+        return _identifier.isIdentifierChar;
+      }
+    });
+    Object.defineProperty(exports2, "isIdentifierName", {
+      enumerable: true,
+      get: function() {
+        return _identifier.isIdentifierName;
+      }
+    });
+    Object.defineProperty(exports2, "isIdentifierStart", {
+      enumerable: true,
+      get: function() {
+        return _identifier.isIdentifierStart;
+      }
+    });
+    Object.defineProperty(exports2, "isKeyword", {
+      enumerable: true,
+      get: function() {
+        return _keyword.isKeyword;
+      }
+    });
+    Object.defineProperty(exports2, "isReservedWord", {
+      enumerable: true,
+      get: function() {
+        return _keyword.isReservedWord;
+      }
+    });
+    Object.defineProperty(exports2, "isStrictBindOnlyReservedWord", {
+      enumerable: true,
+      get: function() {
+        return _keyword.isStrictBindOnlyReservedWord;
+      }
+    });
+    Object.defineProperty(exports2, "isStrictBindReservedWord", {
+      enumerable: true,
+      get: function() {
+        return _keyword.isStrictBindReservedWord;
+      }
+    });
+    Object.defineProperty(exports2, "isStrictReservedWord", {
+      enumerable: true,
+      get: function() {
+        return _keyword.isStrictReservedWord;
+      }
+    });
+    var _identifier = require_identifier();
+    var _keyword = require_keyword();
+  }
+});
+
+// node_modules/picocolors/picocolors.js
+var require_picocolors = __commonJS({
+  "node_modules/picocolors/picocolors.js"(exports2, module2) {
+    "use strict";
+    var p = process || {};
+    var argv = p.argv || [];
+    var env = p.env || {};
+    var isColorSupported = !(!!env.NO_COLOR || argv.includes("--no-color")) && (!!env.FORCE_COLOR || argv.includes("--color") || p.platform === "win32" || (p.stdout || {}).isTTY && env.TERM !== "dumb" || !!env.CI);
+    var formatter = (open, close, replace = open) => (input) => {
+      let string = "" + input, index = string.indexOf(close, open.length);
+      return ~index ? open + replaceClose(string, close, replace, index) + close : open + string + close;
+    };
+    var replaceClose = (string, close, replace, index) => {
+      let result = "", cursor = 0;
+      do {
+        result += string.substring(cursor, index) + replace;
+        cursor = index + close.length;
+        index = string.indexOf(close, cursor);
+      } while (~index);
+      return result + string.substring(cursor);
+    };
+    var createColors = (enabled = isColorSupported) => {
+      let f = enabled ? formatter : () => String;
+      return {
+        isColorSupported: enabled,
+        reset: f("\x1B[0m", "\x1B[0m"),
+        bold: f("\x1B[1m", "\x1B[22m", "\x1B[22m\x1B[1m"),
+        dim: f("\x1B[2m", "\x1B[22m", "\x1B[22m\x1B[2m"),
+        italic: f("\x1B[3m", "\x1B[23m"),
+        underline: f("\x1B[4m", "\x1B[24m"),
+        inverse: f("\x1B[7m", "\x1B[27m"),
+        hidden: f("\x1B[8m", "\x1B[28m"),
+        strikethrough: f("\x1B[9m", "\x1B[29m"),
+        black: f("\x1B[30m", "\x1B[39m"),
+        red: f("\x1B[31m", "\x1B[39m"),
+        green: f("\x1B[32m", "\x1B[39m"),
+        yellow: f("\x1B[33m", "\x1B[39m"),
+        blue: f("\x1B[34m", "\x1B[39m"),
+        magenta: f("\x1B[35m", "\x1B[39m"),
+        cyan: f("\x1B[36m", "\x1B[39m"),
+        white: f("\x1B[37m", "\x1B[39m"),
+        gray: f("\x1B[90m", "\x1B[39m"),
+        bgBlack: f("\x1B[40m", "\x1B[49m"),
+        bgRed: f("\x1B[41m", "\x1B[49m"),
+        bgGreen: f("\x1B[42m", "\x1B[49m"),
+        bgYellow: f("\x1B[43m", "\x1B[49m"),
+        bgBlue: f("\x1B[44m", "\x1B[49m"),
+        bgMagenta: f("\x1B[45m", "\x1B[49m"),
+        bgCyan: f("\x1B[46m", "\x1B[49m"),
+        bgWhite: f("\x1B[47m", "\x1B[49m"),
+        blackBright: f("\x1B[90m", "\x1B[39m"),
+        redBright: f("\x1B[91m", "\x1B[39m"),
+        greenBright: f("\x1B[92m", "\x1B[39m"),
+        yellowBright: f("\x1B[93m", "\x1B[39m"),
+        blueBright: f("\x1B[94m", "\x1B[39m"),
+        magentaBright: f("\x1B[95m", "\x1B[39m"),
+        cyanBright: f("\x1B[96m", "\x1B[39m"),
+        whiteBright: f("\x1B[97m", "\x1B[39m"),
+        bgBlackBright: f("\x1B[100m", "\x1B[49m"),
+        bgRedBright: f("\x1B[101m", "\x1B[49m"),
+        bgGreenBright: f("\x1B[102m", "\x1B[49m"),
+        bgYellowBright: f("\x1B[103m", "\x1B[49m"),
+        bgBlueBright: f("\x1B[104m", "\x1B[49m"),
+        bgMagentaBright: f("\x1B[105m", "\x1B[49m"),
+        bgCyanBright: f("\x1B[106m", "\x1B[49m"),
+        bgWhiteBright: f("\x1B[107m", "\x1B[49m")
+      };
+    };
+    module2.exports = createColors();
+    module2.exports.createColors = createColors;
+  }
+});
+
+// node_modules/@babel/highlight/node_modules/escape-string-regexp/index.js
+var require_escape_string_regexp = __commonJS({
+  "node_modules/@babel/highlight/node_modules/escape-string-regexp/index.js"(exports2, module2) {
+    "use strict";
+    var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
+    module2.exports = function(str) {
+      if (typeof str !== "string") {
+        throw new TypeError("Expected a string");
+      }
+      return str.replace(matchOperatorsRe, "\\$&");
+    };
+  }
+});
+
+// node_modules/color-convert/node_modules/color-name/index.js
+var require_color_name2 = __commonJS({
+  "node_modules/color-convert/node_modules/color-name/index.js"(exports2, module2) {
+    "use strict";
+    module2.exports = {
+      "aliceblue": [240, 248, 255],
+      "antiquewhite": [250, 235, 215],
+      "aqua": [0, 255, 255],
+      "aquamarine": [127, 255, 212],
+      "azure": [240, 255, 255],
+      "beige": [245, 245, 220],
+      "bisque": [255, 228, 196],
+      "black": [0, 0, 0],
+      "blanchedalmond": [255, 235, 205],
+      "blue": [0, 0, 255],
+      "blueviolet": [138, 43, 226],
+      "brown": [165, 42, 42],
+      "burlywood": [222, 184, 135],
+      "cadetblue": [95, 158, 160],
+      "chartreuse": [127, 255, 0],
+      "chocolate": [210, 105, 30],
+      "coral": [255, 127, 80],
+      "cornflowerblue": [100, 149, 237],
+      "cornsilk": [255, 248, 220],
+      "crimson": [220, 20, 60],
+      "cyan": [0, 255, 255],
+      "darkblue": [0, 0, 139],
+      "darkcyan": [0, 139, 139],
+      "darkgoldenrod": [184, 134, 11],
+      "darkgray": [169, 169, 169],
+      "darkgreen": [0, 100, 0],
+      "darkgrey": [169, 169, 169],
+      "darkkhaki": [189, 183, 107],
+      "darkmagenta": [139, 0, 139],
+      "darkolivegreen": [85, 107, 47],
+      "darkorange": [255, 140, 0],
+      "darkorchid": [153, 50, 204],
+      "darkred": [139, 0, 0],
+      "darksalmon": [233, 150, 122],
+      "darkseagreen": [143, 188, 143],
+      "darkslateblue": [72, 61, 139],
+      "darkslategray": [47, 79, 79],
+      "darkslategrey": [47, 79, 79],
+      "darkturquoise": [0, 206, 209],
+      "darkviolet": [148, 0, 211],
+      "deeppink": [255, 20, 147],
+      "deepskyblue": [0, 191, 255],
+      "dimgray": [105, 105, 105],
+      "dimgrey": [105, 105, 105],
+      "dodgerblue": [30, 144, 255],
+      "firebrick": [178, 34, 34],
+      "floralwhite": [255, 250, 240],
+      "forestgreen": [34, 139, 34],
+      "fuchsia": [255, 0, 255],
+      "gainsboro": [220, 220, 220],
+      "ghostwhite": [248, 248, 255],
+      "gold": [255, 215, 0],
+      "goldenrod": [218, 165, 32],
+      "gray": [128, 128, 128],
+      "green": [0, 128, 0],
+      "greenyellow": [173, 255, 47],
+      "grey": [128, 128, 128],
+      "honeydew": [240, 255, 240],
+      "hotpink": [255, 105, 180],
+      "indianred": [205, 92, 92],
+      "indigo": [75, 0, 130],
+      "ivory": [255, 255, 240],
+      "khaki": [240, 230, 140],
+      "lavender": [230, 230, 250],
+      "lavenderblush": [255, 240, 245],
+      "lawngreen": [124, 252, 0],
+      "lemonchiffon": [255, 250, 205],
+      "lightblue": [173, 216, 230],
+      "lightcoral": [240, 128, 128],
+      "lightcyan": [224, 255, 255],
+      "lightgoldenrodyellow": [250, 250, 210],
+      "lightgray": [211, 211, 211],
+      "lightgreen": [144, 238, 144],
+      "lightgrey": [211, 211, 211],
+      "lightpink": [255, 182, 193],
+      "lightsalmon": [255, 160, 122],
+      "lightseagreen": [32, 178, 170],
+      "lightskyblue": [135, 206, 250],
+      "lightslategray": [119, 136, 153],
+      "lightslategrey": [119, 136, 153],
+      "lightsteelblue": [176, 196, 222],
+      "lightyellow": [255, 255, 224],
+      "lime": [0, 255, 0],
+      "limegreen": [50, 205, 50],
+      "linen": [250, 240, 230],
+      "magenta": [255, 0, 255],
+      "maroon": [128, 0, 0],
+      "mediumaquamarine": [102, 205, 170],
+      "mediumblue": [0, 0, 205],
+      "mediumorchid": [186, 85, 211],
+      "mediumpurple": [147, 112, 219],
+      "mediumseagreen": [60, 179, 113],
+      "mediumslateblue": [123, 104, 238],
+      "mediumspringgreen": [0, 250, 154],
+      "mediumturquoise": [72, 209, 204],
+      "mediumvioletred": [199, 21, 133],
+      "midnightblue": [25, 25, 112],
+      "mintcream": [245, 255, 250],
+      "mistyrose": [255, 228, 225],
+      "moccasin": [255, 228, 181],
+      "navajowhite": [255, 222, 173],
+      "navy": [0, 0, 128],
+      "oldlace": [253, 245, 230],
+      "olive": [128, 128, 0],
+      "olivedrab": [107, 142, 35],
+      "orange": [255, 165, 0],
+      "orangered": [255, 69, 0],
+      "orchid": [218, 112, 214],
+      "palegoldenrod": [238, 232, 170],
+      "palegreen": [152, 251, 152],
+      "paleturquoise": [175, 238, 238],
+      "palevioletred": [219, 112, 147],
+      "papayawhip": [255, 239, 213],
+      "peachpuff": [255, 218, 185],
+      "peru": [205, 133, 63],
+      "pink": [255, 192, 203],
+      "plum": [221, 160, 221],
+      "powderblue": [176, 224, 230],
+      "purple": [128, 0, 128],
+      "rebeccapurple": [102, 51, 153],
+      "red": [255, 0, 0],
+      "rosybrown": [188, 143, 143],
+      "royalblue": [65, 105, 225],
+      "saddlebrown": [139, 69, 19],
+      "salmon": [250, 128, 114],
+      "sandybrown": [244, 164, 96],
+      "seagreen": [46, 139, 87],
+      "seashell": [255, 245, 238],
+      "sienna": [160, 82, 45],
+      "silver": [192, 192, 192],
+      "skyblue": [135, 206, 235],
+      "slateblue": [106, 90, 205],
+      "slategray": [112, 128, 144],
+      "slategrey": [112, 128, 144],
+      "snow": [255, 250, 250],
+      "springgreen": [0, 255, 127],
+      "steelblue": [70, 130, 180],
+      "tan": [210, 180, 140],
+      "teal": [0, 128, 128],
+      "thistle": [216, 191, 216],
+      "tomato": [255, 99, 71],
+      "turquoise": [64, 224, 208],
+      "violet": [238, 130, 238],
+      "wheat": [245, 222, 179],
+      "white": [255, 255, 255],
+      "whitesmoke": [245, 245, 245],
+      "yellow": [255, 255, 0],
+      "yellowgreen": [154, 205, 50]
+    };
+  }
+});
+
+// node_modules/color-convert/conversions.js
+var require_conversions2 = __commonJS({
+  "node_modules/color-convert/conversions.js"(exports2, module2) {
+    "use strict";
+    var cssKeywords = require_color_name2();
+    var reverseKeywords = {};
+    for (key3 in cssKeywords) {
+      if (cssKeywords.hasOwnProperty(key3)) {
+        reverseKeywords[cssKeywords[key3]] = key3;
+      }
+    }
+    var key3;
+    var convert = module2.exports = {
+      rgb: { channels: 3, labels: "rgb" },
+      hsl: { channels: 3, labels: "hsl" },
+      hsv: { channels: 3, labels: "hsv" },
+      hwb: { channels: 3, labels: "hwb" },
+      cmyk: { channels: 4, labels: "cmyk" },
+      xyz: { channels: 3, labels: "xyz" },
+      lab: { channels: 3, labels: "lab" },
+      lch: { channels: 3, labels: "lch" },
+      hex: { channels: 1, labels: ["hex"] },
+      keyword: { channels: 1, labels: ["keyword"] },
+      ansi16: { channels: 1, labels: ["ansi16"] },
+      ansi256: { channels: 1, labels: ["ansi256"] },
+      hcg: { channels: 3, labels: ["h", "c", "g"] },
+      apple: { channels: 3, labels: ["r16", "g16", "b16"] },
+      gray: { channels: 1, labels: ["gray"] }
+    };
+    for (model in convert) {
+      if (convert.hasOwnProperty(model)) {
+        if (!("channels" in convert[model])) {
+          throw new Error("missing channels property: " + model);
+        }
+        if (!("labels" in convert[model])) {
+          throw new Error("missing channel labels property: " + model);
+        }
+        if (convert[model].labels.length !== convert[model].channels) {
+          throw new Error("channel and label counts mismatch: " + model);
+        }
+        channels = convert[model].channels;
+        labels = convert[model].labels;
+        delete convert[model].channels;
+        delete convert[model].labels;
+        Object.defineProperty(convert[model], "channels", { value: channels });
+        Object.defineProperty(convert[model], "labels", { value: labels });
+      }
+    }
+    var channels;
+    var labels;
+    var model;
+    convert.rgb.hsl = function(rgb) {
+      var r = rgb[0] / 255;
+      var g = rgb[1] / 255;
+      var b = rgb[2] / 255;
+      var min = Math.min(r, g, b);
+      var max = Math.max(r, g, b);
+      var delta = max - min;
+      var h;
+      var s;
+      var l;
+      if (max === min) {
+        h = 0;
+      } else if (r === max) {
+        h = (g - b) / delta;
+      } else if (g === max) {
+        h = 2 + (b - r) / delta;
+      } else if (b === max) {
+        h = 4 + (r - g) / delta;
+      }
+      h = Math.min(h * 60, 360);
+      if (h < 0) {
+        h += 360;
+      }
+      l = (min + max) / 2;
+      if (max === min) {
+        s = 0;
+      } else if (l <= 0.5) {
+        s = delta / (max + min);
+      } else {
+        s = delta / (2 - max - min);
+      }
+      return [h, s * 100, l * 100];
+    };
+    convert.rgb.hsv = function(rgb) {
+      var rdif;
+      var gdif;
+      var bdif;
+      var h;
+      var s;
+      var r = rgb[0] / 255;
+      var g = rgb[1] / 255;
+      var b = rgb[2] / 255;
+      var v = Math.max(r, g, b);
+      var diff = v - Math.min(r, g, b);
+      var diffc = function(c2) {
+        return (v - c2) / 6 / diff + 1 / 2;
+      };
+      if (diff === 0) {
+        h = s = 0;
+      } else {
+        s = diff / v;
+        rdif = diffc(r);
+        gdif = diffc(g);
+        bdif = diffc(b);
+        if (r === v) {
+          h = bdif - gdif;
+        } else if (g === v) {
+          h = 1 / 3 + rdif - bdif;
+        } else if (b === v) {
+          h = 2 / 3 + gdif - rdif;
+        }
+        if (h < 0) {
+          h += 1;
+        } else if (h > 1) {
+          h -= 1;
+        }
+      }
+      return [
+        h * 360,
+        s * 100,
+        v * 100
+      ];
+    };
+    convert.rgb.hwb = function(rgb) {
+      var r = rgb[0];
+      var g = rgb[1];
+      var b = rgb[2];
+      var h = convert.rgb.hsl(rgb)[0];
+      var w = 1 / 255 * Math.min(r, Math.min(g, b));
+      b = 1 - 1 / 255 * Math.max(r, Math.max(g, b));
+      return [h, w * 100, b * 100];
+    };
+    convert.rgb.cmyk = function(rgb) {
+      var r = rgb[0] / 255;
+      var g = rgb[1] / 255;
+      var b = rgb[2] / 255;
+      var c2;
+      var m;
+      var y;
+      var k;
+      k = Math.min(1 - r, 1 - g, 1 - b);
+      c2 = (1 - r - k) / (1 - k) || 0;
+      m = (1 - g - k) / (1 - k) || 0;
+      y = (1 - b - k) / (1 - k) || 0;
+      return [c2 * 100, m * 100, y * 100, k * 100];
+    };
+    function comparativeDistance(x, y) {
+      return Math.pow(x[0] - y[0], 2) + Math.pow(x[1] - y[1], 2) + Math.pow(x[2] - y[2], 2);
+    }
+    convert.rgb.keyword = function(rgb) {
+      var reversed = reverseKeywords[rgb];
+      if (reversed) {
+        return reversed;
+      }
+      var currentClosestDistance = Infinity;
+      var currentClosestKeyword;
+      for (var keyword in cssKeywords) {
+        if (cssKeywords.hasOwnProperty(keyword)) {
+          var value = cssKeywords[keyword];
+          var distance = comparativeDistance(rgb, value);
+          if (distance < currentClosestDistance) {
+            currentClosestDistance = distance;
+            currentClosestKeyword = keyword;
+          }
+        }
+      }
+      return currentClosestKeyword;
+    };
+    convert.keyword.rgb = function(keyword) {
+      return cssKeywords[keyword];
+    };
+    convert.rgb.xyz = function(rgb) {
+      var r = rgb[0] / 255;
+      var g = rgb[1] / 255;
+      var b = rgb[2] / 255;
+      r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+      g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+      b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+      var x = r * 0.4124 + g * 0.3576 + b * 0.1805;
+      var y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+      var z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+      return [x * 100, y * 100, z * 100];
+    };
+    convert.rgb.lab = function(rgb) {
+      var xyz = convert.rgb.xyz(rgb);
+      var x = xyz[0];
+      var y = xyz[1];
+      var z = xyz[2];
+      var l;
+      var a;
+      var b;
+      x /= 95.047;
+      y /= 100;
+      z /= 108.883;
+      x = x > 8856e-6 ? Math.pow(x, 1 / 3) : 7.787 * x + 16 / 116;
+      y = y > 8856e-6 ? Math.pow(y, 1 / 3) : 7.787 * y + 16 / 116;
+      z = z > 8856e-6 ? Math.pow(z, 1 / 3) : 7.787 * z + 16 / 116;
+      l = 116 * y - 16;
+      a = 500 * (x - y);
+      b = 200 * (y - z);
+      return [l, a, b];
+    };
+    convert.hsl.rgb = function(hsl) {
+      var h = hsl[0] / 360;
+      var s = hsl[1] / 100;
+      var l = hsl[2] / 100;
+      var t1;
+      var t2;
+      var t3;
+      var rgb;
+      var val;
+      if (s === 0) {
+        val = l * 255;
+        return [val, val, val];
+      }
+      if (l < 0.5) {
+        t2 = l * (1 + s);
+      } else {
+        t2 = l + s - l * s;
+      }
+      t1 = 2 * l - t2;
+      rgb = [0, 0, 0];
+      for (var i2 = 0; i2 < 3; i2++) {
+        t3 = h + 1 / 3 * -(i2 - 1);
+        if (t3 < 0) {
+          t3++;
+        }
+        if (t3 > 1) {
+          t3--;
+        }
+        if (6 * t3 < 1) {
+          val = t1 + (t2 - t1) * 6 * t3;
+        } else if (2 * t3 < 1) {
+          val = t2;
+        } else if (3 * t3 < 2) {
+          val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
+        } else {
+          val = t1;
+        }
+        rgb[i2] = val * 255;
+      }
+      return rgb;
+    };
+    convert.hsl.hsv = function(hsl) {
+      var h = hsl[0];
+      var s = hsl[1] / 100;
+      var l = hsl[2] / 100;
+      var smin = s;
+      var lmin = Math.max(l, 0.01);
+      var sv;
+      var v;
+      l *= 2;
+      s *= l <= 1 ? l : 2 - l;
+      smin *= lmin <= 1 ? lmin : 2 - lmin;
+      v = (l + s) / 2;
+      sv = l === 0 ? 2 * smin / (lmin + smin) : 2 * s / (l + s);
+      return [h, sv * 100, v * 100];
+    };
+    convert.hsv.rgb = function(hsv) {
+      var h = hsv[0] / 60;
+      var s = hsv[1] / 100;
+      var v = hsv[2] / 100;
+      var hi = Math.floor(h) % 6;
+      var f = h - Math.floor(h);
+      var p = 255 * v * (1 - s);
+      var q = 255 * v * (1 - s * f);
+      var t = 255 * v * (1 - s * (1 - f));
+      v *= 255;
+      switch (hi) {
+        case 0:
+          return [v, t, p];
+        case 1:
+          return [q, v, p];
+        case 2:
+          return [p, v, t];
+        case 3:
+          return [p, q, v];
+        case 4:
+          return [t, p, v];
+        case 5:
+          return [v, p, q];
+      }
+    };
+    convert.hsv.hsl = function(hsv) {
+      var h = hsv[0];
+      var s = hsv[1] / 100;
+      var v = hsv[2] / 100;
+      var vmin = Math.max(v, 0.01);
+      var lmin;
+      var sl;
+      var l;
+      l = (2 - s) * v;
+      lmin = (2 - s) * vmin;
+      sl = s * vmin;
+      sl /= lmin <= 1 ? lmin : 2 - lmin;
+      sl = sl || 0;
+      l /= 2;
+      return [h, sl * 100, l * 100];
+    };
+    convert.hwb.rgb = function(hwb) {
+      var h = hwb[0] / 360;
+      var wh = hwb[1] / 100;
+      var bl = hwb[2] / 100;
+      var ratio = wh + bl;
+      var i2;
+      var v;
+      var f;
+      var n;
+      if (ratio > 1) {
+        wh /= ratio;
+        bl /= ratio;
+      }
+      i2 = Math.floor(6 * h);
+      v = 1 - bl;
+      f = 6 * h - i2;
+      if ((i2 & 1) !== 0) {
+        f = 1 - f;
+      }
+      n = wh + f * (v - wh);
+      var r;
+      var g;
+      var b;
+      switch (i2) {
+        default:
+        case 6:
+        case 0:
+          r = v;
+          g = n;
+          b = wh;
+          break;
+        case 1:
+          r = n;
+          g = v;
+          b = wh;
+          break;
+        case 2:
+          r = wh;
+          g = v;
+          b = n;
+          break;
+        case 3:
+          r = wh;
+          g = n;
+          b = v;
+          break;
+        case 4:
+          r = n;
+          g = wh;
+          b = v;
+          break;
+        case 5:
+          r = v;
+          g = wh;
+          b = n;
+          break;
+      }
+      return [r * 255, g * 255, b * 255];
+    };
+    convert.cmyk.rgb = function(cmyk) {
+      var c2 = cmyk[0] / 100;
+      var m = cmyk[1] / 100;
+      var y = cmyk[2] / 100;
+      var k = cmyk[3] / 100;
+      var r;
+      var g;
+      var b;
+      r = 1 - Math.min(1, c2 * (1 - k) + k);
+      g = 1 - Math.min(1, m * (1 - k) + k);
+      b = 1 - Math.min(1, y * (1 - k) + k);
+      return [r * 255, g * 255, b * 255];
+    };
+    convert.xyz.rgb = function(xyz) {
+      var x = xyz[0] / 100;
+      var y = xyz[1] / 100;
+      var z = xyz[2] / 100;
+      var r;
+      var g;
+      var b;
+      r = x * 3.2406 + y * -1.5372 + z * -0.4986;
+      g = x * -0.9689 + y * 1.8758 + z * 0.0415;
+      b = x * 0.0557 + y * -0.204 + z * 1.057;
+      r = r > 31308e-7 ? 1.055 * Math.pow(r, 1 / 2.4) - 0.055 : r * 12.92;
+      g = g > 31308e-7 ? 1.055 * Math.pow(g, 1 / 2.4) - 0.055 : g * 12.92;
+      b = b > 31308e-7 ? 1.055 * Math.pow(b, 1 / 2.4) - 0.055 : b * 12.92;
+      r = Math.min(Math.max(0, r), 1);
+      g = Math.min(Math.max(0, g), 1);
+      b = Math.min(Math.max(0, b), 1);
+      return [r * 255, g * 255, b * 255];
+    };
+    convert.xyz.lab = function(xyz) {
+      var x = xyz[0];
+      var y = xyz[1];
+      var z = xyz[2];
+      var l;
+      var a;
+      var b;
+      x /= 95.047;
+      y /= 100;
+      z /= 108.883;
+      x = x > 8856e-6 ? Math.pow(x, 1 / 3) : 7.787 * x + 16 / 116;
+      y = y > 8856e-6 ? Math.pow(y, 1 / 3) : 7.787 * y + 16 / 116;
+      z = z > 8856e-6 ? Math.pow(z, 1 / 3) : 7.787 * z + 16 / 116;
+      l = 116 * y - 16;
+      a = 500 * (x - y);
+      b = 200 * (y - z);
+      return [l, a, b];
+    };
+    convert.lab.xyz = function(lab) {
+      var l = lab[0];
+      var a = lab[1];
+      var b = lab[2];
+      var x;
+      var y;
+      var z;
+      y = (l + 16) / 116;
+      x = a / 500 + y;
+      z = y - b / 200;
+      var y2 = Math.pow(y, 3);
+      var x2 = Math.pow(x, 3);
+      var z2 = Math.pow(z, 3);
+      y = y2 > 8856e-6 ? y2 : (y - 16 / 116) / 7.787;
+      x = x2 > 8856e-6 ? x2 : (x - 16 / 116) / 7.787;
+      z = z2 > 8856e-6 ? z2 : (z - 16 / 116) / 7.787;
+      x *= 95.047;
+      y *= 100;
+      z *= 108.883;
+      return [x, y, z];
+    };
+    convert.lab.lch = function(lab) {
+      var l = lab[0];
+      var a = lab[1];
+      var b = lab[2];
+      var hr;
+      var h;
+      var c2;
+      hr = Math.atan2(b, a);
+      h = hr * 360 / 2 / Math.PI;
+      if (h < 0) {
+        h += 360;
+      }
+      c2 = Math.sqrt(a * a + b * b);
+      return [l, c2, h];
+    };
+    convert.lch.lab = function(lch) {
+      var l = lch[0];
+      var c2 = lch[1];
+      var h = lch[2];
+      var a;
+      var b;
+      var hr;
+      hr = h / 360 * 2 * Math.PI;
+      a = c2 * Math.cos(hr);
+      b = c2 * Math.sin(hr);
+      return [l, a, b];
+    };
+    convert.rgb.ansi16 = function(args) {
+      var r = args[0];
+      var g = args[1];
+      var b = args[2];
+      var value = 1 in arguments ? arguments[1] : convert.rgb.hsv(args)[2];
+      value = Math.round(value / 50);
+      if (value === 0) {
+        return 30;
+      }
+      var ansi = 30 + (Math.round(b / 255) << 2 | Math.round(g / 255) << 1 | Math.round(r / 255));
+      if (value === 2) {
+        ansi += 60;
+      }
+      return ansi;
+    };
+    convert.hsv.ansi16 = function(args) {
+      return convert.rgb.ansi16(convert.hsv.rgb(args), args[2]);
+    };
+    convert.rgb.ansi256 = function(args) {
+      var r = args[0];
+      var g = args[1];
+      var b = args[2];
+      if (r === g && g === b) {
+        if (r < 8) {
+          return 16;
+        }
+        if (r > 248) {
+          return 231;
+        }
+        return Math.round((r - 8) / 247 * 24) + 232;
+      }
+      var ansi = 16 + 36 * Math.round(r / 255 * 5) + 6 * Math.round(g / 255 * 5) + Math.round(b / 255 * 5);
+      return ansi;
+    };
+    convert.ansi16.rgb = function(args) {
+      var color = args % 10;
+      if (color === 0 || color === 7) {
+        if (args > 50) {
+          color += 3.5;
+        }
+        color = color / 10.5 * 255;
+        return [color, color, color];
+      }
+      var mult = (~~(args > 50) + 1) * 0.5;
+      var r = (color & 1) * mult * 255;
+      var g = (color >> 1 & 1) * mult * 255;
+      var b = (color >> 2 & 1) * mult * 255;
+      return [r, g, b];
+    };
+    convert.ansi256.rgb = function(args) {
+      if (args >= 232) {
+        var c2 = (args - 232) * 10 + 8;
+        return [c2, c2, c2];
+      }
+      args -= 16;
+      var rem;
+      var r = Math.floor(args / 36) / 5 * 255;
+      var g = Math.floor((rem = args % 36) / 6) / 5 * 255;
+      var b = rem % 6 / 5 * 255;
+      return [r, g, b];
+    };
+    convert.rgb.hex = function(args) {
+      var integer = ((Math.round(args[0]) & 255) << 16) + ((Math.round(args[1]) & 255) << 8) + (Math.round(args[2]) & 255);
+      var string = integer.toString(16).toUpperCase();
+      return "000000".substring(string.length) + string;
+    };
+    convert.hex.rgb = function(args) {
+      var match = args.toString(16).match(/[a-f0-9]{6}|[a-f0-9]{3}/i);
+      if (!match) {
+        return [0, 0, 0];
+      }
+      var colorString = match[0];
+      if (match[0].length === 3) {
+        colorString = colorString.split("").map(function(char) {
+          return char + char;
+        }).join("");
+      }
+      var integer = parseInt(colorString, 16);
+      var r = integer >> 16 & 255;
+      var g = integer >> 8 & 255;
+      var b = integer & 255;
+      return [r, g, b];
+    };
+    convert.rgb.hcg = function(rgb) {
+      var r = rgb[0] / 255;
+      var g = rgb[1] / 255;
+      var b = rgb[2] / 255;
+      var max = Math.max(Math.max(r, g), b);
+      var min = Math.min(Math.min(r, g), b);
+      var chroma = max - min;
+      var grayscale;
+      var hue;
+      if (chroma < 1) {
+        grayscale = min / (1 - chroma);
+      } else {
+        grayscale = 0;
+      }
+      if (chroma <= 0) {
+        hue = 0;
+      } else if (max === r) {
+        hue = (g - b) / chroma % 6;
+      } else if (max === g) {
+        hue = 2 + (b - r) / chroma;
+      } else {
+        hue = 4 + (r - g) / chroma + 4;
+      }
+      hue /= 6;
+      hue %= 1;
+      return [hue * 360, chroma * 100, grayscale * 100];
+    };
+    convert.hsl.hcg = function(hsl) {
+      var s = hsl[1] / 100;
+      var l = hsl[2] / 100;
+      var c2 = 1;
+      var f = 0;
+      if (l < 0.5) {
+        c2 = 2 * s * l;
+      } else {
+        c2 = 2 * s * (1 - l);
+      }
+      if (c2 < 1) {
+        f = (l - 0.5 * c2) / (1 - c2);
+      }
+      return [hsl[0], c2 * 100, f * 100];
+    };
+    convert.hsv.hcg = function(hsv) {
+      var s = hsv[1] / 100;
+      var v = hsv[2] / 100;
+      var c2 = s * v;
+      var f = 0;
+      if (c2 < 1) {
+        f = (v - c2) / (1 - c2);
+      }
+      return [hsv[0], c2 * 100, f * 100];
+    };
+    convert.hcg.rgb = function(hcg) {
+      var h = hcg[0] / 360;
+      var c2 = hcg[1] / 100;
+      var g = hcg[2] / 100;
+      if (c2 === 0) {
+        return [g * 255, g * 255, g * 255];
+      }
+      var pure = [0, 0, 0];
+      var hi = h % 1 * 6;
+      var v = hi % 1;
+      var w = 1 - v;
+      var mg = 0;
+      switch (Math.floor(hi)) {
+        case 0:
+          pure[0] = 1;
+          pure[1] = v;
+          pure[2] = 0;
+          break;
+        case 1:
+          pure[0] = w;
+          pure[1] = 1;
+          pure[2] = 0;
+          break;
+        case 2:
+          pure[0] = 0;
+          pure[1] = 1;
+          pure[2] = v;
+          break;
+        case 3:
+          pure[0] = 0;
+          pure[1] = w;
+          pure[2] = 1;
+          break;
+        case 4:
+          pure[0] = v;
+          pure[1] = 0;
+          pure[2] = 1;
+          break;
+        default:
+          pure[0] = 1;
+          pure[1] = 0;
+          pure[2] = w;
+      }
+      mg = (1 - c2) * g;
+      return [
+        (c2 * pure[0] + mg) * 255,
+        (c2 * pure[1] + mg) * 255,
+        (c2 * pure[2] + mg) * 255
+      ];
+    };
+    convert.hcg.hsv = function(hcg) {
+      var c2 = hcg[1] / 100;
+      var g = hcg[2] / 100;
+      var v = c2 + g * (1 - c2);
+      var f = 0;
+      if (v > 0) {
+        f = c2 / v;
+      }
+      return [hcg[0], f * 100, v * 100];
+    };
+    convert.hcg.hsl = function(hcg) {
+      var c2 = hcg[1] / 100;
+      var g = hcg[2] / 100;
+      var l = g * (1 - c2) + 0.5 * c2;
+      var s = 0;
+      if (l > 0 && l < 0.5) {
+        s = c2 / (2 * l);
+      } else if (l >= 0.5 && l < 1) {
+        s = c2 / (2 * (1 - l));
+      }
+      return [hcg[0], s * 100, l * 100];
+    };
+    convert.hcg.hwb = function(hcg) {
+      var c2 = hcg[1] / 100;
+      var g = hcg[2] / 100;
+      var v = c2 + g * (1 - c2);
+      return [hcg[0], (v - c2) * 100, (1 - v) * 100];
+    };
+    convert.hwb.hcg = function(hwb) {
+      var w = hwb[1] / 100;
+      var b = hwb[2] / 100;
+      var v = 1 - b;
+      var c2 = v - w;
+      var g = 0;
+      if (c2 < 1) {
+        g = (v - c2) / (1 - c2);
+      }
+      return [hwb[0], c2 * 100, g * 100];
+    };
+    convert.apple.rgb = function(apple) {
+      return [apple[0] / 65535 * 255, apple[1] / 65535 * 255, apple[2] / 65535 * 255];
+    };
+    convert.rgb.apple = function(rgb) {
+      return [rgb[0] / 255 * 65535, rgb[1] / 255 * 65535, rgb[2] / 255 * 65535];
+    };
+    convert.gray.rgb = function(args) {
+      return [args[0] / 100 * 255, args[0] / 100 * 255, args[0] / 100 * 255];
+    };
+    convert.gray.hsl = convert.gray.hsv = function(args) {
+      return [0, 0, args[0]];
+    };
+    convert.gray.hwb = function(gray) {
+      return [0, 100, gray[0]];
+    };
+    convert.gray.cmyk = function(gray) {
+      return [0, 0, 0, gray[0]];
+    };
+    convert.gray.lab = function(gray) {
+      return [gray[0], 0, 0];
+    };
+    convert.gray.hex = function(gray) {
+      var val = Math.round(gray[0] / 100 * 255) & 255;
+      var integer = (val << 16) + (val << 8) + val;
+      var string = integer.toString(16).toUpperCase();
+      return "000000".substring(string.length) + string;
+    };
+    convert.rgb.gray = function(rgb) {
+      var val = (rgb[0] + rgb[1] + rgb[2]) / 3;
+      return [val / 255 * 100];
+    };
+  }
+});
+
+// node_modules/color-convert/route.js
+var require_route2 = __commonJS({
+  "node_modules/color-convert/route.js"(exports2, module2) {
+    "use strict";
+    var conversions = require_conversions2();
+    function buildGraph() {
+      var graph = {};
+      var models = Object.keys(conversions);
+      for (var len = models.length, i2 = 0; i2 < len; i2++) {
+        graph[models[i2]] = {
+          // http://jsperf.com/1-vs-infinity
+          // micro-opt, but this is simple.
+          distance: -1,
+          parent: null
+        };
+      }
+      return graph;
+    }
+    function deriveBFS(fromModel) {
+      var graph = buildGraph();
+      var queue = [fromModel];
+      graph[fromModel].distance = 0;
+      while (queue.length) {
+        var current = queue.pop();
+        var adjacents = Object.keys(conversions[current]);
+        for (var len = adjacents.length, i2 = 0; i2 < len; i2++) {
+          var adjacent = adjacents[i2];
+          var node = graph[adjacent];
+          if (node.distance === -1) {
+            node.distance = graph[current].distance + 1;
+            node.parent = current;
+            queue.unshift(adjacent);
+          }
+        }
+      }
+      return graph;
+    }
+    function link(from, to) {
+      return function(args) {
+        return to(from(args));
+      };
+    }
+    function wrapConversion(toModel, graph) {
+      var path8 = [graph[toModel].parent, toModel];
+      var fn = conversions[graph[toModel].parent][toModel];
+      var cur = graph[toModel].parent;
+      while (graph[cur].parent) {
+        path8.unshift(graph[cur].parent);
+        fn = link(conversions[graph[cur].parent][cur], fn);
+        cur = graph[cur].parent;
+      }
+      fn.conversion = path8;
+      return fn;
+    }
+    module2.exports = function(fromModel) {
+      var graph = deriveBFS(fromModel);
+      var conversion = {};
+      var models = Object.keys(graph);
+      for (var len = models.length, i2 = 0; i2 < len; i2++) {
+        var toModel = models[i2];
+        var node = graph[toModel];
+        if (node.parent === null) {
+          continue;
+        }
+        conversion[toModel] = wrapConversion(toModel, graph);
+      }
+      return conversion;
+    };
+  }
+});
+
+// node_modules/color-convert/index.js
+var require_color_convert2 = __commonJS({
+  "node_modules/color-convert/index.js"(exports2, module2) {
+    "use strict";
+    var conversions = require_conversions2();
+    var route = require_route2();
+    var convert = {};
+    var models = Object.keys(conversions);
+    function wrapRaw(fn) {
+      var wrappedFn = function(args) {
+        if (args === void 0 || args === null) {
+          return args;
+        }
+        if (arguments.length > 1) {
+          args = Array.prototype.slice.call(arguments);
+        }
+        return fn(args);
+      };
+      if ("conversion" in fn) {
+        wrappedFn.conversion = fn.conversion;
+      }
+      return wrappedFn;
+    }
+    function wrapRounded(fn) {
+      var wrappedFn = function(args) {
+        if (args === void 0 || args === null) {
+          return args;
+        }
+        if (arguments.length > 1) {
+          args = Array.prototype.slice.call(arguments);
+        }
+        var result = fn(args);
+        if (typeof result === "object") {
+          for (var len = result.length, i2 = 0; i2 < len; i2++) {
+            result[i2] = Math.round(result[i2]);
+          }
+        }
+        return result;
+      };
+      if ("conversion" in fn) {
+        wrappedFn.conversion = fn.conversion;
+      }
+      return wrappedFn;
+    }
+    models.forEach(function(fromModel) {
+      convert[fromModel] = {};
+      Object.defineProperty(convert[fromModel], "channels", { value: conversions[fromModel].channels });
+      Object.defineProperty(convert[fromModel], "labels", { value: conversions[fromModel].labels });
+      var routes = route(fromModel);
+      var routeModels = Object.keys(routes);
+      routeModels.forEach(function(toModel) {
+        var fn = routes[toModel];
+        convert[fromModel][toModel] = wrapRounded(fn);
+        convert[fromModel][toModel].raw = wrapRaw(fn);
+      });
+    });
+    module2.exports = convert;
+  }
+});
+
+// node_modules/@babel/highlight/node_modules/ansi-styles/index.js
+var require_ansi_styles2 = __commonJS({
+  "node_modules/@babel/highlight/node_modules/ansi-styles/index.js"(exports2, module2) {
+    "use strict";
+    var colorConvert = require_color_convert2();
+    var wrapAnsi16 = (fn, offset) => function() {
+      const code = fn.apply(colorConvert, arguments);
+      return `\x1B[${code + offset}m`;
+    };
+    var wrapAnsi256 = (fn, offset) => function() {
+      const code = fn.apply(colorConvert, arguments);
+      return `\x1B[${38 + offset};5;${code}m`;
+    };
+    var wrapAnsi16m = (fn, offset) => function() {
+      const rgb = fn.apply(colorConvert, arguments);
+      return `\x1B[${38 + offset};2;${rgb[0]};${rgb[1]};${rgb[2]}m`;
+    };
+    function assembleStyles() {
+      const codes = /* @__PURE__ */ new Map();
+      const styles = {
+        modifier: {
+          reset: [0, 0],
+          // 21 isn't widely supported and 22 does the same thing
+          bold: [1, 22],
+          dim: [2, 22],
+          italic: [3, 23],
+          underline: [4, 24],
+          inverse: [7, 27],
+          hidden: [8, 28],
+          strikethrough: [9, 29]
+        },
+        color: {
+          black: [30, 39],
+          red: [31, 39],
+          green: [32, 39],
+          yellow: [33, 39],
+          blue: [34, 39],
+          magenta: [35, 39],
+          cyan: [36, 39],
+          white: [37, 39],
+          gray: [90, 39],
+          // Bright color
+          redBright: [91, 39],
+          greenBright: [92, 39],
+          yellowBright: [93, 39],
+          blueBright: [94, 39],
+          magentaBright: [95, 39],
+          cyanBright: [96, 39],
+          whiteBright: [97, 39]
+        },
+        bgColor: {
+          bgBlack: [40, 49],
+          bgRed: [41, 49],
+          bgGreen: [42, 49],
+          bgYellow: [43, 49],
+          bgBlue: [44, 49],
+          bgMagenta: [45, 49],
+          bgCyan: [46, 49],
+          bgWhite: [47, 49],
+          // Bright color
+          bgBlackBright: [100, 49],
+          bgRedBright: [101, 49],
+          bgGreenBright: [102, 49],
+          bgYellowBright: [103, 49],
+          bgBlueBright: [104, 49],
+          bgMagentaBright: [105, 49],
+          bgCyanBright: [106, 49],
+          bgWhiteBright: [107, 49]
+        }
+      };
+      styles.color.grey = styles.color.gray;
+      for (const groupName of Object.keys(styles)) {
+        const group = styles[groupName];
+        for (const styleName of Object.keys(group)) {
+          const style = group[styleName];
+          styles[styleName] = {
+            open: `\x1B[${style[0]}m`,
+            close: `\x1B[${style[1]}m`
+          };
+          group[styleName] = styles[styleName];
+          codes.set(style[0], style[1]);
+        }
+        Object.defineProperty(styles, groupName, {
+          value: group,
+          enumerable: false
+        });
+        Object.defineProperty(styles, "codes", {
+          value: codes,
+          enumerable: false
+        });
+      }
+      const ansi2ansi = (n) => n;
+      const rgb2rgb = (r, g, b) => [r, g, b];
+      styles.color.close = "\x1B[39m";
+      styles.bgColor.close = "\x1B[49m";
+      styles.color.ansi = {
+        ansi: wrapAnsi16(ansi2ansi, 0)
+      };
+      styles.color.ansi256 = {
+        ansi256: wrapAnsi256(ansi2ansi, 0)
+      };
+      styles.color.ansi16m = {
+        rgb: wrapAnsi16m(rgb2rgb, 0)
+      };
+      styles.bgColor.ansi = {
+        ansi: wrapAnsi16(ansi2ansi, 10)
+      };
+      styles.bgColor.ansi256 = {
+        ansi256: wrapAnsi256(ansi2ansi, 10)
+      };
+      styles.bgColor.ansi16m = {
+        rgb: wrapAnsi16m(rgb2rgb, 10)
+      };
+      for (let key3 of Object.keys(colorConvert)) {
+        if (typeof colorConvert[key3] !== "object") {
+          continue;
+        }
+        const suite = colorConvert[key3];
+        if (key3 === "ansi16") {
+          key3 = "ansi";
+        }
+        if ("ansi16" in suite) {
+          styles.color.ansi[key3] = wrapAnsi16(suite.ansi16, 0);
+          styles.bgColor.ansi[key3] = wrapAnsi16(suite.ansi16, 10);
+        }
+        if ("ansi256" in suite) {
+          styles.color.ansi256[key3] = wrapAnsi256(suite.ansi256, 0);
+          styles.bgColor.ansi256[key3] = wrapAnsi256(suite.ansi256, 10);
+        }
+        if ("rgb" in suite) {
+          styles.color.ansi16m[key3] = wrapAnsi16m(suite.rgb, 0);
+          styles.bgColor.ansi16m[key3] = wrapAnsi16m(suite.rgb, 10);
+        }
+      }
+      return styles;
+    }
+    Object.defineProperty(module2, "exports", {
+      enumerable: true,
+      get: assembleStyles
+    });
+  }
+});
+
+// node_modules/@babel/highlight/node_modules/has-flag/index.js
+var require_has_flag2 = __commonJS({
+  "node_modules/@babel/highlight/node_modules/has-flag/index.js"(exports2, module2) {
+    "use strict";
+    module2.exports = (flag, argv) => {
+      argv = argv || process.argv;
+      const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
+      const pos2 = argv.indexOf(prefix + flag);
+      const terminatorPos = argv.indexOf("--");
+      return pos2 !== -1 && (terminatorPos === -1 ? true : pos2 < terminatorPos);
+    };
+  }
+});
+
+// node_modules/@babel/highlight/node_modules/supports-color/index.js
+var require_supports_color2 = __commonJS({
+  "node_modules/@babel/highlight/node_modules/supports-color/index.js"(exports2, module2) {
+    "use strict";
+    var os = require("os");
+    var hasFlag = require_has_flag2();
+    var env = process.env;
+    var forceColor;
+    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false")) {
+      forceColor = false;
+    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
+      forceColor = true;
+    }
+    if ("FORCE_COLOR" in env) {
+      forceColor = env.FORCE_COLOR.length === 0 || parseInt(env.FORCE_COLOR, 10) !== 0;
+    }
+    function translateLevel(level) {
+      if (level === 0) {
+        return false;
+      }
+      return {
+        level,
+        hasBasic: true,
+        has256: level >= 2,
+        has16m: level >= 3
+      };
+    }
+    function supportsColor(stream) {
+      if (forceColor === false) {
+        return 0;
+      }
+      if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
+        return 3;
+      }
+      if (hasFlag("color=256")) {
+        return 2;
+      }
+      if (stream && !stream.isTTY && forceColor !== true) {
+        return 0;
+      }
+      const min = forceColor ? 1 : 0;
+      if (process.platform === "win32") {
+        const osRelease = os.release().split(".");
+        if (Number(process.versions.node.split(".")[0]) >= 8 && Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
+          return Number(osRelease[2]) >= 14931 ? 3 : 2;
+        }
+        return 1;
+      }
+      if ("CI" in env) {
+        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI"].some((sign2) => sign2 in env) || env.CI_NAME === "codeship") {
+          return 1;
+        }
+        return min;
+      }
+      if ("TEAMCITY_VERSION" in env) {
+        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
+      }
+      if (env.COLORTERM === "truecolor") {
+        return 3;
+      }
+      if ("TERM_PROGRAM" in env) {
+        const version = parseInt((env.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+        switch (env.TERM_PROGRAM) {
+          case "iTerm.app":
+            return version >= 3 ? 3 : 2;
+          case "Apple_Terminal":
+            return 2;
+        }
+      }
+      if (/-256(color)?$/i.test(env.TERM)) {
+        return 2;
+      }
+      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
+        return 1;
+      }
+      if ("COLORTERM" in env) {
+        return 1;
+      }
+      if (env.TERM === "dumb") {
+        return min;
+      }
+      return min;
+    }
+    function getSupportLevel(stream) {
+      const level = supportsColor(stream);
+      return translateLevel(level);
+    }
+    module2.exports = {
+      supportsColor: getSupportLevel,
+      stdout: getSupportLevel(process.stdout),
+      stderr: getSupportLevel(process.stderr)
+    };
+  }
+});
+
+// node_modules/@babel/highlight/node_modules/chalk/templates.js
+var require_templates2 = __commonJS({
+  "node_modules/@babel/highlight/node_modules/chalk/templates.js"(exports2, module2) {
+    "use strict";
+    var TEMPLATE_REGEX = /(?:\\(u[a-f\d]{4}|x[a-f\d]{2}|.))|(?:\{(~)?(\w+(?:\([^)]*\))?(?:\.\w+(?:\([^)]*\))?)*)(?:[ \t]|(?=\r?\n)))|(\})|((?:.|[\r\n\f])+?)/gi;
+    var STYLE_REGEX = /(?:^|\.)(\w+)(?:\(([^)]*)\))?/g;
+    var STRING_REGEX = /^(['"])((?:\\.|(?!\1)[^\\])*)\1$/;
+    var ESCAPE_REGEX = /\\(u[a-f\d]{4}|x[a-f\d]{2}|.)|([^\\])/gi;
+    var ESCAPES = /* @__PURE__ */ new Map([
+      ["n", "\n"],
+      ["r", "\r"],
+      ["t", "	"],
+      ["b", "\b"],
+      ["f", "\f"],
+      ["v", "\v"],
+      ["0", "\0"],
+      ["\\", "\\"],
+      ["e", "\x1B"],
+      ["a", "\x07"]
+    ]);
+    function unescape2(c2) {
+      if (c2[0] === "u" && c2.length === 5 || c2[0] === "x" && c2.length === 3) {
+        return String.fromCharCode(parseInt(c2.slice(1), 16));
+      }
+      return ESCAPES.get(c2) || c2;
+    }
+    function parseArguments(name, args) {
+      const results = [];
+      const chunks = args.trim().split(/\s*,\s*/g);
+      let matches;
+      for (const chunk of chunks) {
+        if (!isNaN(chunk)) {
+          results.push(Number(chunk));
+        } else if (matches = chunk.match(STRING_REGEX)) {
+          results.push(matches[2].replace(ESCAPE_REGEX, (m, escape2, chr) => escape2 ? unescape2(escape2) : chr));
+        } else {
+          throw new Error(`Invalid Chalk template style argument: ${chunk} (in style '${name}')`);
+        }
+      }
+      return results;
+    }
+    function parseStyle(style) {
+      STYLE_REGEX.lastIndex = 0;
+      const results = [];
+      let matches;
+      while ((matches = STYLE_REGEX.exec(style)) !== null) {
+        const name = matches[1];
+        if (matches[2]) {
+          const args = parseArguments(name, matches[2]);
+          results.push([name].concat(args));
+        } else {
+          results.push([name]);
+        }
+      }
+      return results;
+    }
+    function buildStyle(chalk, styles) {
+      const enabled = {};
+      for (const layer of styles) {
+        for (const style of layer.styles) {
+          enabled[style[0]] = layer.inverse ? null : style.slice(1);
+        }
+      }
+      let current = chalk;
+      for (const styleName of Object.keys(enabled)) {
+        if (Array.isArray(enabled[styleName])) {
+          if (!(styleName in current)) {
+            throw new Error(`Unknown Chalk style: ${styleName}`);
+          }
+          if (enabled[styleName].length > 0) {
+            current = current[styleName].apply(current, enabled[styleName]);
+          } else {
+            current = current[styleName];
+          }
+        }
+      }
+      return current;
+    }
+    module2.exports = (chalk, tmp) => {
+      const styles = [];
+      const chunks = [];
+      let chunk = [];
+      tmp.replace(TEMPLATE_REGEX, (m, escapeChar, inverse, style, close, chr) => {
+        if (escapeChar) {
+          chunk.push(unescape2(escapeChar));
+        } else if (style) {
+          const str = chunk.join("");
+          chunk = [];
+          chunks.push(styles.length === 0 ? str : buildStyle(chalk, styles)(str));
+          styles.push({ inverse, styles: parseStyle(style) });
+        } else if (close) {
+          if (styles.length === 0) {
+            throw new Error("Found extraneous } in Chalk template literal");
+          }
+          chunks.push(buildStyle(chalk, styles)(chunk.join("")));
+          chunk = [];
+          styles.pop();
+        } else {
+          chunk.push(chr);
+        }
+      });
+      chunks.push(chunk.join(""));
+      if (styles.length > 0) {
+        const errMsg = `Chalk template literal is missing ${styles.length} closing bracket${styles.length === 1 ? "" : "s"} (\`}\`)`;
+        throw new Error(errMsg);
+      }
+      return chunks.join("");
+    };
+  }
+});
+
+// node_modules/@babel/highlight/node_modules/chalk/index.js
+var require_chalk = __commonJS({
+  "node_modules/@babel/highlight/node_modules/chalk/index.js"(exports2, module2) {
+    "use strict";
+    var escapeStringRegexp = require_escape_string_regexp();
+    var ansiStyles = require_ansi_styles2();
+    var stdoutColor = require_supports_color2().stdout;
+    var template = require_templates2();
+    var isSimpleWindowsTerm = process.platform === "win32" && !(process.env.TERM || "").toLowerCase().startsWith("xterm");
+    var levelMapping = ["ansi", "ansi", "ansi256", "ansi16m"];
+    var skipModels = /* @__PURE__ */ new Set(["gray"]);
+    var styles = /* @__PURE__ */ Object.create(null);
+    function applyOptions(obj, options) {
+      options = options || {};
+      const scLevel = stdoutColor ? stdoutColor.level : 0;
+      obj.level = options.level === void 0 ? scLevel : options.level;
+      obj.enabled = "enabled" in options ? options.enabled : obj.level > 0;
+    }
+    function Chalk(options) {
+      if (!this || !(this instanceof Chalk) || this.template) {
+        const chalk = {};
+        applyOptions(chalk, options);
+        chalk.template = function() {
+          const args = [].slice.call(arguments);
+          return chalkTag.apply(null, [chalk.template].concat(args));
+        };
+        Object.setPrototypeOf(chalk, Chalk.prototype);
+        Object.setPrototypeOf(chalk.template, chalk);
+        chalk.template.constructor = Chalk;
+        return chalk.template;
+      }
+      applyOptions(this, options);
+    }
+    if (isSimpleWindowsTerm) {
+      ansiStyles.blue.open = "\x1B[94m";
+    }
+    for (const key3 of Object.keys(ansiStyles)) {
+      ansiStyles[key3].closeRe = new RegExp(escapeStringRegexp(ansiStyles[key3].close), "g");
+      styles[key3] = {
+        get() {
+          const codes = ansiStyles[key3];
+          return build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, key3);
+        }
+      };
+    }
+    styles.visible = {
+      get() {
+        return build.call(this, this._styles || [], true, "visible");
+      }
+    };
+    ansiStyles.color.closeRe = new RegExp(escapeStringRegexp(ansiStyles.color.close), "g");
+    for (const model of Object.keys(ansiStyles.color.ansi)) {
+      if (skipModels.has(model)) {
+        continue;
+      }
+      styles[model] = {
+        get() {
+          const level = this.level;
+          return function() {
+            const open = ansiStyles.color[levelMapping[level]][model].apply(null, arguments);
+            const codes = {
+              open,
+              close: ansiStyles.color.close,
+              closeRe: ansiStyles.color.closeRe
+            };
+            return build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, model);
+          };
+        }
+      };
+    }
+    ansiStyles.bgColor.closeRe = new RegExp(escapeStringRegexp(ansiStyles.bgColor.close), "g");
+    for (const model of Object.keys(ansiStyles.bgColor.ansi)) {
+      if (skipModels.has(model)) {
+        continue;
+      }
+      const bgModel = "bg" + model[0].toUpperCase() + model.slice(1);
+      styles[bgModel] = {
+        get() {
+          const level = this.level;
+          return function() {
+            const open = ansiStyles.bgColor[levelMapping[level]][model].apply(null, arguments);
+            const codes = {
+              open,
+              close: ansiStyles.bgColor.close,
+              closeRe: ansiStyles.bgColor.closeRe
+            };
+            return build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, model);
+          };
+        }
+      };
+    }
+    var proto = Object.defineProperties(() => {
+    }, styles);
+    function build(_styles, _empty, key3) {
+      const builder = function() {
+        return applyStyle.apply(builder, arguments);
+      };
+      builder._styles = _styles;
+      builder._empty = _empty;
+      const self = this;
+      Object.defineProperty(builder, "level", {
+        enumerable: true,
+        get() {
+          return self.level;
+        },
+        set(level) {
+          self.level = level;
+        }
+      });
+      Object.defineProperty(builder, "enabled", {
+        enumerable: true,
+        get() {
+          return self.enabled;
+        },
+        set(enabled) {
+          self.enabled = enabled;
+        }
+      });
+      builder.hasGrey = this.hasGrey || key3 === "gray" || key3 === "grey";
+      builder.__proto__ = proto;
+      return builder;
+    }
+    function applyStyle() {
+      const args = arguments;
+      const argsLen = args.length;
+      let str = String(arguments[0]);
+      if (argsLen === 0) {
+        return "";
+      }
+      if (argsLen > 1) {
+        for (let a = 1; a < argsLen; a++) {
+          str += " " + args[a];
+        }
+      }
+      if (!this.enabled || this.level <= 0 || !str) {
+        return this._empty ? "" : str;
+      }
+      const originalDim = ansiStyles.dim.open;
+      if (isSimpleWindowsTerm && this.hasGrey) {
+        ansiStyles.dim.open = "";
+      }
+      for (const code of this._styles.slice().reverse()) {
+        str = code.open + str.replace(code.closeRe, code.open) + code.close;
+        str = str.replace(/\r?\n/g, `${code.close}$&${code.open}`);
+      }
+      ansiStyles.dim.open = originalDim;
+      return str;
+    }
+    function chalkTag(chalk, strings) {
+      if (!Array.isArray(strings)) {
+        return [].slice.call(arguments, 1).join(" ");
+      }
+      const args = [].slice.call(arguments, 2);
+      const parts = [strings.raw[0]];
+      for (let i2 = 1; i2 < strings.length; i2++) {
+        parts.push(String(args[i2 - 1]).replace(/[{}\\]/g, "\\$&"));
+        parts.push(String(strings.raw[i2]));
+      }
+      return template(chalk, parts.join(""));
+    }
+    Object.defineProperties(Chalk.prototype, styles);
+    module2.exports = Chalk();
+    module2.exports.supportsColor = stdoutColor;
+    module2.exports.default = module2.exports;
+  }
+});
+
+// node_modules/@babel/highlight/lib/index.js
+var require_lib2 = __commonJS({
+  "node_modules/@babel/highlight/lib/index.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", {
+      value: true
+    });
+    exports2.default = highlight;
+    exports2.shouldHighlight = shouldHighlight;
+    var _jsTokens = require_js_tokens();
+    var _helperValidatorIdentifier = require_lib();
+    var _picocolors = _interopRequireWildcard(require_picocolors(), true);
+    function _getRequireWildcardCache(e) {
+      if ("function" != typeof WeakMap) return null;
+      var r = /* @__PURE__ */ new WeakMap(), t = /* @__PURE__ */ new WeakMap();
+      return (_getRequireWildcardCache = function(e2) {
+        return e2 ? t : r;
+      })(e);
+    }
+    function _interopRequireWildcard(e, r) {
+      if (!r && e && e.__esModule) return e;
+      if (null === e || "object" != typeof e && "function" != typeof e) return { default: e };
+      var t = _getRequireWildcardCache(r);
+      if (t && t.has(e)) return t.get(e);
+      var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor;
+      for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) {
+        var i2 = a ? Object.getOwnPropertyDescriptor(e, u) : null;
+        i2 && (i2.get || i2.set) ? Object.defineProperty(n, u, i2) : n[u] = e[u];
+      }
+      return n.default = e, t && t.set(e, n), n;
+    }
+    var colors = typeof process === "object" && (process.env.FORCE_COLOR === "0" || process.env.FORCE_COLOR === "false") ? (0, _picocolors.createColors)(false) : _picocolors.default;
+    var compose = (f, g) => (v) => f(g(v));
+    var sometimesKeywords = /* @__PURE__ */ new Set(["as", "async", "from", "get", "of", "set"]);
+    function getDefs(colors2) {
+      return {
+        keyword: colors2.cyan,
+        capitalized: colors2.yellow,
+        jsxIdentifier: colors2.yellow,
+        punctuator: colors2.yellow,
+        number: colors2.magenta,
+        string: colors2.green,
+        regex: colors2.magenta,
+        comment: colors2.gray,
+        invalid: compose(compose(colors2.white, colors2.bgRed), colors2.bold)
+      };
+    }
+    var NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
+    var BRACKET = /^[()[\]{}]$/;
+    var tokenize;
+    {
+      const JSX_TAG = /^[a-z][\w-]*$/i;
+      const getTokenType = function(token2, offset, text) {
+        if (token2.type === "name") {
+          if ((0, _helperValidatorIdentifier.isKeyword)(token2.value) || (0, _helperValidatorIdentifier.isStrictReservedWord)(token2.value, true) || sometimesKeywords.has(token2.value)) {
+            return "keyword";
+          }
+          if (JSX_TAG.test(token2.value) && (text[offset - 1] === "<" || text.slice(offset - 2, offset) === "</")) {
+            return "jsxIdentifier";
+          }
+          if (token2.value[0] !== token2.value[0].toLowerCase()) {
+            return "capitalized";
+          }
+        }
+        if (token2.type === "punctuator" && BRACKET.test(token2.value)) {
+          return "bracket";
+        }
+        if (token2.type === "invalid" && (token2.value === "@" || token2.value === "#")) {
+          return "punctuator";
+        }
+        return token2.type;
+      };
+      tokenize = function* (text) {
+        let match;
+        while (match = _jsTokens.default.exec(text)) {
+          const token2 = _jsTokens.matchToToken(match);
+          yield {
+            type: getTokenType(token2, match.index, text),
+            value: token2.value
+          };
+        }
+      };
+    }
+    function highlightTokens(defs, text) {
+      let highlighted = "";
+      for (const {
+        type,
+        value
+      } of tokenize(text)) {
+        const colorize = defs[type];
+        if (colorize) {
+          highlighted += value.split(NEWLINE).map((str) => colorize(str)).join("\n");
+        } else {
+          highlighted += value;
+        }
+      }
+      return highlighted;
+    }
+    function shouldHighlight(options) {
+      return colors.isColorSupported || options.forceColor;
+    }
+    var pcWithForcedColor = void 0;
+    function getColors(forceColor) {
+      if (forceColor) {
+        var _pcWithForcedColor;
+        (_pcWithForcedColor = pcWithForcedColor) != null ? _pcWithForcedColor : pcWithForcedColor = (0, _picocolors.createColors)(true);
+        return pcWithForcedColor;
+      }
+      return colors;
+    }
+    function highlight(code, options = {}) {
+      if (code !== "" && shouldHighlight(options)) {
+        const defs = getDefs(getColors(options.forceColor));
+        return highlightTokens(defs, code);
+      } else {
+        return code;
+      }
+    }
+    {
+      let chalk, chalkWithForcedColor;
+      exports2.getChalk = ({
+        forceColor
+      }) => {
+        var _chalk;
+        (_chalk = chalk) != null ? _chalk : chalk = require_chalk();
+        if (forceColor) {
+          var _chalkWithForcedColor;
+          (_chalkWithForcedColor = chalkWithForcedColor) != null ? _chalkWithForcedColor : chalkWithForcedColor = new chalk.constructor({
+            enabled: true,
+            level: 1
+          });
+          return chalkWithForcedColor;
+        }
+        return chalk;
+      };
+    }
+  }
+});
+
+// node_modules/@expo/json-file/node_modules/@babel/code-frame/lib/index.js
+var require_lib3 = __commonJS({
+  "node_modules/@expo/json-file/node_modules/@babel/code-frame/lib/index.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", {
+      value: true
+    });
+    exports2.codeFrameColumns = codeFrameColumns;
+    exports2.default = _default;
+    var _highlight = _interopRequireWildcard(require_lib2());
+    function _getRequireWildcardCache() {
+      if (typeof WeakMap !== "function") return null;
+      var cache = /* @__PURE__ */ new WeakMap();
+      _getRequireWildcardCache = function() {
+        return cache;
+      };
+      return cache;
+    }
+    function _interopRequireWildcard(obj) {
+      if (obj && obj.__esModule) {
+        return obj;
+      }
+      if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
+        return { default: obj };
+      }
+      var cache = _getRequireWildcardCache();
+      if (cache && cache.has(obj)) {
+        return cache.get(obj);
+      }
+      var newObj = {};
+      var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+      for (var key3 in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key3)) {
+          var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key3) : null;
+          if (desc && (desc.get || desc.set)) {
+            Object.defineProperty(newObj, key3, desc);
+          } else {
+            newObj[key3] = obj[key3];
+          }
+        }
+      }
+      newObj.default = obj;
+      if (cache) {
+        cache.set(obj, newObj);
+      }
+      return newObj;
+    }
+    var deprecationWarningShown = false;
+    function getDefs(chalk) {
+      return {
+        gutter: chalk.grey,
+        marker: chalk.red.bold,
+        message: chalk.red.bold
+      };
+    }
+    var NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
+    function getMarkerLines(loc, source2, opts) {
+      const startLoc = Object.assign({
+        column: 0,
+        line: -1
+      }, loc.start);
+      const endLoc = Object.assign({}, startLoc, loc.end);
+      const {
+        linesAbove = 2,
+        linesBelow = 3
+      } = opts || {};
+      const startLine = startLoc.line;
+      const startColumn = startLoc.column;
+      const endLine = endLoc.line;
+      const endColumn = endLoc.column;
+      let start = Math.max(startLine - (linesAbove + 1), 0);
+      let end = Math.min(source2.length, endLine + linesBelow);
+      if (startLine === -1) {
+        start = 0;
+      }
+      if (endLine === -1) {
+        end = source2.length;
+      }
+      const lineDiff = endLine - startLine;
+      const markerLines = {};
+      if (lineDiff) {
+        for (let i2 = 0; i2 <= lineDiff; i2++) {
+          const lineNumber = i2 + startLine;
+          if (!startColumn) {
+            markerLines[lineNumber] = true;
+          } else if (i2 === 0) {
+            const sourceLength = source2[lineNumber - 1].length;
+            markerLines[lineNumber] = [startColumn, sourceLength - startColumn + 1];
+          } else if (i2 === lineDiff) {
+            markerLines[lineNumber] = [0, endColumn];
+          } else {
+            const sourceLength = source2[lineNumber - i2].length;
+            markerLines[lineNumber] = [0, sourceLength];
+          }
+        }
+      } else {
+        if (startColumn === endColumn) {
+          if (startColumn) {
+            markerLines[startLine] = [startColumn, 0];
+          } else {
+            markerLines[startLine] = true;
+          }
+        } else {
+          markerLines[startLine] = [startColumn, endColumn - startColumn];
+        }
+      }
+      return {
+        start,
+        end,
+        markerLines
+      };
+    }
+    function codeFrameColumns(rawLines, loc, opts = {}) {
+      const highlighted = (opts.highlightCode || opts.forceColor) && (0, _highlight.shouldHighlight)(opts);
+      const chalk = (0, _highlight.getChalk)(opts);
+      const defs = getDefs(chalk);
+      const maybeHighlight = (chalkFn, string) => {
+        return highlighted ? chalkFn(string) : string;
+      };
+      const lines = rawLines.split(NEWLINE);
+      const {
+        start,
+        end,
+        markerLines
+      } = getMarkerLines(loc, lines, opts);
+      const hasColumns = loc.start && typeof loc.start.column === "number";
+      const numberMaxWidth = String(end).length;
+      const highlightedLines = highlighted ? (0, _highlight.default)(rawLines, opts) : rawLines;
+      let frame = highlightedLines.split(NEWLINE).slice(start, end).map((line2, index) => {
+        const number = start + 1 + index;
+        const paddedNumber = ` ${number}`.slice(-numberMaxWidth);
+        const gutter = ` ${paddedNumber} | `;
+        const hasMarker = markerLines[number];
+        const lastMarkerLine = !markerLines[number + 1];
+        if (hasMarker) {
+          let markerLine = "";
+          if (Array.isArray(hasMarker)) {
+            const markerSpacing = line2.slice(0, Math.max(hasMarker[0] - 1, 0)).replace(/[^\t]/g, " ");
+            const numberOfMarkers = hasMarker[1] || 1;
+            markerLine = ["\n ", maybeHighlight(defs.gutter, gutter.replace(/\d/g, " ")), markerSpacing, maybeHighlight(defs.marker, "^").repeat(numberOfMarkers)].join("");
+            if (lastMarkerLine && opts.message) {
+              markerLine += " " + maybeHighlight(defs.message, opts.message);
+            }
+          }
+          return [maybeHighlight(defs.marker, ">"), maybeHighlight(defs.gutter, gutter), line2, markerLine].join("");
+        } else {
+          return ` ${maybeHighlight(defs.gutter, gutter)}${line2}`;
+        }
+      }).join("\n");
+      if (opts.message && !hasColumns) {
+        frame = `${" ".repeat(numberMaxWidth + 1)}${opts.message}
+${frame}`;
+      }
+      if (highlighted) {
+        return chalk.reset(frame);
+      } else {
+        return frame;
+      }
+    }
+    function _default(rawLines, lineNumber, colNumber, opts = {}) {
+      if (!deprecationWarningShown) {
+        deprecationWarningShown = true;
+        const message = "Passing lineNumber and colNumber is deprecated to @babel/code-frame. Please use `codeFrameColumns`.";
+        if (process.emitWarning) {
+          process.emitWarning(message, "DeprecationWarning");
+        } else {
+          const deprecationError = new Error(message);
+          deprecationError.name = "DeprecationWarning";
+          console.warn(new Error(message));
+        }
+      }
+      colNumber = Math.max(colNumber, 0);
+      const location = {
+        start: {
+          column: colNumber,
+          line: lineNumber
+        }
+      };
+      return codeFrameColumns(rawLines, location, opts);
+    }
+  }
+});
+
+// node_modules/json5/dist/index.mjs
+var dist_exports = {};
+__export(dist_exports, {
+  default: () => dist_default
+});
+function internalize(holder, name, reviver) {
+  const value = holder[name];
+  if (value != null && typeof value === "object") {
+    if (Array.isArray(value)) {
+      for (let i2 = 0; i2 < value.length; i2++) {
+        const key3 = String(i2);
+        const replacement = internalize(value, key3, reviver);
+        if (replacement === void 0) {
+          delete value[key3];
+        } else {
+          Object.defineProperty(value, key3, {
+            value: replacement,
+            writable: true,
+            enumerable: true,
+            configurable: true
+          });
+        }
+      }
+    } else {
+      for (const key3 in value) {
+        const replacement = internalize(value, key3, reviver);
+        if (replacement === void 0) {
+          delete value[key3];
+        } else {
+          Object.defineProperty(value, key3, {
+            value: replacement,
+            writable: true,
+            enumerable: true,
+            configurable: true
+          });
+        }
+      }
+    }
+  }
+  return reviver.call(holder, name, value);
+}
+function lex() {
+  lexState = "default";
+  buffer = "";
+  doubleQuote = false;
+  sign = 1;
+  for (; ; ) {
+    c = peek();
+    const token2 = lexStates[lexState]();
+    if (token2) {
+      return token2;
+    }
+  }
+}
+function peek() {
+  if (source[pos]) {
+    return String.fromCodePoint(source.codePointAt(pos));
+  }
+}
+function read() {
+  const c2 = peek();
+  if (c2 === "\n") {
+    line++;
+    column = 0;
+  } else if (c2) {
+    column += c2.length;
+  } else {
+    column++;
+  }
+  if (c2) {
+    pos += c2.length;
+  }
+  return c2;
+}
+function newToken(type, value) {
+  return {
+    type,
+    value,
+    line,
+    column
+  };
+}
+function literal(s) {
+  for (const c2 of s) {
+    const p = peek();
+    if (p !== c2) {
+      throw invalidChar(read());
+    }
+    read();
+  }
+}
+function escape() {
+  const c2 = peek();
+  switch (c2) {
+    case "b":
+      read();
+      return "\b";
+    case "f":
+      read();
+      return "\f";
+    case "n":
+      read();
+      return "\n";
+    case "r":
+      read();
+      return "\r";
+    case "t":
+      read();
+      return "	";
+    case "v":
+      read();
+      return "\v";
+    case "0":
+      read();
+      if (util.isDigit(peek())) {
+        throw invalidChar(read());
+      }
+      return "\0";
+    case "x":
+      read();
+      return hexEscape();
+    case "u":
+      read();
+      return unicodeEscape();
+    case "\n":
+    case "\u2028":
+    case "\u2029":
+      read();
+      return "";
+    case "\r":
+      read();
+      if (peek() === "\n") {
+        read();
+      }
+      return "";
+    case "1":
+    case "2":
+    case "3":
+    case "4":
+    case "5":
+    case "6":
+    case "7":
+    case "8":
+    case "9":
+      throw invalidChar(read());
+    case void 0:
+      throw invalidChar(read());
+  }
+  return read();
+}
+function hexEscape() {
+  let buffer2 = "";
+  let c2 = peek();
+  if (!util.isHexDigit(c2)) {
+    throw invalidChar(read());
+  }
+  buffer2 += read();
+  c2 = peek();
+  if (!util.isHexDigit(c2)) {
+    throw invalidChar(read());
+  }
+  buffer2 += read();
+  return String.fromCodePoint(parseInt(buffer2, 16));
+}
+function unicodeEscape() {
+  let buffer2 = "";
+  let count = 4;
+  while (count-- > 0) {
+    const c2 = peek();
+    if (!util.isHexDigit(c2)) {
+      throw invalidChar(read());
+    }
+    buffer2 += read();
+  }
+  return String.fromCodePoint(parseInt(buffer2, 16));
+}
+function push() {
+  let value;
+  switch (token.type) {
+    case "punctuator":
+      switch (token.value) {
+        case "{":
+          value = {};
+          break;
+        case "[":
+          value = [];
+          break;
+      }
+      break;
+    case "null":
+    case "boolean":
+    case "numeric":
+    case "string":
+      value = token.value;
+      break;
+  }
+  if (root === void 0) {
+    root = value;
+  } else {
+    const parent = stack[stack.length - 1];
+    if (Array.isArray(parent)) {
+      parent.push(value);
+    } else {
+      Object.defineProperty(parent, key2, {
+        value,
+        writable: true,
+        enumerable: true,
+        configurable: true
+      });
+    }
+  }
+  if (value !== null && typeof value === "object") {
+    stack.push(value);
+    if (Array.isArray(value)) {
+      parseState = "beforeArrayValue";
+    } else {
+      parseState = "beforePropertyName";
+    }
+  } else {
+    const current = stack[stack.length - 1];
+    if (current == null) {
+      parseState = "end";
+    } else if (Array.isArray(current)) {
+      parseState = "afterArrayValue";
+    } else {
+      parseState = "afterPropertyValue";
+    }
+  }
+}
+function pop() {
+  stack.pop();
+  const current = stack[stack.length - 1];
+  if (current == null) {
+    parseState = "end";
+  } else if (Array.isArray(current)) {
+    parseState = "afterArrayValue";
+  } else {
+    parseState = "afterPropertyValue";
+  }
+}
+function invalidChar(c2) {
+  if (c2 === void 0) {
+    return syntaxError(`JSON5: invalid end of input at ${line}:${column}`);
+  }
+  return syntaxError(`JSON5: invalid character '${formatChar(c2)}' at ${line}:${column}`);
+}
+function invalidEOF() {
+  return syntaxError(`JSON5: invalid end of input at ${line}:${column}`);
+}
+function invalidIdentifier() {
+  column -= 5;
+  return syntaxError(`JSON5: invalid identifier character at ${line}:${column}`);
+}
+function separatorChar(c2) {
+  console.warn(`JSON5: '${formatChar(c2)}' in strings is not valid ECMAScript; consider escaping`);
+}
+function formatChar(c2) {
+  const replacements = {
+    "'": "\\'",
+    '"': '\\"',
+    "\\": "\\\\",
+    "\b": "\\b",
+    "\f": "\\f",
+    "\n": "\\n",
+    "\r": "\\r",
+    "	": "\\t",
+    "\v": "\\v",
+    "\0": "\\0",
+    "\u2028": "\\u2028",
+    "\u2029": "\\u2029"
+  };
+  if (replacements[c2]) {
+    return replacements[c2];
+  }
+  if (c2 < " ") {
+    const hexString = c2.charCodeAt(0).toString(16);
+    return "\\x" + ("00" + hexString).substring(hexString.length);
+  }
+  return c2;
+}
+function syntaxError(message) {
+  const err = new SyntaxError(message);
+  err.lineNumber = line;
+  err.columnNumber = column;
+  return err;
+}
+var Space_Separator, ID_Start, ID_Continue, unicode, util, source, parseState, stack, pos, line, column, token, key2, root, parse, lexState, buffer, doubleQuote, sign, c, lexStates, parseStates, stringify, JSON5, lib, dist_default;
+var init_dist = __esm({
+  "node_modules/json5/dist/index.mjs"() {
+    "use strict";
+    Space_Separator = /[\u1680\u2000-\u200A\u202F\u205F\u3000]/;
+    ID_Start = /[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u0860-\u086A\u08A0-\u08B4\u08B6-\u08BD\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u09FC\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C60\u0C61\u0C80\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D54-\u0D56\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F8\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u1884\u1887-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1C80-\u1C88\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312E\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FEA\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6EF\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AE\uA7B0-\uA7B7\uA7F7-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]|\uD800[\uDC00-\uDC0B\uDC0D-\uDC26\uDC28-\uDC3A\uDC3C\uDC3D\uDC3F-\uDC4D\uDC50-\uDC5D\uDC80-\uDCFA\uDD40-\uDD74\uDE80-\uDE9C\uDEA0-\uDED0\uDF00-\uDF1F\uDF2D-\uDF4A\uDF50-\uDF75\uDF80-\uDF9D\uDFA0-\uDFC3\uDFC8-\uDFCF\uDFD1-\uDFD5]|\uD801[\uDC00-\uDC9D\uDCB0-\uDCD3\uDCD8-\uDCFB\uDD00-\uDD27\uDD30-\uDD63\uDE00-\uDF36\uDF40-\uDF55\uDF60-\uDF67]|\uD802[\uDC00-\uDC05\uDC08\uDC0A-\uDC35\uDC37\uDC38\uDC3C\uDC3F-\uDC55\uDC60-\uDC76\uDC80-\uDC9E\uDCE0-\uDCF2\uDCF4\uDCF5\uDD00-\uDD15\uDD20-\uDD39\uDD80-\uDDB7\uDDBE\uDDBF\uDE00\uDE10-\uDE13\uDE15-\uDE17\uDE19-\uDE33\uDE60-\uDE7C\uDE80-\uDE9C\uDEC0-\uDEC7\uDEC9-\uDEE4\uDF00-\uDF35\uDF40-\uDF55\uDF60-\uDF72\uDF80-\uDF91]|\uD803[\uDC00-\uDC48\uDC80-\uDCB2\uDCC0-\uDCF2]|\uD804[\uDC03-\uDC37\uDC83-\uDCAF\uDCD0-\uDCE8\uDD03-\uDD26\uDD50-\uDD72\uDD76\uDD83-\uDDB2\uDDC1-\uDDC4\uDDDA\uDDDC\uDE00-\uDE11\uDE13-\uDE2B\uDE80-\uDE86\uDE88\uDE8A-\uDE8D\uDE8F-\uDE9D\uDE9F-\uDEA8\uDEB0-\uDEDE\uDF05-\uDF0C\uDF0F\uDF10\uDF13-\uDF28\uDF2A-\uDF30\uDF32\uDF33\uDF35-\uDF39\uDF3D\uDF50\uDF5D-\uDF61]|\uD805[\uDC00-\uDC34\uDC47-\uDC4A\uDC80-\uDCAF\uDCC4\uDCC5\uDCC7\uDD80-\uDDAE\uDDD8-\uDDDB\uDE00-\uDE2F\uDE44\uDE80-\uDEAA\uDF00-\uDF19]|\uD806[\uDCA0-\uDCDF\uDCFF\uDE00\uDE0B-\uDE32\uDE3A\uDE50\uDE5C-\uDE83\uDE86-\uDE89\uDEC0-\uDEF8]|\uD807[\uDC00-\uDC08\uDC0A-\uDC2E\uDC40\uDC72-\uDC8F\uDD00-\uDD06\uDD08\uDD09\uDD0B-\uDD30\uDD46]|\uD808[\uDC00-\uDF99]|\uD809[\uDC00-\uDC6E\uDC80-\uDD43]|[\uD80C\uD81C-\uD820\uD840-\uD868\uD86A-\uD86C\uD86F-\uD872\uD874-\uD879][\uDC00-\uDFFF]|\uD80D[\uDC00-\uDC2E]|\uD811[\uDC00-\uDE46]|\uD81A[\uDC00-\uDE38\uDE40-\uDE5E\uDED0-\uDEED\uDF00-\uDF2F\uDF40-\uDF43\uDF63-\uDF77\uDF7D-\uDF8F]|\uD81B[\uDF00-\uDF44\uDF50\uDF93-\uDF9F\uDFE0\uDFE1]|\uD821[\uDC00-\uDFEC]|\uD822[\uDC00-\uDEF2]|\uD82C[\uDC00-\uDD1E\uDD70-\uDEFB]|\uD82F[\uDC00-\uDC6A\uDC70-\uDC7C\uDC80-\uDC88\uDC90-\uDC99]|\uD835[\uDC00-\uDC54\uDC56-\uDC9C\uDC9E\uDC9F\uDCA2\uDCA5\uDCA6\uDCA9-\uDCAC\uDCAE-\uDCB9\uDCBB\uDCBD-\uDCC3\uDCC5-\uDD05\uDD07-\uDD0A\uDD0D-\uDD14\uDD16-\uDD1C\uDD1E-\uDD39\uDD3B-\uDD3E\uDD40-\uDD44\uDD46\uDD4A-\uDD50\uDD52-\uDEA5\uDEA8-\uDEC0\uDEC2-\uDEDA\uDEDC-\uDEFA\uDEFC-\uDF14\uDF16-\uDF34\uDF36-\uDF4E\uDF50-\uDF6E\uDF70-\uDF88\uDF8A-\uDFA8\uDFAA-\uDFC2\uDFC4-\uDFCB]|\uD83A[\uDC00-\uDCC4\uDD00-\uDD43]|\uD83B[\uDE00-\uDE03\uDE05-\uDE1F\uDE21\uDE22\uDE24\uDE27\uDE29-\uDE32\uDE34-\uDE37\uDE39\uDE3B\uDE42\uDE47\uDE49\uDE4B\uDE4D-\uDE4F\uDE51\uDE52\uDE54\uDE57\uDE59\uDE5B\uDE5D\uDE5F\uDE61\uDE62\uDE64\uDE67-\uDE6A\uDE6C-\uDE72\uDE74-\uDE77\uDE79-\uDE7C\uDE7E\uDE80-\uDE89\uDE8B-\uDE9B\uDEA1-\uDEA3\uDEA5-\uDEA9\uDEAB-\uDEBB]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D\uDC20-\uDFFF]|\uD873[\uDC00-\uDEA1\uDEB0-\uDFFF]|\uD87A[\uDC00-\uDFE0]|\uD87E[\uDC00-\uDE1D]/;
+    ID_Continue = /[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0300-\u0374\u0376\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u0483-\u0487\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u05D0-\u05EA\u05F0-\u05F2\u0610-\u061A\u0620-\u0669\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06FC\u06FF\u0710-\u074A\u074D-\u07B1\u07C0-\u07F5\u07FA\u0800-\u082D\u0840-\u085B\u0860-\u086A\u08A0-\u08B4\u08B6-\u08BD\u08D4-\u08E1\u08E3-\u0963\u0966-\u096F\u0971-\u0983\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BC-\u09C4\u09C7\u09C8\u09CB-\u09CE\u09D7\u09DC\u09DD\u09DF-\u09E3\u09E6-\u09F1\u09FC\u0A01-\u0A03\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A59-\u0A5C\u0A5E\u0A66-\u0A75\u0A81-\u0A83\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABC-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AD0\u0AE0-\u0AE3\u0AE6-\u0AEF\u0AF9-\u0AFF\u0B01-\u0B03\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3C-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B56\u0B57\u0B5C\u0B5D\u0B5F-\u0B63\u0B66-\u0B6F\u0B71\u0B82\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD0\u0BD7\u0BE6-\u0BEF\u0C00-\u0C03\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C58-\u0C5A\u0C60-\u0C63\u0C66-\u0C6F\u0C80-\u0C83\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBC-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CDE\u0CE0-\u0CE3\u0CE6-\u0CEF\u0CF1\u0CF2\u0D00-\u0D03\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D44\u0D46-\u0D48\u0D4A-\u0D4E\u0D54-\u0D57\u0D5F-\u0D63\u0D66-\u0D6F\u0D7A-\u0D7F\u0D82\u0D83\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DE6-\u0DEF\u0DF2\u0DF3\u0E01-\u0E3A\u0E40-\u0E4E\u0E50-\u0E59\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB9\u0EBB-\u0EBD\u0EC0-\u0EC4\u0EC6\u0EC8-\u0ECD\u0ED0-\u0ED9\u0EDC-\u0EDF\u0F00\u0F18\u0F19\u0F20-\u0F29\u0F35\u0F37\u0F39\u0F3E-\u0F47\u0F49-\u0F6C\u0F71-\u0F84\u0F86-\u0F97\u0F99-\u0FBC\u0FC6\u1000-\u1049\u1050-\u109D\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u135D-\u135F\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F8\u1700-\u170C\u170E-\u1714\u1720-\u1734\u1740-\u1753\u1760-\u176C\u176E-\u1770\u1772\u1773\u1780-\u17D3\u17D7\u17DC\u17DD\u17E0-\u17E9\u180B-\u180D\u1810-\u1819\u1820-\u1877\u1880-\u18AA\u18B0-\u18F5\u1900-\u191E\u1920-\u192B\u1930-\u193B\u1946-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u19D0-\u19D9\u1A00-\u1A1B\u1A20-\u1A5E\u1A60-\u1A7C\u1A7F-\u1A89\u1A90-\u1A99\u1AA7\u1AB0-\u1ABD\u1B00-\u1B4B\u1B50-\u1B59\u1B6B-\u1B73\u1B80-\u1BF3\u1C00-\u1C37\u1C40-\u1C49\u1C4D-\u1C7D\u1C80-\u1C88\u1CD0-\u1CD2\u1CD4-\u1CF9\u1D00-\u1DF9\u1DFB-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u203F\u2040\u2054\u2071\u207F\u2090-\u209C\u20D0-\u20DC\u20E1\u20E5-\u20F0\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D7F-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2DE0-\u2DFF\u2E2F\u3005-\u3007\u3021-\u302F\u3031-\u3035\u3038-\u303C\u3041-\u3096\u3099\u309A\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312E\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FEA\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA62B\uA640-\uA66F\uA674-\uA67D\uA67F-\uA6F1\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AE\uA7B0-\uA7B7\uA7F7-\uA827\uA840-\uA873\uA880-\uA8C5\uA8D0-\uA8D9\uA8E0-\uA8F7\uA8FB\uA8FD\uA900-\uA92D\uA930-\uA953\uA960-\uA97C\uA980-\uA9C0\uA9CF-\uA9D9\uA9E0-\uA9FE\uAA00-\uAA36\uAA40-\uAA4D\uAA50-\uAA59\uAA60-\uAA76\uAA7A-\uAAC2\uAADB-\uAADD\uAAE0-\uAAEF\uAAF2-\uAAF6\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABEA\uABEC\uABED\uABF0-\uABF9\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE00-\uFE0F\uFE20-\uFE2F\uFE33\uFE34\uFE4D-\uFE4F\uFE70-\uFE74\uFE76-\uFEFC\uFF10-\uFF19\uFF21-\uFF3A\uFF3F\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]|\uD800[\uDC00-\uDC0B\uDC0D-\uDC26\uDC28-\uDC3A\uDC3C\uDC3D\uDC3F-\uDC4D\uDC50-\uDC5D\uDC80-\uDCFA\uDD40-\uDD74\uDDFD\uDE80-\uDE9C\uDEA0-\uDED0\uDEE0\uDF00-\uDF1F\uDF2D-\uDF4A\uDF50-\uDF7A\uDF80-\uDF9D\uDFA0-\uDFC3\uDFC8-\uDFCF\uDFD1-\uDFD5]|\uD801[\uDC00-\uDC9D\uDCA0-\uDCA9\uDCB0-\uDCD3\uDCD8-\uDCFB\uDD00-\uDD27\uDD30-\uDD63\uDE00-\uDF36\uDF40-\uDF55\uDF60-\uDF67]|\uD802[\uDC00-\uDC05\uDC08\uDC0A-\uDC35\uDC37\uDC38\uDC3C\uDC3F-\uDC55\uDC60-\uDC76\uDC80-\uDC9E\uDCE0-\uDCF2\uDCF4\uDCF5\uDD00-\uDD15\uDD20-\uDD39\uDD80-\uDDB7\uDDBE\uDDBF\uDE00-\uDE03\uDE05\uDE06\uDE0C-\uDE13\uDE15-\uDE17\uDE19-\uDE33\uDE38-\uDE3A\uDE3F\uDE60-\uDE7C\uDE80-\uDE9C\uDEC0-\uDEC7\uDEC9-\uDEE6\uDF00-\uDF35\uDF40-\uDF55\uDF60-\uDF72\uDF80-\uDF91]|\uD803[\uDC00-\uDC48\uDC80-\uDCB2\uDCC0-\uDCF2]|\uD804[\uDC00-\uDC46\uDC66-\uDC6F\uDC7F-\uDCBA\uDCD0-\uDCE8\uDCF0-\uDCF9\uDD00-\uDD34\uDD36-\uDD3F\uDD50-\uDD73\uDD76\uDD80-\uDDC4\uDDCA-\uDDCC\uDDD0-\uDDDA\uDDDC\uDE00-\uDE11\uDE13-\uDE37\uDE3E\uDE80-\uDE86\uDE88\uDE8A-\uDE8D\uDE8F-\uDE9D\uDE9F-\uDEA8\uDEB0-\uDEEA\uDEF0-\uDEF9\uDF00-\uDF03\uDF05-\uDF0C\uDF0F\uDF10\uDF13-\uDF28\uDF2A-\uDF30\uDF32\uDF33\uDF35-\uDF39\uDF3C-\uDF44\uDF47\uDF48\uDF4B-\uDF4D\uDF50\uDF57\uDF5D-\uDF63\uDF66-\uDF6C\uDF70-\uDF74]|\uD805[\uDC00-\uDC4A\uDC50-\uDC59\uDC80-\uDCC5\uDCC7\uDCD0-\uDCD9\uDD80-\uDDB5\uDDB8-\uDDC0\uDDD8-\uDDDD\uDE00-\uDE40\uDE44\uDE50-\uDE59\uDE80-\uDEB7\uDEC0-\uDEC9\uDF00-\uDF19\uDF1D-\uDF2B\uDF30-\uDF39]|\uD806[\uDCA0-\uDCE9\uDCFF\uDE00-\uDE3E\uDE47\uDE50-\uDE83\uDE86-\uDE99\uDEC0-\uDEF8]|\uD807[\uDC00-\uDC08\uDC0A-\uDC36\uDC38-\uDC40\uDC50-\uDC59\uDC72-\uDC8F\uDC92-\uDCA7\uDCA9-\uDCB6\uDD00-\uDD06\uDD08\uDD09\uDD0B-\uDD36\uDD3A\uDD3C\uDD3D\uDD3F-\uDD47\uDD50-\uDD59]|\uD808[\uDC00-\uDF99]|\uD809[\uDC00-\uDC6E\uDC80-\uDD43]|[\uD80C\uD81C-\uD820\uD840-\uD868\uD86A-\uD86C\uD86F-\uD872\uD874-\uD879][\uDC00-\uDFFF]|\uD80D[\uDC00-\uDC2E]|\uD811[\uDC00-\uDE46]|\uD81A[\uDC00-\uDE38\uDE40-\uDE5E\uDE60-\uDE69\uDED0-\uDEED\uDEF0-\uDEF4\uDF00-\uDF36\uDF40-\uDF43\uDF50-\uDF59\uDF63-\uDF77\uDF7D-\uDF8F]|\uD81B[\uDF00-\uDF44\uDF50-\uDF7E\uDF8F-\uDF9F\uDFE0\uDFE1]|\uD821[\uDC00-\uDFEC]|\uD822[\uDC00-\uDEF2]|\uD82C[\uDC00-\uDD1E\uDD70-\uDEFB]|\uD82F[\uDC00-\uDC6A\uDC70-\uDC7C\uDC80-\uDC88\uDC90-\uDC99\uDC9D\uDC9E]|\uD834[\uDD65-\uDD69\uDD6D-\uDD72\uDD7B-\uDD82\uDD85-\uDD8B\uDDAA-\uDDAD\uDE42-\uDE44]|\uD835[\uDC00-\uDC54\uDC56-\uDC9C\uDC9E\uDC9F\uDCA2\uDCA5\uDCA6\uDCA9-\uDCAC\uDCAE-\uDCB9\uDCBB\uDCBD-\uDCC3\uDCC5-\uDD05\uDD07-\uDD0A\uDD0D-\uDD14\uDD16-\uDD1C\uDD1E-\uDD39\uDD3B-\uDD3E\uDD40-\uDD44\uDD46\uDD4A-\uDD50\uDD52-\uDEA5\uDEA8-\uDEC0\uDEC2-\uDEDA\uDEDC-\uDEFA\uDEFC-\uDF14\uDF16-\uDF34\uDF36-\uDF4E\uDF50-\uDF6E\uDF70-\uDF88\uDF8A-\uDFA8\uDFAA-\uDFC2\uDFC4-\uDFCB\uDFCE-\uDFFF]|\uD836[\uDE00-\uDE36\uDE3B-\uDE6C\uDE75\uDE84\uDE9B-\uDE9F\uDEA1-\uDEAF]|\uD838[\uDC00-\uDC06\uDC08-\uDC18\uDC1B-\uDC21\uDC23\uDC24\uDC26-\uDC2A]|\uD83A[\uDC00-\uDCC4\uDCD0-\uDCD6\uDD00-\uDD4A\uDD50-\uDD59]|\uD83B[\uDE00-\uDE03\uDE05-\uDE1F\uDE21\uDE22\uDE24\uDE27\uDE29-\uDE32\uDE34-\uDE37\uDE39\uDE3B\uDE42\uDE47\uDE49\uDE4B\uDE4D-\uDE4F\uDE51\uDE52\uDE54\uDE57\uDE59\uDE5B\uDE5D\uDE5F\uDE61\uDE62\uDE64\uDE67-\uDE6A\uDE6C-\uDE72\uDE74-\uDE77\uDE79-\uDE7C\uDE7E\uDE80-\uDE89\uDE8B-\uDE9B\uDEA1-\uDEA3\uDEA5-\uDEA9\uDEAB-\uDEBB]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D\uDC20-\uDFFF]|\uD873[\uDC00-\uDEA1\uDEB0-\uDFFF]|\uD87A[\uDC00-\uDFE0]|\uD87E[\uDC00-\uDE1D]|\uDB40[\uDD00-\uDDEF]/;
+    unicode = {
+      Space_Separator,
+      ID_Start,
+      ID_Continue
+    };
+    util = {
+      isSpaceSeparator(c2) {
+        return typeof c2 === "string" && unicode.Space_Separator.test(c2);
+      },
+      isIdStartChar(c2) {
+        return typeof c2 === "string" && (c2 >= "a" && c2 <= "z" || c2 >= "A" && c2 <= "Z" || c2 === "$" || c2 === "_" || unicode.ID_Start.test(c2));
+      },
+      isIdContinueChar(c2) {
+        return typeof c2 === "string" && (c2 >= "a" && c2 <= "z" || c2 >= "A" && c2 <= "Z" || c2 >= "0" && c2 <= "9" || c2 === "$" || c2 === "_" || c2 === "\u200C" || c2 === "\u200D" || unicode.ID_Continue.test(c2));
+      },
+      isDigit(c2) {
+        return typeof c2 === "string" && /[0-9]/.test(c2);
+      },
+      isHexDigit(c2) {
+        return typeof c2 === "string" && /[0-9A-Fa-f]/.test(c2);
+      }
+    };
+    parse = function parse2(text, reviver) {
+      source = String(text);
+      parseState = "start";
+      stack = [];
+      pos = 0;
+      line = 1;
+      column = 0;
+      token = void 0;
+      key2 = void 0;
+      root = void 0;
+      do {
+        token = lex();
+        parseStates[parseState]();
+      } while (token.type !== "eof");
+      if (typeof reviver === "function") {
+        return internalize({ "": root }, "", reviver);
+      }
+      return root;
+    };
+    lexStates = {
+      default() {
+        switch (c) {
+          case "	":
+          case "\v":
+          case "\f":
+          case " ":
+          case "\xA0":
+          case "\uFEFF":
+          case "\n":
+          case "\r":
+          case "\u2028":
+          case "\u2029":
+            read();
+            return;
+          case "/":
+            read();
+            lexState = "comment";
+            return;
+          case void 0:
+            read();
+            return newToken("eof");
+        }
+        if (util.isSpaceSeparator(c)) {
+          read();
+          return;
+        }
+        return lexStates[parseState]();
+      },
+      comment() {
+        switch (c) {
+          case "*":
+            read();
+            lexState = "multiLineComment";
+            return;
+          case "/":
+            read();
+            lexState = "singleLineComment";
+            return;
+        }
+        throw invalidChar(read());
+      },
+      multiLineComment() {
+        switch (c) {
+          case "*":
+            read();
+            lexState = "multiLineCommentAsterisk";
+            return;
+          case void 0:
+            throw invalidChar(read());
+        }
+        read();
+      },
+      multiLineCommentAsterisk() {
+        switch (c) {
+          case "*":
+            read();
+            return;
+          case "/":
+            read();
+            lexState = "default";
+            return;
+          case void 0:
+            throw invalidChar(read());
+        }
+        read();
+        lexState = "multiLineComment";
+      },
+      singleLineComment() {
+        switch (c) {
+          case "\n":
+          case "\r":
+          case "\u2028":
+          case "\u2029":
+            read();
+            lexState = "default";
+            return;
+          case void 0:
+            read();
+            return newToken("eof");
+        }
+        read();
+      },
+      value() {
+        switch (c) {
+          case "{":
+          case "[":
+            return newToken("punctuator", read());
+          case "n":
+            read();
+            literal("ull");
+            return newToken("null", null);
+          case "t":
+            read();
+            literal("rue");
+            return newToken("boolean", true);
+          case "f":
+            read();
+            literal("alse");
+            return newToken("boolean", false);
+          case "-":
+          case "+":
+            if (read() === "-") {
+              sign = -1;
+            }
+            lexState = "sign";
+            return;
+          case ".":
+            buffer = read();
+            lexState = "decimalPointLeading";
+            return;
+          case "0":
+            buffer = read();
+            lexState = "zero";
+            return;
+          case "1":
+          case "2":
+          case "3":
+          case "4":
+          case "5":
+          case "6":
+          case "7":
+          case "8":
+          case "9":
+            buffer = read();
+            lexState = "decimalInteger";
+            return;
+          case "I":
+            read();
+            literal("nfinity");
+            return newToken("numeric", Infinity);
+          case "N":
+            read();
+            literal("aN");
+            return newToken("numeric", NaN);
+          case '"':
+          case "'":
+            doubleQuote = read() === '"';
+            buffer = "";
+            lexState = "string";
+            return;
+        }
+        throw invalidChar(read());
+      },
+      identifierNameStartEscape() {
+        if (c !== "u") {
+          throw invalidChar(read());
+        }
+        read();
+        const u = unicodeEscape();
+        switch (u) {
+          case "$":
+          case "_":
+            break;
+          default:
+            if (!util.isIdStartChar(u)) {
+              throw invalidIdentifier();
+            }
+            break;
+        }
+        buffer += u;
+        lexState = "identifierName";
+      },
+      identifierName() {
+        switch (c) {
+          case "$":
+          case "_":
+          case "\u200C":
+          case "\u200D":
+            buffer += read();
+            return;
+          case "\\":
+            read();
+            lexState = "identifierNameEscape";
+            return;
+        }
+        if (util.isIdContinueChar(c)) {
+          buffer += read();
+          return;
+        }
+        return newToken("identifier", buffer);
+      },
+      identifierNameEscape() {
+        if (c !== "u") {
+          throw invalidChar(read());
+        }
+        read();
+        const u = unicodeEscape();
+        switch (u) {
+          case "$":
+          case "_":
+          case "\u200C":
+          case "\u200D":
+            break;
+          default:
+            if (!util.isIdContinueChar(u)) {
+              throw invalidIdentifier();
+            }
+            break;
+        }
+        buffer += u;
+        lexState = "identifierName";
+      },
+      sign() {
+        switch (c) {
+          case ".":
+            buffer = read();
+            lexState = "decimalPointLeading";
+            return;
+          case "0":
+            buffer = read();
+            lexState = "zero";
+            return;
+          case "1":
+          case "2":
+          case "3":
+          case "4":
+          case "5":
+          case "6":
+          case "7":
+          case "8":
+          case "9":
+            buffer = read();
+            lexState = "decimalInteger";
+            return;
+          case "I":
+            read();
+            literal("nfinity");
+            return newToken("numeric", sign * Infinity);
+          case "N":
+            read();
+            literal("aN");
+            return newToken("numeric", NaN);
+        }
+        throw invalidChar(read());
+      },
+      zero() {
+        switch (c) {
+          case ".":
+            buffer += read();
+            lexState = "decimalPoint";
+            return;
+          case "e":
+          case "E":
+            buffer += read();
+            lexState = "decimalExponent";
+            return;
+          case "x":
+          case "X":
+            buffer += read();
+            lexState = "hexadecimal";
+            return;
+        }
+        return newToken("numeric", sign * 0);
+      },
+      decimalInteger() {
+        switch (c) {
+          case ".":
+            buffer += read();
+            lexState = "decimalPoint";
+            return;
+          case "e":
+          case "E":
+            buffer += read();
+            lexState = "decimalExponent";
+            return;
+        }
+        if (util.isDigit(c)) {
+          buffer += read();
+          return;
+        }
+        return newToken("numeric", sign * Number(buffer));
+      },
+      decimalPointLeading() {
+        if (util.isDigit(c)) {
+          buffer += read();
+          lexState = "decimalFraction";
+          return;
+        }
+        throw invalidChar(read());
+      },
+      decimalPoint() {
+        switch (c) {
+          case "e":
+          case "E":
+            buffer += read();
+            lexState = "decimalExponent";
+            return;
+        }
+        if (util.isDigit(c)) {
+          buffer += read();
+          lexState = "decimalFraction";
+          return;
+        }
+        return newToken("numeric", sign * Number(buffer));
+      },
+      decimalFraction() {
+        switch (c) {
+          case "e":
+          case "E":
+            buffer += read();
+            lexState = "decimalExponent";
+            return;
+        }
+        if (util.isDigit(c)) {
+          buffer += read();
+          return;
+        }
+        return newToken("numeric", sign * Number(buffer));
+      },
+      decimalExponent() {
+        switch (c) {
+          case "+":
+          case "-":
+            buffer += read();
+            lexState = "decimalExponentSign";
+            return;
+        }
+        if (util.isDigit(c)) {
+          buffer += read();
+          lexState = "decimalExponentInteger";
+          return;
+        }
+        throw invalidChar(read());
+      },
+      decimalExponentSign() {
+        if (util.isDigit(c)) {
+          buffer += read();
+          lexState = "decimalExponentInteger";
+          return;
+        }
+        throw invalidChar(read());
+      },
+      decimalExponentInteger() {
+        if (util.isDigit(c)) {
+          buffer += read();
+          return;
+        }
+        return newToken("numeric", sign * Number(buffer));
+      },
+      hexadecimal() {
+        if (util.isHexDigit(c)) {
+          buffer += read();
+          lexState = "hexadecimalInteger";
+          return;
+        }
+        throw invalidChar(read());
+      },
+      hexadecimalInteger() {
+        if (util.isHexDigit(c)) {
+          buffer += read();
+          return;
+        }
+        return newToken("numeric", sign * Number(buffer));
+      },
+      string() {
+        switch (c) {
+          case "\\":
+            read();
+            buffer += escape();
+            return;
+          case '"':
+            if (doubleQuote) {
+              read();
+              return newToken("string", buffer);
+            }
+            buffer += read();
+            return;
+          case "'":
+            if (!doubleQuote) {
+              read();
+              return newToken("string", buffer);
+            }
+            buffer += read();
+            return;
+          case "\n":
+          case "\r":
+            throw invalidChar(read());
+          case "\u2028":
+          case "\u2029":
+            separatorChar(c);
+            break;
+          case void 0:
+            throw invalidChar(read());
+        }
+        buffer += read();
+      },
+      start() {
+        switch (c) {
+          case "{":
+          case "[":
+            return newToken("punctuator", read());
+        }
+        lexState = "value";
+      },
+      beforePropertyName() {
+        switch (c) {
+          case "$":
+          case "_":
+            buffer = read();
+            lexState = "identifierName";
+            return;
+          case "\\":
+            read();
+            lexState = "identifierNameStartEscape";
+            return;
+          case "}":
+            return newToken("punctuator", read());
+          case '"':
+          case "'":
+            doubleQuote = read() === '"';
+            lexState = "string";
+            return;
+        }
+        if (util.isIdStartChar(c)) {
+          buffer += read();
+          lexState = "identifierName";
+          return;
+        }
+        throw invalidChar(read());
+      },
+      afterPropertyName() {
+        if (c === ":") {
+          return newToken("punctuator", read());
+        }
+        throw invalidChar(read());
+      },
+      beforePropertyValue() {
+        lexState = "value";
+      },
+      afterPropertyValue() {
+        switch (c) {
+          case ",":
+          case "}":
+            return newToken("punctuator", read());
+        }
+        throw invalidChar(read());
+      },
+      beforeArrayValue() {
+        if (c === "]") {
+          return newToken("punctuator", read());
+        }
+        lexState = "value";
+      },
+      afterArrayValue() {
+        switch (c) {
+          case ",":
+          case "]":
+            return newToken("punctuator", read());
+        }
+        throw invalidChar(read());
+      },
+      end() {
+        throw invalidChar(read());
+      }
+    };
+    parseStates = {
+      start() {
+        if (token.type === "eof") {
+          throw invalidEOF();
+        }
+        push();
+      },
+      beforePropertyName() {
+        switch (token.type) {
+          case "identifier":
+          case "string":
+            key2 = token.value;
+            parseState = "afterPropertyName";
+            return;
+          case "punctuator":
+            pop();
+            return;
+          case "eof":
+            throw invalidEOF();
+        }
+      },
+      afterPropertyName() {
+        if (token.type === "eof") {
+          throw invalidEOF();
+        }
+        parseState = "beforePropertyValue";
+      },
+      beforePropertyValue() {
+        if (token.type === "eof") {
+          throw invalidEOF();
+        }
+        push();
+      },
+      beforeArrayValue() {
+        if (token.type === "eof") {
+          throw invalidEOF();
+        }
+        if (token.type === "punctuator" && token.value === "]") {
+          pop();
+          return;
+        }
+        push();
+      },
+      afterPropertyValue() {
+        if (token.type === "eof") {
+          throw invalidEOF();
+        }
+        switch (token.value) {
+          case ",":
+            parseState = "beforePropertyName";
+            return;
+          case "}":
+            pop();
+        }
+      },
+      afterArrayValue() {
+        if (token.type === "eof") {
+          throw invalidEOF();
+        }
+        switch (token.value) {
+          case ",":
+            parseState = "beforeArrayValue";
+            return;
+          case "]":
+            pop();
+        }
+      },
+      end() {
+      }
+    };
+    stringify = function stringify2(value, replacer, space) {
+      const stack2 = [];
+      let indent = "";
+      let propertyList;
+      let replacerFunc;
+      let gap = "";
+      let quote;
+      if (replacer != null && typeof replacer === "object" && !Array.isArray(replacer)) {
+        space = replacer.space;
+        quote = replacer.quote;
+        replacer = replacer.replacer;
+      }
+      if (typeof replacer === "function") {
+        replacerFunc = replacer;
+      } else if (Array.isArray(replacer)) {
+        propertyList = [];
+        for (const v of replacer) {
+          let item;
+          if (typeof v === "string") {
+            item = v;
+          } else if (typeof v === "number" || v instanceof String || v instanceof Number) {
+            item = String(v);
+          }
+          if (item !== void 0 && propertyList.indexOf(item) < 0) {
+            propertyList.push(item);
+          }
+        }
+      }
+      if (space instanceof Number) {
+        space = Number(space);
+      } else if (space instanceof String) {
+        space = String(space);
+      }
+      if (typeof space === "number") {
+        if (space > 0) {
+          space = Math.min(10, Math.floor(space));
+          gap = "          ".substr(0, space);
+        }
+      } else if (typeof space === "string") {
+        gap = space.substr(0, 10);
+      }
+      return serializeProperty("", { "": value });
+      function serializeProperty(key3, holder) {
+        let value2 = holder[key3];
+        if (value2 != null) {
+          if (typeof value2.toJSON5 === "function") {
+            value2 = value2.toJSON5(key3);
+          } else if (typeof value2.toJSON === "function") {
+            value2 = value2.toJSON(key3);
+          }
+        }
+        if (replacerFunc) {
+          value2 = replacerFunc.call(holder, key3, value2);
+        }
+        if (value2 instanceof Number) {
+          value2 = Number(value2);
+        } else if (value2 instanceof String) {
+          value2 = String(value2);
+        } else if (value2 instanceof Boolean) {
+          value2 = value2.valueOf();
+        }
+        switch (value2) {
+          case null:
+            return "null";
+          case true:
+            return "true";
+          case false:
+            return "false";
+        }
+        if (typeof value2 === "string") {
+          return quoteString(value2, false);
+        }
+        if (typeof value2 === "number") {
+          return String(value2);
+        }
+        if (typeof value2 === "object") {
+          return Array.isArray(value2) ? serializeArray(value2) : serializeObject(value2);
+        }
+        return void 0;
+      }
+      function quoteString(value2) {
+        const quotes = {
+          "'": 0.1,
+          '"': 0.2
+        };
+        const replacements = {
+          "'": "\\'",
+          '"': '\\"',
+          "\\": "\\\\",
+          "\b": "\\b",
+          "\f": "\\f",
+          "\n": "\\n",
+          "\r": "\\r",
+          "	": "\\t",
+          "\v": "\\v",
+          "\0": "\\0",
+          "\u2028": "\\u2028",
+          "\u2029": "\\u2029"
+        };
+        let product = "";
+        for (let i2 = 0; i2 < value2.length; i2++) {
+          const c2 = value2[i2];
+          switch (c2) {
+            case "'":
+            case '"':
+              quotes[c2]++;
+              product += c2;
+              continue;
+            case "\0":
+              if (util.isDigit(value2[i2 + 1])) {
+                product += "\\x00";
+                continue;
+              }
+          }
+          if (replacements[c2]) {
+            product += replacements[c2];
+            continue;
+          }
+          if (c2 < " ") {
+            let hexString = c2.charCodeAt(0).toString(16);
+            product += "\\x" + ("00" + hexString).substring(hexString.length);
+            continue;
+          }
+          product += c2;
+        }
+        const quoteChar = quote || Object.keys(quotes).reduce((a, b) => quotes[a] < quotes[b] ? a : b);
+        product = product.replace(new RegExp(quoteChar, "g"), replacements[quoteChar]);
+        return quoteChar + product + quoteChar;
+      }
+      function serializeObject(value2) {
+        if (stack2.indexOf(value2) >= 0) {
+          throw TypeError("Converting circular structure to JSON5");
+        }
+        stack2.push(value2);
+        let stepback = indent;
+        indent = indent + gap;
+        let keys = propertyList || Object.keys(value2);
+        let partial = [];
+        for (const key3 of keys) {
+          const propertyString = serializeProperty(key3, value2);
+          if (propertyString !== void 0) {
+            let member = serializeKey(key3) + ":";
+            if (gap !== "") {
+              member += " ";
+            }
+            member += propertyString;
+            partial.push(member);
+          }
+        }
+        let final;
+        if (partial.length === 0) {
+          final = "{}";
+        } else {
+          let properties;
+          if (gap === "") {
+            properties = partial.join(",");
+            final = "{" + properties + "}";
+          } else {
+            let separator = ",\n" + indent;
+            properties = partial.join(separator);
+            final = "{\n" + indent + properties + ",\n" + stepback + "}";
+          }
+        }
+        stack2.pop();
+        indent = stepback;
+        return final;
+      }
+      function serializeKey(key3) {
+        if (key3.length === 0) {
+          return quoteString(key3, true);
+        }
+        const firstChar = String.fromCodePoint(key3.codePointAt(0));
+        if (!util.isIdStartChar(firstChar)) {
+          return quoteString(key3, true);
+        }
+        for (let i2 = firstChar.length; i2 < key3.length; i2++) {
+          if (!util.isIdContinueChar(String.fromCodePoint(key3.codePointAt(i2)))) {
+            return quoteString(key3, true);
+          }
+        }
+        return key3;
+      }
+      function serializeArray(value2) {
+        if (stack2.indexOf(value2) >= 0) {
+          throw TypeError("Converting circular structure to JSON5");
+        }
+        stack2.push(value2);
+        let stepback = indent;
+        indent = indent + gap;
+        let partial = [];
+        for (let i2 = 0; i2 < value2.length; i2++) {
+          const propertyString = serializeProperty(String(i2), value2);
+          partial.push(propertyString !== void 0 ? propertyString : "null");
+        }
+        let final;
+        if (partial.length === 0) {
+          final = "[]";
+        } else {
+          if (gap === "") {
+            let properties = partial.join(",");
+            final = "[" + properties + "]";
+          } else {
+            let separator = ",\n" + indent;
+            let properties = partial.join(separator);
+            final = "[\n" + indent + properties + ",\n" + stepback + "]";
+          }
+        }
+        stack2.pop();
+        indent = stepback;
+        return final;
+      }
+    };
+    JSON5 = {
+      parse,
+      stringify
+    };
+    lib = JSON5;
+    dist_default = lib;
+  }
+});
+
+// node_modules/@expo/json-file/build/JsonFileError.js
+var require_JsonFileError = __commonJS({
+  "node_modules/@expo/json-file/build/JsonFileError.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.EmptyJsonFileError = void 0;
+    var JsonFileError = class extends Error {
+      cause;
+      code;
+      fileName;
+      isJsonFileError;
+      constructor(message, cause, code, fileName) {
+        let fullMessage = message;
+        if (fileName) {
+          fullMessage += `
+${cause ? "\u251C" : "\u2514"}\u2500 File: ${fileName}`;
+        }
+        if (cause) {
+          fullMessage += `
+\u2514\u2500 Cause: ${cause.name}: ${cause.message}`;
+        }
+        super(fullMessage);
+        this.name = this.constructor.name;
+        this.cause = cause;
+        this.code = code;
+        this.fileName = fileName;
+        this.isJsonFileError = true;
+      }
+    };
+    exports2.default = JsonFileError;
+    var EmptyJsonFileError = class extends JsonFileError {
+      constructor(fileName) {
+        super(`Cannot parse an empty JSON string`, void 0, "EJSONEMPTY", fileName);
+      }
+    };
+    exports2.EmptyJsonFileError = EmptyJsonFileError;
+  }
+});
+
+// node_modules/@expo/json-file/build/writeAtomic.js
+var require_writeAtomic = __commonJS({
+  "node_modules/@expo/json-file/build/writeAtomic.js"(exports2) {
+    "use strict";
+    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0) k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0) k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar = exports2 && exports2.__importStar || /* @__PURE__ */ function() {
+      var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function(o2) {
+          var ar = [];
+          for (var k in o2) if (Object.prototype.hasOwnProperty.call(o2, k)) ar[ar.length] = k;
+          return ar;
+        };
+        return ownKeys(o);
+      };
+      return function(mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) {
+          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        }
+        __setModuleDefault(result, mod);
+        return result;
+      };
+    }();
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.writeFileAtomicSync = writeFileAtomicSync;
+    exports2.writeFileAtomic = writeFileAtomic;
+    var node_crypto_1 = require("crypto");
+    var fs3 = __importStar(require("fs"));
+    function getTarget(filename, data) {
+      const hash = (0, node_crypto_1.createHash)("sha256").update(data).digest("base64url");
+      return `${filename}.${hash}`;
+    }
+    function writeFileAtomicSync(filename, data) {
+      const tmpfile = getTarget(filename, data);
+      fs3.writeFileSync(tmpfile, data);
+      fs3.renameSync(tmpfile, filename);
+    }
+    async function writeFileAtomic(filename, data) {
+      const tmpfile = getTarget(filename, data);
+      await fs3.promises.writeFile(tmpfile, data);
+      await fs3.promises.rename(tmpfile, filename);
+    }
+  }
+});
+
+// node_modules/@expo/json-file/build/JsonFile.js
+var require_JsonFile = __commonJS({
+  "node_modules/@expo/json-file/build/JsonFile.js"(exports2) {
+    "use strict";
+    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0) k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0) k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar = exports2 && exports2.__importStar || /* @__PURE__ */ function() {
+      var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function(o2) {
+          var ar = [];
+          for (var k in o2) if (Object.prototype.hasOwnProperty.call(o2, k)) ar[ar.length] = k;
+          return ar;
+        };
+        return ownKeys(o);
+      };
+      return function(mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) {
+          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        }
+        __setModuleDefault(result, mod);
+        return result;
+      };
+    }();
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    var code_frame_1 = require_lib3();
+    var json5_1 = __importDefault((init_dist(), __toCommonJS(dist_exports)));
+    var node_fs_1 = __importDefault(require("fs"));
+    var node_path_1 = __importDefault(require("path"));
+    var JsonFileError_1 = __importStar(require_JsonFileError());
+    var writeAtomic_1 = require_writeAtomic();
+    var DEFAULT_OPTIONS2 = {
+      badJsonDefault: void 0,
+      jsonParseErrorDefault: void 0,
+      cantReadFileDefault: void 0,
+      ensureDir: false,
+      default: void 0,
+      json5: false,
+      space: 2,
+      addNewLineAtEOF: true
+    };
+    var JsonFile = class {
+      file;
+      options;
+      static read = read2;
+      static readAsync = readAsync;
+      static parseJsonString = parseJsonString;
+      static write = write;
+      static writeAsync = writeAsync;
+      static get = getSync;
+      static getAsync = getAsync;
+      static set = setSync;
+      static setAsync = setAsync;
+      static merge = merge;
+      static mergeAsync = mergeAsync;
+      static deleteKey = deleteKey;
+      static deleteKeyAsync = deleteKeyAsync;
+      static deleteKeys = deleteKeys;
+      static deleteKeysAsync = deleteKeysAsync;
+      static rewrite = rewrite;
+      static rewriteAsync = rewriteAsync;
+      constructor(file, options = {}) {
+        this.file = file;
+        this.options = options;
+      }
+      read(options) {
+        return read2(this.file, this._getOptions(options));
+      }
+      async readAsync(options) {
+        return readAsync(this.file, this._getOptions(options));
+      }
+      write(object, options) {
+        return write(this.file, object, this._getOptions(options));
+      }
+      async writeAsync(object, options) {
+        return writeAsync(this.file, object, this._getOptions(options));
+      }
+      parseJsonString(json, options) {
+        return parseJsonString(json, options);
+      }
+      get(key3, defaultValue, options) {
+        return getSync(this.file, key3, defaultValue, this._getOptions(options));
+      }
+      async getAsync(key3, defaultValue, options) {
+        return getAsync(this.file, key3, defaultValue, this._getOptions(options));
+      }
+      set(key3, value, options) {
+        return setSync(this.file, key3, value, this._getOptions(options));
+      }
+      async setAsync(key3, value, options) {
+        return setAsync(this.file, key3, value, this._getOptions(options));
+      }
+      async merge(sources, options) {
+        return merge(this.file, sources, this._getOptions(options));
+      }
+      async mergeAsync(sources, options) {
+        return mergeAsync(this.file, sources, this._getOptions(options));
+      }
+      deleteKey(key3, options) {
+        return deleteKey(this.file, key3, this._getOptions(options));
+      }
+      async deleteKeyAsync(key3, options) {
+        return deleteKeyAsync(this.file, key3, this._getOptions(options));
+      }
+      deleteKeys(keys, options) {
+        return deleteKeys(this.file, keys, this._getOptions(options));
+      }
+      async deleteKeysAsync(keys, options) {
+        return deleteKeysAsync(this.file, keys, this._getOptions(options));
+      }
+      rewrite(options) {
+        return rewrite(this.file, this._getOptions(options));
+      }
+      async rewriteAsync(options) {
+        return rewriteAsync(this.file, this._getOptions(options));
+      }
+      _getOptions(options) {
+        return {
+          ...this.options,
+          ...options
+        };
+      }
+    };
+    exports2.default = JsonFile;
+    function read2(file, options) {
+      let json;
+      try {
+        json = node_fs_1.default.readFileSync(file, "utf8");
+      } catch (error) {
+        assertEmptyJsonString(json, file);
+        const defaultValue = cantReadFileDefault(options);
+        if (defaultValue === void 0) {
+          throw new JsonFileError_1.default(`Can't read JSON file: ${file}`, error, error.code, file);
+        } else {
+          return defaultValue;
+        }
+      }
+      return parseJsonString(json, options, file);
+    }
+    async function readAsync(file, options) {
+      let json;
+      try {
+        json = await node_fs_1.default.promises.readFile(file, "utf8");
+      } catch (error) {
+        assertEmptyJsonString(json, file);
+        const defaultValue = cantReadFileDefault(options);
+        if (defaultValue === void 0) {
+          throw new JsonFileError_1.default(`Can't read JSON file: ${file}`, error, error.code);
+        } else {
+          return defaultValue;
+        }
+      }
+      return parseJsonString(json, options);
+    }
+    function parseJsonString(json, options, fileName) {
+      assertEmptyJsonString(json, fileName);
+      try {
+        if (_getOption(options, "json5")) {
+          return json5_1.default.parse(json);
+        } else {
+          return JSON.parse(json);
+        }
+      } catch (e) {
+        const defaultValue = jsonParseErrorDefault(options);
+        if (defaultValue === void 0) {
+          const location = locationFromSyntaxError(e, json);
+          if (location) {
+            const codeFrame = (0, code_frame_1.codeFrameColumns)(json, { start: location });
+            e.codeFrame = codeFrame;
+            e.message += `
+${codeFrame}`;
+          }
+          throw new JsonFileError_1.default(`Error parsing JSON: ${json}`, e, "EJSONPARSE", fileName);
+        } else {
+          return defaultValue;
+        }
+      }
+    }
+    function getSync(file, key3, defaultValue, options) {
+      const object = read2(file, options);
+      if (key3 in object) {
+        return object[key3];
+      }
+      if (defaultValue === void 0) {
+        throw new JsonFileError_1.default(`No value at key path "${String(key3)}" in JSON object from: ${file}`);
+      }
+      return defaultValue;
+    }
+    async function getAsync(file, key3, defaultValue, options) {
+      const object = await readAsync(file, options);
+      if (key3 in object) {
+        return object[key3];
+      }
+      if (defaultValue === void 0) {
+        throw new JsonFileError_1.default(`No value at key path "${String(key3)}" in JSON object from: ${file}`);
+      }
+      return defaultValue;
+    }
+    function write(file, object, options) {
+      if (options?.ensureDir) {
+        node_fs_1.default.mkdirSync(node_path_1.default.dirname(file), { recursive: true });
+      }
+      const space = _getOption(options, "space");
+      const json5 = _getOption(options, "json5");
+      const addNewLineAtEOF = _getOption(options, "addNewLineAtEOF");
+      let json;
+      try {
+        if (json5) {
+          json = json5_1.default.stringify(object, null, space);
+        } else {
+          json = JSON.stringify(object, null, space);
+        }
+      } catch (e) {
+        throw new JsonFileError_1.default(`Couldn't JSON.stringify object for file: ${file}`, e);
+      }
+      const data = addNewLineAtEOF ? `${json}
+` : json;
+      (0, writeAtomic_1.writeFileAtomicSync)(file, data);
+      return object;
+    }
+    async function writeAsync(file, object, options) {
+      if (options?.ensureDir) {
+        await node_fs_1.default.promises.mkdir(node_path_1.default.dirname(file), { recursive: true });
+      }
+      const space = _getOption(options, "space");
+      const json5 = _getOption(options, "json5");
+      const addNewLineAtEOF = _getOption(options, "addNewLineAtEOF");
+      let json;
+      try {
+        if (json5) {
+          json = json5_1.default.stringify(object, null, space);
+        } else {
+          json = JSON.stringify(object, null, space);
+        }
+      } catch (e) {
+        throw new JsonFileError_1.default(`Couldn't JSON.stringify object for file: ${file}`, e);
+      }
+      const data = addNewLineAtEOF ? `${json}
+` : json;
+      await (0, writeAtomic_1.writeFileAtomic)(file, data);
+      return object;
+    }
+    function setSync(file, key3, value, options) {
+      const object = read2(file, options);
+      return write(file, { ...object, [key3]: value }, options);
+    }
+    async function setAsync(file, key3, value, options) {
+      const object = await readAsync(file, options);
+      return writeAsync(file, { ...object, [key3]: value }, options);
+    }
+    async function mergeAsync(file, sources, options) {
+      const object = await readAsync(file, options);
+      if (Array.isArray(sources)) {
+        Object.assign(object, ...sources);
+      } else {
+        Object.assign(object, sources);
+      }
+      return writeAsync(file, object, options);
+    }
+    function merge(file, sources, options) {
+      const object = read2(file, options);
+      if (Array.isArray(sources)) {
+        Object.assign(object, ...sources);
+      } else {
+        Object.assign(object, sources);
+      }
+      return write(file, object, options);
+    }
+    async function deleteKeyAsync(file, key3, options) {
+      return deleteKeysAsync(file, [key3], options);
+    }
+    function deleteKey(file, key3, options) {
+      return deleteKeys(file, [key3], options);
+    }
+    async function deleteKeysAsync(file, keys, options) {
+      const object = await readAsync(file, options);
+      let didDelete = false;
+      for (let i2 = 0; i2 < keys.length; i2++) {
+        const key3 = keys[i2];
+        if (object.hasOwnProperty(key3)) {
+          delete object[key3];
+          didDelete = true;
+        }
+      }
+      if (didDelete) {
+        return writeAsync(file, object, options);
+      }
+      return object;
+    }
+    function deleteKeys(file, keys, options) {
+      const object = read2(file, options);
+      let didDelete = false;
+      for (let i2 = 0; i2 < keys.length; i2++) {
+        const key3 = keys[i2];
+        if (object.hasOwnProperty(key3)) {
+          delete object[key3];
+          didDelete = true;
+        }
+      }
+      if (didDelete) {
+        return write(file, object, options);
+      }
+      return object;
+    }
+    async function rewriteAsync(file, options) {
+      const object = await readAsync(file, options);
+      return writeAsync(file, object, options);
+    }
+    function rewrite(file, options) {
+      return write(file, read2(file, options), options);
+    }
+    function jsonParseErrorDefault(options = {}) {
+      if (options.jsonParseErrorDefault === void 0) {
+        return options.default;
+      } else {
+        return options.jsonParseErrorDefault;
+      }
+    }
+    function cantReadFileDefault(options = {}) {
+      if (options.cantReadFileDefault === void 0) {
+        return options.default;
+      } else {
+        return options.cantReadFileDefault;
+      }
+    }
+    function _getOption(options, field) {
+      if (options) {
+        if (options[field] !== void 0) {
+          return options[field];
+        }
+      }
+      return DEFAULT_OPTIONS2[field];
+    }
+    function locationFromSyntaxError(error, sourceString) {
+      if ("lineNumber" in error && "columnNumber" in error) {
+        return { line: error.lineNumber, column: error.columnNumber };
+      }
+      const match = /at position (\d+)/.exec(error.message);
+      if (match) {
+        const index = parseInt(match[1], 10);
+        const lines = sourceString.slice(0, index + 1).split("\n");
+        return { line: lines.length, column: lines[lines.length - 1].length };
+      }
+      return null;
+    }
+    function assertEmptyJsonString(json, file) {
+      if (json?.trim() === "") {
+        throw new JsonFileError_1.EmptyJsonFileError(file);
+      }
+    }
+  }
+});
+
+// node_modules/@expo/config-plugins/build/utils/locales.js
+var require_locales = __commonJS({
+  "node_modules/@expo/config-plugins/build/utils/locales.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", {
+      value: true
+    });
+    exports2.getResolvedLocalesAsync = getResolvedLocalesAsync;
+    function _jsonFile() {
+      const data = _interopRequireDefault(require_JsonFile());
+      _jsonFile = function() {
+        return data;
+      };
+      return data;
+    }
+    function _path() {
+      const data = _interopRequireDefault(require("path"));
+      _path = function() {
+        return data;
+      };
+      return data;
+    }
+    function _warnings() {
+      const data = require_warnings();
+      _warnings = function() {
+        return data;
+      };
+      return data;
+    }
+    function _interopRequireDefault(e) {
+      return e && e.__esModule ? e : { default: e };
+    }
+    async function getResolvedLocalesAsync(projectRoot, input, forPlatform) {
+      const locales = {};
+      for (const [lang, localeJsonPath] of Object.entries(input)) {
+        let locale = null;
+        if (typeof localeJsonPath === "string") {
+          try {
+            locale = await _jsonFile().default.readAsync(_path().default.join(projectRoot, localeJsonPath));
+          } catch {
+            (0, _warnings().addWarningForPlatform)(forPlatform, `locales.${lang}`, `Failed to parse JSON of locale file for language: ${lang}`, "https://docs.expo.dev/guides/localization/#translating-app-metadata");
+          }
+        } else {
+          locale = localeJsonPath;
+        }
+        if (locale) {
+          const {
+            android,
+            ios,
+            ...rest
+          } = {
+            android: {},
+            ios: {},
+            ...locale
+          };
+          if (forPlatform === "ios") {
+            locales[lang] = {
+              ...rest,
+              ...ios
+            };
+          } else {
+            locales[lang] = {
+              ...rest,
+              ...android
+            };
+          }
+        }
+      }
+      return locales;
+    }
+  }
+});
+
+// node_modules/@expo/config-plugins/build/android/Locales.js
+var require_Locales = __commonJS({
+  "node_modules/@expo/config-plugins/build/android/Locales.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", {
+      value: true
+    });
+    exports2.getLocales = getLocales;
+    exports2.setLocalesAsync = setLocalesAsync;
+    exports2.withLocales = void 0;
+    function _path() {
+      const data = _interopRequireDefault(require("path"));
+      _path = function() {
+        return data;
+      };
+      return data;
+    }
+    function _() {
+      const data = require_build4();
+      _ = function() {
+        return data;
+      };
+      return data;
+    }
+    function _XML() {
+      const data = require_XML();
+      _XML = function() {
+        return data;
+      };
+      return data;
+    }
+    function _locales() {
+      const data = require_locales();
+      _locales = function() {
+        return data;
+      };
+      return data;
+    }
+    function _interopRequireDefault(e) {
+      return e && e.__esModule ? e : { default: e };
+    }
+    var withLocales = (config) => {
+      return (0, _().withDangerousMod)(config, ["android", async (config2) => {
+        config2.modResults = await setLocalesAsync(config2, {
+          projectRoot: config2.modRequest.projectRoot
+        });
+        return config2;
+      }]);
+    };
+    exports2.withLocales = withLocales;
+    function getLocales(config) {
+      return config.locales ?? null;
+    }
+    async function setLocalesAsync(config, {
+      projectRoot
+    }) {
+      const locales = getLocales(config);
+      if (!locales) {
+        return config;
+      }
+      const localesMap = await (0, _locales().getResolvedLocalesAsync)(projectRoot, locales, "android");
+      for (const [lang, localizationObj] of Object.entries(localesMap)) {
+        const stringsFilePath = _path().default.join(await _().AndroidConfig.Paths.getResourceFolderAsync(projectRoot), `values-b+${lang.replaceAll("-", "+")}`, "strings.xml");
+        (0, _XML().writeXMLAsync)({
+          path: stringsFilePath,
+          xml: {
+            resources: Object.entries(localizationObj).map(([k, v]) => ({
+              string: {
+                $: {
+                  name: k
+                },
+                _: v
+              }
+            }))
+          }
+        });
+      }
+      return config;
+    }
+  }
+});
+
 // node_modules/@expo/config-plugins/build/android/Strings.js
 var require_Strings = __commonJS({
   "node_modules/@expo/config-plugins/build/android/Strings.js"(exports2) {
@@ -15378,7 +19224,7 @@ var require_android = __commonJS({
     Object.defineProperty(exports2, "__esModule", {
       value: true
     });
-    exports2.WindowSoftInputMode = exports2.Version = exports2.Updates = exports2.Styles = exports2.Strings = exports2.StatusBar = exports2.Scheme = exports2.Resources = exports2.Properties = exports2.PrimaryColor = exports2.Permissions = exports2.Paths = exports2.Package = exports2.Orientation = exports2.Name = exports2.Manifest = exports2.IntentFilters = exports2.GoogleServices = exports2.GoogleMapsApiKey = exports2.EasBuild = exports2.Colors = exports2.BuildProperties = exports2.AllowBackup = void 0;
+    exports2.WindowSoftInputMode = exports2.Version = exports2.Updates = exports2.Styles = exports2.Strings = exports2.StatusBar = exports2.Scheme = exports2.Resources = exports2.Properties = exports2.PrimaryColor = exports2.Permissions = exports2.Paths = exports2.Package = exports2.Orientation = exports2.Name = exports2.Manifest = exports2.Locales = exports2.IntentFilters = exports2.GoogleServices = exports2.GoogleMapsApiKey = exports2.EasBuild = exports2.Colors = exports2.BuildProperties = exports2.AllowBackup = void 0;
     function AllowBackup() {
       const data = _interopRequireWildcard(require_AllowBackup());
       AllowBackup = function() {
@@ -15468,6 +19314,19 @@ var require_android = __commonJS({
       enumerable: true,
       get: function() {
         return IntentFilters();
+      }
+    });
+    function Locales() {
+      const data = _interopRequireWildcard(require_Locales());
+      Locales = function() {
+        return data;
+      };
+      return data;
+    }
+    Object.defineProperty(exports2, "Locales", {
+      enumerable: true,
+      get: function() {
+        return Locales();
       }
     });
     function Manifest() {
@@ -21112,9 +24971,9 @@ var require_base64_js = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/Utility.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/Utility.js
 var require_Utility = __commonJS({
-  "node_modules/xmlbuilder/lib/Utility.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/Utility.js"(exports2, module2) {
     "use strict";
     (function() {
       var assign, getValue, isArray, isEmpty, isFunction, isObject, isPlainObject, hasProp = {}.hasOwnProperty;
@@ -21183,9 +25042,9 @@ var require_Utility = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDOMImplementation.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDOMImplementation.js
 var require_XMLDOMImplementation = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDOMImplementation.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDOMImplementation.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLDOMImplementation;
@@ -21231,9 +25090,9 @@ var require_XMLDOMImplementation = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDOMErrorHandler.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDOMErrorHandler.js
 var require_XMLDOMErrorHandler = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDOMErrorHandler.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDOMErrorHandler.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLDOMErrorHandler;
@@ -21251,9 +25110,9 @@ var require_XMLDOMErrorHandler = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDOMStringList.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDOMStringList.js
 var require_XMLDOMStringList = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDOMStringList.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDOMStringList.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLDOMStringList;
@@ -21289,9 +25148,9 @@ var require_XMLDOMStringList = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDOMConfiguration.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDOMConfiguration.js
 var require_XMLDOMConfiguration = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDOMConfiguration.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDOMConfiguration.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLDOMConfiguration, XMLDOMErrorHandler, XMLDOMStringList;
@@ -21360,9 +25219,9 @@ var require_XMLDOMConfiguration = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/NodeType.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/NodeType.js
 var require_NodeType = __commonJS({
-  "node_modules/xmlbuilder/lib/NodeType.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/NodeType.js"(exports2, module2) {
     "use strict";
     (function() {
       module2.exports = {
@@ -21390,9 +25249,9 @@ var require_NodeType = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLAttribute.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLAttribute.js
 var require_XMLAttribute = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLAttribute.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLAttribute.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLAttribute, XMLNode;
@@ -21501,9 +25360,9 @@ var require_XMLAttribute = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLNamedNodeMap.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLNamedNodeMap.js
 var require_XMLNamedNodeMap = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLNamedNodeMap.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLNamedNodeMap.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLNamedNodeMap;
@@ -21562,9 +25421,9 @@ var require_XMLNamedNodeMap = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLElement.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLElement.js
 var require_XMLElement = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLElement.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLElement.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLAttribute, XMLElement, XMLNamedNodeMap, XMLNode, getValue, isFunction, isObject, hasProp = {}.hasOwnProperty;
@@ -21842,9 +25701,9 @@ var require_XMLElement = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLCharacterData.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLCharacterData.js
 var require_XMLCharacterData = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLCharacterData.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLCharacterData.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLCharacterData, XMLNode;
@@ -21914,9 +25773,9 @@ var require_XMLCharacterData = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLCData.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLCData.js
 var require_XMLCData = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLCData.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLCData.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLCData, XMLCharacterData;
@@ -21951,9 +25810,9 @@ var require_XMLCData = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLComment.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLComment.js
 var require_XMLComment = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLComment.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLComment.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLCharacterData, XMLComment;
@@ -21988,9 +25847,9 @@ var require_XMLComment = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDeclaration.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDeclaration.js
 var require_XMLDeclaration = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDeclaration.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDeclaration.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLDeclaration, XMLNode, isObject;
@@ -22033,9 +25892,9 @@ var require_XMLDeclaration = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDTDAttList.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDTDAttList.js
 var require_XMLDTDAttList = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDTDAttList.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDTDAttList.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLDTDAttList, XMLNode;
@@ -22096,9 +25955,9 @@ var require_XMLDTDAttList = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDTDEntity.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDTDEntity.js
 var require_XMLDTDEntity = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDTDEntity.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDTDEntity.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLDTDEntity, XMLNode, isObject;
@@ -22198,9 +26057,9 @@ var require_XMLDTDEntity = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDTDElement.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDTDElement.js
 var require_XMLDTDElement = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDTDElement.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDTDElement.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLDTDElement, XMLNode;
@@ -22239,9 +26098,9 @@ var require_XMLDTDElement = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDTDNotation.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDTDNotation.js
 var require_XMLDTDNotation = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDTDNotation.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDTDNotation.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLDTDNotation, XMLNode;
@@ -22298,9 +26157,9 @@ var require_XMLDTDNotation = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDocType.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDocType.js
 var require_XMLDocType = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDocType.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDocType.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLDTDAttList, XMLDTDElement, XMLDTDEntity, XMLDTDNotation, XMLDocType, XMLNamedNodeMap, XMLNode, isObject;
@@ -22496,9 +26355,9 @@ var require_XMLDocType = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLRaw.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLRaw.js
 var require_XMLRaw = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLRaw.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLRaw.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLNode, XMLRaw;
@@ -22532,9 +26391,9 @@ var require_XMLRaw = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLText.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLText.js
 var require_XMLText = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLText.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLText.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLCharacterData, XMLText;
@@ -22604,9 +26463,9 @@ var require_XMLText = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLProcessingInstruction.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLProcessingInstruction.js
 var require_XMLProcessingInstruction = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLProcessingInstruction.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLProcessingInstruction.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLCharacterData, XMLProcessingInstruction;
@@ -22655,9 +26514,9 @@ var require_XMLProcessingInstruction = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDummy.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDummy.js
 var require_XMLDummy = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDummy.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDummy.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLDummy, XMLNode;
@@ -22690,9 +26549,9 @@ var require_XMLDummy = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLNodeList.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLNodeList.js
 var require_XMLNodeList = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLNodeList.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLNodeList.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLNodeList;
@@ -22726,9 +26585,9 @@ var require_XMLNodeList = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/DocumentPosition.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/DocumentPosition.js
 var require_DocumentPosition = __commonJS({
-  "node_modules/xmlbuilder/lib/DocumentPosition.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/DocumentPosition.js"(exports2, module2) {
     "use strict";
     (function() {
       module2.exports = {
@@ -22743,9 +26602,9 @@ var require_DocumentPosition = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLNode.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLNode.js
 var require_XMLNode = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLNode.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLNode.js"(exports2, module2) {
     "use strict";
     (function() {
       var DocumentPosition, NodeType, XMLCData, XMLComment, XMLDeclaration, XMLDocType, XMLDummy, XMLElement, XMLNamedNodeMap, XMLNode, XMLNodeList, XMLProcessingInstruction, XMLRaw, XMLText, getValue, isEmpty, isFunction, isObject, hasProp = {}.hasOwnProperty, splice = [].splice;
@@ -23549,9 +27408,9 @@ var require_XMLNode = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLStringifier.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLStringifier.js
 var require_XMLStringifier = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLStringifier.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLStringifier.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLStringifier, hasProp = {}.hasOwnProperty;
@@ -23780,9 +27639,9 @@ var require_XMLStringifier = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/WriterState.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/WriterState.js
 var require_WriterState = __commonJS({
-  "node_modules/xmlbuilder/lib/WriterState.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/WriterState.js"(exports2, module2) {
     "use strict";
     (function() {
       module2.exports = {
@@ -23795,9 +27654,9 @@ var require_WriterState = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLWriterBase.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLWriterBase.js
 var require_XMLWriterBase = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLWriterBase.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLWriterBase.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, WriterState, XMLCData, XMLComment, XMLDTDAttList, XMLDTDElement, XMLDTDEntity, XMLDTDNotation, XMLDeclaration, XMLDocType, XMLDummy, XMLElement, XMLProcessingInstruction, XMLRaw, XMLText, XMLWriterBase, assign, hasProp = {}.hasOwnProperty;
@@ -24233,9 +28092,9 @@ var require_XMLWriterBase = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLStringWriter.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLStringWriter.js
 var require_XMLStringWriter = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLStringWriter.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLStringWriter.js"(exports2, module2) {
     "use strict";
     (function() {
       var XMLStringWriter, XMLWriterBase;
@@ -24271,9 +28130,9 @@ var require_XMLStringWriter = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDocument.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDocument.js
 var require_XMLDocument = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDocument.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDocument.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, XMLDOMConfiguration, XMLDOMImplementation, XMLDocument, XMLNode, XMLStringWriter, XMLStringifier, isPlainObject;
@@ -24504,9 +28363,9 @@ var require_XMLDocument = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLDocumentCB.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDocumentCB.js
 var require_XMLDocumentCB = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLDocumentCB.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLDocumentCB.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, WriterState, XMLAttribute, XMLCData, XMLComment, XMLDTDAttList, XMLDTDElement, XMLDTDEntity, XMLDTDNotation, XMLDeclaration, XMLDocType, XMLDocument, XMLDocumentCB, XMLElement, XMLProcessingInstruction, XMLRaw, XMLStringWriter, XMLStringifier, XMLText, getValue, isFunction, isObject, isPlainObject, hasProp = {}.hasOwnProperty;
@@ -25066,9 +28925,9 @@ var require_XMLDocumentCB = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/XMLStreamWriter.js
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLStreamWriter.js
 var require_XMLStreamWriter = __commonJS({
-  "node_modules/xmlbuilder/lib/XMLStreamWriter.js"(exports2, module2) {
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/XMLStreamWriter.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, WriterState, XMLStreamWriter, XMLWriterBase, hasProp = {}.hasOwnProperty;
@@ -25248,9 +29107,9 @@ var require_XMLStreamWriter = __commonJS({
   }
 });
 
-// node_modules/xmlbuilder/lib/index.js
-var require_lib = __commonJS({
-  "node_modules/xmlbuilder/lib/index.js"(exports2, module2) {
+// node_modules/@expo/plist/node_modules/xmlbuilder/lib/index.js
+var require_lib4 = __commonJS({
+  "node_modules/@expo/plist/node_modules/xmlbuilder/lib/index.js"(exports2, module2) {
     "use strict";
     (function() {
       var NodeType, WriterState, XMLDOMImplementation, XMLDocument, XMLDocumentCB, XMLStreamWriter, XMLStringWriter, assign, isFunction;
@@ -25312,7 +29171,7 @@ var require_build2 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.build = build;
     var base64_js_1 = __importDefault(require_base64_js());
-    var xmlbuilder_1 = __importDefault(require_lib());
+    var xmlbuilder_1 = __importDefault(require_lib4());
     function ISODateString(d) {
       function pad(n) {
         return n < 10 ? "0" + n : n;
@@ -29883,7 +33742,7 @@ var require_dom_parser = __commonJS({
 });
 
 // node_modules/@xmldom/xmldom/lib/index.js
-var require_lib2 = __commonJS({
+var require_lib5 = __commonJS({
   "node_modules/@xmldom/xmldom/lib/index.js"(exports2) {
     "use strict";
     var dom = require_dom();
@@ -29902,7 +33761,7 @@ var require_parse2 = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.parse = parse3;
-    var xmldom_1 = require_lib2();
+    var xmldom_1 = require_lib5();
     var assert_1 = __importDefault(require("assert"));
     var TEXT_NODE = 3;
     var CDATA_NODE = 4;
@@ -30678,3715 +34537,16 @@ var require_IosConfig_types = __commonJS({
   }
 });
 
-// node_modules/js-tokens/index.js
-var require_js_tokens = __commonJS({
-  "node_modules/js-tokens/index.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", {
-      value: true
-    });
-    exports2.default = /((['"])(?:(?!\2|\\).|\\(?:\r\n|[\s\S]))*(\2)?|`(?:[^`\\$]|\\[\s\S]|\$(?!\{)|\$\{(?:[^{}]|\{[^}]*\}?)*\}?)*(`)?)|(\/\/.*)|(\/\*(?:[^*]|\*(?!\/))*(\*\/)?)|(\/(?!\*)(?:\[(?:(?![\]\\]).|\\.)*\]|(?![\/\]\\]).|\\.)+\/(?:(?!\s*(?:\b|[\u0080-\uFFFF$\\'"~({]|[+\-!](?!=)|\.?\d))|[gmiyus]{1,6}\b(?![\u0080-\uFFFF$\\]|\s*(?:[+\-*%&|^<>!=?({]|\/(?![\/*])))))|(0[xX][\da-fA-F]+|0[oO][0-7]+|0[bB][01]+|(?:\d*\.\d+|\d+\.?)(?:[eE][+-]?\d+)?)|((?!\d)(?:(?!\s)[$\w\u0080-\uFFFF]|\\u[\da-fA-F]{4}|\\u\{[\da-fA-F]+\})+)|(--|\+\+|&&|\|\||=>|\.{3}|(?:[+\-\/%&|^]|\*{1,2}|<{1,2}|>{1,3}|!=?|={1,2})=?|[?~.,:;[\](){}])|(\s+)|(^$|[\s\S])/g;
-    exports2.matchToToken = function(match) {
-      var token2 = { type: "invalid", value: match[0], closed: void 0 };
-      if (match[1]) token2.type = "string", token2.closed = !!(match[3] || match[4]);
-      else if (match[5]) token2.type = "comment";
-      else if (match[6]) token2.type = "comment", token2.closed = !!match[7];
-      else if (match[8]) token2.type = "regex";
-      else if (match[9]) token2.type = "number";
-      else if (match[10]) token2.type = "name";
-      else if (match[11]) token2.type = "punctuator";
-      else if (match[12]) token2.type = "whitespace";
-      return token2;
-    };
-  }
-});
-
-// node_modules/@babel/helper-validator-identifier/lib/identifier.js
-var require_identifier = __commonJS({
-  "node_modules/@babel/helper-validator-identifier/lib/identifier.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", {
-      value: true
-    });
-    exports2.isIdentifierChar = isIdentifierChar;
-    exports2.isIdentifierName = isIdentifierName;
-    exports2.isIdentifierStart = isIdentifierStart;
-    var nonASCIIidentifierStartChars = "\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0560-\u0588\u05D0-\u05EA\u05EF-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u0860-\u086A\u0870-\u0887\u0889-\u088E\u08A0-\u08C9\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u09FC\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C5D\u0C60\u0C61\u0C80\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D04-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D54-\u0D56\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E86-\u0E8A\u0E8C-\u0EA3\u0EA5\u0EA7-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F8\u1700-\u1711\u171F-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1878\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4C\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1C80-\u1C8A\u1C90-\u1CBA\u1CBD-\u1CBF\u1CE9-\u1CEC\u1CEE-\u1CF3\u1CF5\u1CF6\u1CFA\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2118-\u211D\u2124\u2126\u2128\u212A-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3041-\u3096\u309B-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312F\u3131-\u318E\u31A0-\u31BF\u31F0-\u31FF\u3400-\u4DBF\u4E00-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6EF\uA717-\uA71F\uA722-\uA788\uA78B-\uA7CD\uA7D0\uA7D1\uA7D3\uA7D5-\uA7DC\uA7F2-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA8FE\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB69\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC";
-    var nonASCIIidentifierChars = "\xB7\u0300-\u036F\u0387\u0483-\u0487\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u0610-\u061A\u064B-\u0669\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u06F0-\u06F9\u0711\u0730-\u074A\u07A6-\u07B0\u07C0-\u07C9\u07EB-\u07F3\u07FD\u0816-\u0819\u081B-\u0823\u0825-\u0827\u0829-\u082D\u0859-\u085B\u0897-\u089F\u08CA-\u08E1\u08E3-\u0903\u093A-\u093C\u093E-\u094F\u0951-\u0957\u0962\u0963\u0966-\u096F\u0981-\u0983\u09BC\u09BE-\u09C4\u09C7\u09C8\u09CB-\u09CD\u09D7\u09E2\u09E3\u09E6-\u09EF\u09FE\u0A01-\u0A03\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A66-\u0A71\u0A75\u0A81-\u0A83\u0ABC\u0ABE-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AE2\u0AE3\u0AE6-\u0AEF\u0AFA-\u0AFF\u0B01-\u0B03\u0B3C\u0B3E-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B55-\u0B57\u0B62\u0B63\u0B66-\u0B6F\u0B82\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD7\u0BE6-\u0BEF\u0C00-\u0C04\u0C3C\u0C3E-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C62\u0C63\u0C66-\u0C6F\u0C81-\u0C83\u0CBC\u0CBE-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CE2\u0CE3\u0CE6-\u0CEF\u0CF3\u0D00-\u0D03\u0D3B\u0D3C\u0D3E-\u0D44\u0D46-\u0D48\u0D4A-\u0D4D\u0D57\u0D62\u0D63\u0D66-\u0D6F\u0D81-\u0D83\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DE6-\u0DEF\u0DF2\u0DF3\u0E31\u0E34-\u0E3A\u0E47-\u0E4E\u0E50-\u0E59\u0EB1\u0EB4-\u0EBC\u0EC8-\u0ECE\u0ED0-\u0ED9\u0F18\u0F19\u0F20-\u0F29\u0F35\u0F37\u0F39\u0F3E\u0F3F\u0F71-\u0F84\u0F86\u0F87\u0F8D-\u0F97\u0F99-\u0FBC\u0FC6\u102B-\u103E\u1040-\u1049\u1056-\u1059\u105E-\u1060\u1062-\u1064\u1067-\u106D\u1071-\u1074\u1082-\u108D\u108F-\u109D\u135D-\u135F\u1369-\u1371\u1712-\u1715\u1732-\u1734\u1752\u1753\u1772\u1773\u17B4-\u17D3\u17DD\u17E0-\u17E9\u180B-\u180D\u180F-\u1819\u18A9\u1920-\u192B\u1930-\u193B\u1946-\u194F\u19D0-\u19DA\u1A17-\u1A1B\u1A55-\u1A5E\u1A60-\u1A7C\u1A7F-\u1A89\u1A90-\u1A99\u1AB0-\u1ABD\u1ABF-\u1ACE\u1B00-\u1B04\u1B34-\u1B44\u1B50-\u1B59\u1B6B-\u1B73\u1B80-\u1B82\u1BA1-\u1BAD\u1BB0-\u1BB9\u1BE6-\u1BF3\u1C24-\u1C37\u1C40-\u1C49\u1C50-\u1C59\u1CD0-\u1CD2\u1CD4-\u1CE8\u1CED\u1CF4\u1CF7-\u1CF9\u1DC0-\u1DFF\u200C\u200D\u203F\u2040\u2054\u20D0-\u20DC\u20E1\u20E5-\u20F0\u2CEF-\u2CF1\u2D7F\u2DE0-\u2DFF\u302A-\u302F\u3099\u309A\u30FB\uA620-\uA629\uA66F\uA674-\uA67D\uA69E\uA69F\uA6F0\uA6F1\uA802\uA806\uA80B\uA823-\uA827\uA82C\uA880\uA881\uA8B4-\uA8C5\uA8D0-\uA8D9\uA8E0-\uA8F1\uA8FF-\uA909\uA926-\uA92D\uA947-\uA953\uA980-\uA983\uA9B3-\uA9C0\uA9D0-\uA9D9\uA9E5\uA9F0-\uA9F9\uAA29-\uAA36\uAA43\uAA4C\uAA4D\uAA50-\uAA59\uAA7B-\uAA7D\uAAB0\uAAB2-\uAAB4\uAAB7\uAAB8\uAABE\uAABF\uAAC1\uAAEB-\uAAEF\uAAF5\uAAF6\uABE3-\uABEA\uABEC\uABED\uABF0-\uABF9\uFB1E\uFE00-\uFE0F\uFE20-\uFE2F\uFE33\uFE34\uFE4D-\uFE4F\uFF10-\uFF19\uFF3F\uFF65";
-    var nonASCIIidentifierStart = new RegExp("[" + nonASCIIidentifierStartChars + "]");
-    var nonASCIIidentifier = new RegExp("[" + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "]");
-    nonASCIIidentifierStartChars = nonASCIIidentifierChars = null;
-    var astralIdentifierStartCodes = [0, 11, 2, 25, 2, 18, 2, 1, 2, 14, 3, 13, 35, 122, 70, 52, 268, 28, 4, 48, 48, 31, 14, 29, 6, 37, 11, 29, 3, 35, 5, 7, 2, 4, 43, 157, 19, 35, 5, 35, 5, 39, 9, 51, 13, 10, 2, 14, 2, 6, 2, 1, 2, 10, 2, 14, 2, 6, 2, 1, 4, 51, 13, 310, 10, 21, 11, 7, 25, 5, 2, 41, 2, 8, 70, 5, 3, 0, 2, 43, 2, 1, 4, 0, 3, 22, 11, 22, 10, 30, 66, 18, 2, 1, 11, 21, 11, 25, 71, 55, 7, 1, 65, 0, 16, 3, 2, 2, 2, 28, 43, 28, 4, 28, 36, 7, 2, 27, 28, 53, 11, 21, 11, 18, 14, 17, 111, 72, 56, 50, 14, 50, 14, 35, 39, 27, 10, 22, 251, 41, 7, 1, 17, 2, 60, 28, 11, 0, 9, 21, 43, 17, 47, 20, 28, 22, 13, 52, 58, 1, 3, 0, 14, 44, 33, 24, 27, 35, 30, 0, 3, 0, 9, 34, 4, 0, 13, 47, 15, 3, 22, 0, 2, 0, 36, 17, 2, 24, 20, 1, 64, 6, 2, 0, 2, 3, 2, 14, 2, 9, 8, 46, 39, 7, 3, 1, 3, 21, 2, 6, 2, 1, 2, 4, 4, 0, 19, 0, 13, 4, 31, 9, 2, 0, 3, 0, 2, 37, 2, 0, 26, 0, 2, 0, 45, 52, 19, 3, 21, 2, 31, 47, 21, 1, 2, 0, 185, 46, 42, 3, 37, 47, 21, 0, 60, 42, 14, 0, 72, 26, 38, 6, 186, 43, 117, 63, 32, 7, 3, 0, 3, 7, 2, 1, 2, 23, 16, 0, 2, 0, 95, 7, 3, 38, 17, 0, 2, 0, 29, 0, 11, 39, 8, 0, 22, 0, 12, 45, 20, 0, 19, 72, 200, 32, 32, 8, 2, 36, 18, 0, 50, 29, 113, 6, 2, 1, 2, 37, 22, 0, 26, 5, 2, 1, 2, 31, 15, 0, 328, 18, 16, 0, 2, 12, 2, 33, 125, 0, 80, 921, 103, 110, 18, 195, 2637, 96, 16, 1071, 18, 5, 26, 3994, 6, 582, 6842, 29, 1763, 568, 8, 30, 18, 78, 18, 29, 19, 47, 17, 3, 32, 20, 6, 18, 433, 44, 212, 63, 129, 74, 6, 0, 67, 12, 65, 1, 2, 0, 29, 6135, 9, 1237, 42, 9, 8936, 3, 2, 6, 2, 1, 2, 290, 16, 0, 30, 2, 3, 0, 15, 3, 9, 395, 2309, 106, 6, 12, 4, 8, 8, 9, 5991, 84, 2, 70, 2, 1, 3, 0, 3, 1, 3, 3, 2, 11, 2, 0, 2, 6, 2, 64, 2, 3, 3, 7, 2, 6, 2, 27, 2, 3, 2, 4, 2, 0, 4, 6, 2, 339, 3, 24, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 30, 2, 24, 2, 7, 1845, 30, 7, 5, 262, 61, 147, 44, 11, 6, 17, 0, 322, 29, 19, 43, 485, 27, 229, 29, 3, 0, 496, 6, 2, 3, 2, 1, 2, 14, 2, 196, 60, 67, 8, 0, 1205, 3, 2, 26, 2, 1, 2, 0, 3, 0, 2, 9, 2, 3, 2, 0, 2, 0, 7, 0, 5, 0, 2, 0, 2, 0, 2, 2, 2, 1, 2, 0, 3, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1, 2, 0, 3, 3, 2, 6, 2, 3, 2, 3, 2, 0, 2, 9, 2, 16, 6, 2, 2, 4, 2, 16, 4421, 42719, 33, 4153, 7, 221, 3, 5761, 15, 7472, 16, 621, 2467, 541, 1507, 4938, 6, 4191];
-    var astralIdentifierCodes = [509, 0, 227, 0, 150, 4, 294, 9, 1368, 2, 2, 1, 6, 3, 41, 2, 5, 0, 166, 1, 574, 3, 9, 9, 7, 9, 32, 4, 318, 1, 80, 3, 71, 10, 50, 3, 123, 2, 54, 14, 32, 10, 3, 1, 11, 3, 46, 10, 8, 0, 46, 9, 7, 2, 37, 13, 2, 9, 6, 1, 45, 0, 13, 2, 49, 13, 9, 3, 2, 11, 83, 11, 7, 0, 3, 0, 158, 11, 6, 9, 7, 3, 56, 1, 2, 6, 3, 1, 3, 2, 10, 0, 11, 1, 3, 6, 4, 4, 68, 8, 2, 0, 3, 0, 2, 3, 2, 4, 2, 0, 15, 1, 83, 17, 10, 9, 5, 0, 82, 19, 13, 9, 214, 6, 3, 8, 28, 1, 83, 16, 16, 9, 82, 12, 9, 9, 7, 19, 58, 14, 5, 9, 243, 14, 166, 9, 71, 5, 2, 1, 3, 3, 2, 0, 2, 1, 13, 9, 120, 6, 3, 6, 4, 0, 29, 9, 41, 6, 2, 3, 9, 0, 10, 10, 47, 15, 343, 9, 54, 7, 2, 7, 17, 9, 57, 21, 2, 13, 123, 5, 4, 0, 2, 1, 2, 6, 2, 0, 9, 9, 49, 4, 2, 1, 2, 4, 9, 9, 330, 3, 10, 1, 2, 0, 49, 6, 4, 4, 14, 10, 5350, 0, 7, 14, 11465, 27, 2343, 9, 87, 9, 39, 4, 60, 6, 26, 9, 535, 9, 470, 0, 2, 54, 8, 3, 82, 0, 12, 1, 19628, 1, 4178, 9, 519, 45, 3, 22, 543, 4, 4, 5, 9, 7, 3, 6, 31, 3, 149, 2, 1418, 49, 513, 54, 5, 49, 9, 0, 15, 0, 23, 4, 2, 14, 1361, 6, 2, 16, 3, 6, 2, 1, 2, 4, 101, 0, 161, 6, 10, 9, 357, 0, 62, 13, 499, 13, 245, 1, 2, 9, 726, 6, 110, 6, 6, 9, 4759, 9, 787719, 239];
-    function isInAstralSet(code, set) {
-      let pos2 = 65536;
-      for (let i2 = 0, length = set.length; i2 < length; i2 += 2) {
-        pos2 += set[i2];
-        if (pos2 > code) return false;
-        pos2 += set[i2 + 1];
-        if (pos2 >= code) return true;
-      }
-      return false;
-    }
-    function isIdentifierStart(code) {
-      if (code < 65) return code === 36;
-      if (code <= 90) return true;
-      if (code < 97) return code === 95;
-      if (code <= 122) return true;
-      if (code <= 65535) {
-        return code >= 170 && nonASCIIidentifierStart.test(String.fromCharCode(code));
-      }
-      return isInAstralSet(code, astralIdentifierStartCodes);
-    }
-    function isIdentifierChar(code) {
-      if (code < 48) return code === 36;
-      if (code < 58) return true;
-      if (code < 65) return false;
-      if (code <= 90) return true;
-      if (code < 97) return code === 95;
-      if (code <= 122) return true;
-      if (code <= 65535) {
-        return code >= 170 && nonASCIIidentifier.test(String.fromCharCode(code));
-      }
-      return isInAstralSet(code, astralIdentifierStartCodes) || isInAstralSet(code, astralIdentifierCodes);
-    }
-    function isIdentifierName(name) {
-      let isFirst = true;
-      for (let i2 = 0; i2 < name.length; i2++) {
-        let cp = name.charCodeAt(i2);
-        if ((cp & 64512) === 55296 && i2 + 1 < name.length) {
-          const trail = name.charCodeAt(++i2);
-          if ((trail & 64512) === 56320) {
-            cp = 65536 + ((cp & 1023) << 10) + (trail & 1023);
-          }
-        }
-        if (isFirst) {
-          isFirst = false;
-          if (!isIdentifierStart(cp)) {
-            return false;
-          }
-        } else if (!isIdentifierChar(cp)) {
-          return false;
-        }
-      }
-      return !isFirst;
-    }
-  }
-});
-
-// node_modules/@babel/helper-validator-identifier/lib/keyword.js
-var require_keyword = __commonJS({
-  "node_modules/@babel/helper-validator-identifier/lib/keyword.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", {
-      value: true
-    });
-    exports2.isKeyword = isKeyword;
-    exports2.isReservedWord = isReservedWord;
-    exports2.isStrictBindOnlyReservedWord = isStrictBindOnlyReservedWord;
-    exports2.isStrictBindReservedWord = isStrictBindReservedWord;
-    exports2.isStrictReservedWord = isStrictReservedWord;
-    var reservedWords = {
-      keyword: ["break", "case", "catch", "continue", "debugger", "default", "do", "else", "finally", "for", "function", "if", "return", "switch", "throw", "try", "var", "const", "while", "with", "new", "this", "super", "class", "extends", "export", "import", "null", "true", "false", "in", "instanceof", "typeof", "void", "delete"],
-      strict: ["implements", "interface", "let", "package", "private", "protected", "public", "static", "yield"],
-      strictBind: ["eval", "arguments"]
-    };
-    var keywords = new Set(reservedWords.keyword);
-    var reservedWordsStrictSet = new Set(reservedWords.strict);
-    var reservedWordsStrictBindSet = new Set(reservedWords.strictBind);
-    function isReservedWord(word, inModule) {
-      return inModule && word === "await" || word === "enum";
-    }
-    function isStrictReservedWord(word, inModule) {
-      return isReservedWord(word, inModule) || reservedWordsStrictSet.has(word);
-    }
-    function isStrictBindOnlyReservedWord(word) {
-      return reservedWordsStrictBindSet.has(word);
-    }
-    function isStrictBindReservedWord(word, inModule) {
-      return isStrictReservedWord(word, inModule) || isStrictBindOnlyReservedWord(word);
-    }
-    function isKeyword(word) {
-      return keywords.has(word);
-    }
-  }
-});
-
-// node_modules/@babel/helper-validator-identifier/lib/index.js
-var require_lib3 = __commonJS({
-  "node_modules/@babel/helper-validator-identifier/lib/index.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", {
-      value: true
-    });
-    Object.defineProperty(exports2, "isIdentifierChar", {
-      enumerable: true,
-      get: function() {
-        return _identifier.isIdentifierChar;
-      }
-    });
-    Object.defineProperty(exports2, "isIdentifierName", {
-      enumerable: true,
-      get: function() {
-        return _identifier.isIdentifierName;
-      }
-    });
-    Object.defineProperty(exports2, "isIdentifierStart", {
-      enumerable: true,
-      get: function() {
-        return _identifier.isIdentifierStart;
-      }
-    });
-    Object.defineProperty(exports2, "isKeyword", {
-      enumerable: true,
-      get: function() {
-        return _keyword.isKeyword;
-      }
-    });
-    Object.defineProperty(exports2, "isReservedWord", {
-      enumerable: true,
-      get: function() {
-        return _keyword.isReservedWord;
-      }
-    });
-    Object.defineProperty(exports2, "isStrictBindOnlyReservedWord", {
-      enumerable: true,
-      get: function() {
-        return _keyword.isStrictBindOnlyReservedWord;
-      }
-    });
-    Object.defineProperty(exports2, "isStrictBindReservedWord", {
-      enumerable: true,
-      get: function() {
-        return _keyword.isStrictBindReservedWord;
-      }
-    });
-    Object.defineProperty(exports2, "isStrictReservedWord", {
-      enumerable: true,
-      get: function() {
-        return _keyword.isStrictReservedWord;
-      }
-    });
-    var _identifier = require_identifier();
-    var _keyword = require_keyword();
-  }
-});
-
-// node_modules/picocolors/picocolors.js
-var require_picocolors = __commonJS({
-  "node_modules/picocolors/picocolors.js"(exports2, module2) {
-    "use strict";
-    var p = process || {};
-    var argv = p.argv || [];
-    var env = p.env || {};
-    var isColorSupported = !(!!env.NO_COLOR || argv.includes("--no-color")) && (!!env.FORCE_COLOR || argv.includes("--color") || p.platform === "win32" || (p.stdout || {}).isTTY && env.TERM !== "dumb" || !!env.CI);
-    var formatter = (open, close, replace = open) => (input) => {
-      let string = "" + input, index = string.indexOf(close, open.length);
-      return ~index ? open + replaceClose(string, close, replace, index) + close : open + string + close;
-    };
-    var replaceClose = (string, close, replace, index) => {
-      let result = "", cursor = 0;
-      do {
-        result += string.substring(cursor, index) + replace;
-        cursor = index + close.length;
-        index = string.indexOf(close, cursor);
-      } while (~index);
-      return result + string.substring(cursor);
-    };
-    var createColors = (enabled = isColorSupported) => {
-      let f = enabled ? formatter : () => String;
-      return {
-        isColorSupported: enabled,
-        reset: f("\x1B[0m", "\x1B[0m"),
-        bold: f("\x1B[1m", "\x1B[22m", "\x1B[22m\x1B[1m"),
-        dim: f("\x1B[2m", "\x1B[22m", "\x1B[22m\x1B[2m"),
-        italic: f("\x1B[3m", "\x1B[23m"),
-        underline: f("\x1B[4m", "\x1B[24m"),
-        inverse: f("\x1B[7m", "\x1B[27m"),
-        hidden: f("\x1B[8m", "\x1B[28m"),
-        strikethrough: f("\x1B[9m", "\x1B[29m"),
-        black: f("\x1B[30m", "\x1B[39m"),
-        red: f("\x1B[31m", "\x1B[39m"),
-        green: f("\x1B[32m", "\x1B[39m"),
-        yellow: f("\x1B[33m", "\x1B[39m"),
-        blue: f("\x1B[34m", "\x1B[39m"),
-        magenta: f("\x1B[35m", "\x1B[39m"),
-        cyan: f("\x1B[36m", "\x1B[39m"),
-        white: f("\x1B[37m", "\x1B[39m"),
-        gray: f("\x1B[90m", "\x1B[39m"),
-        bgBlack: f("\x1B[40m", "\x1B[49m"),
-        bgRed: f("\x1B[41m", "\x1B[49m"),
-        bgGreen: f("\x1B[42m", "\x1B[49m"),
-        bgYellow: f("\x1B[43m", "\x1B[49m"),
-        bgBlue: f("\x1B[44m", "\x1B[49m"),
-        bgMagenta: f("\x1B[45m", "\x1B[49m"),
-        bgCyan: f("\x1B[46m", "\x1B[49m"),
-        bgWhite: f("\x1B[47m", "\x1B[49m"),
-        blackBright: f("\x1B[90m", "\x1B[39m"),
-        redBright: f("\x1B[91m", "\x1B[39m"),
-        greenBright: f("\x1B[92m", "\x1B[39m"),
-        yellowBright: f("\x1B[93m", "\x1B[39m"),
-        blueBright: f("\x1B[94m", "\x1B[39m"),
-        magentaBright: f("\x1B[95m", "\x1B[39m"),
-        cyanBright: f("\x1B[96m", "\x1B[39m"),
-        whiteBright: f("\x1B[97m", "\x1B[39m"),
-        bgBlackBright: f("\x1B[100m", "\x1B[49m"),
-        bgRedBright: f("\x1B[101m", "\x1B[49m"),
-        bgGreenBright: f("\x1B[102m", "\x1B[49m"),
-        bgYellowBright: f("\x1B[103m", "\x1B[49m"),
-        bgBlueBright: f("\x1B[104m", "\x1B[49m"),
-        bgMagentaBright: f("\x1B[105m", "\x1B[49m"),
-        bgCyanBright: f("\x1B[106m", "\x1B[49m"),
-        bgWhiteBright: f("\x1B[107m", "\x1B[49m")
-      };
-    };
-    module2.exports = createColors();
-    module2.exports.createColors = createColors;
-  }
-});
-
-// node_modules/@babel/highlight/node_modules/escape-string-regexp/index.js
-var require_escape_string_regexp = __commonJS({
-  "node_modules/@babel/highlight/node_modules/escape-string-regexp/index.js"(exports2, module2) {
-    "use strict";
-    var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
-    module2.exports = function(str) {
-      if (typeof str !== "string") {
-        throw new TypeError("Expected a string");
-      }
-      return str.replace(matchOperatorsRe, "\\$&");
-    };
-  }
-});
-
-// node_modules/color-convert/node_modules/color-name/index.js
-var require_color_name2 = __commonJS({
-  "node_modules/color-convert/node_modules/color-name/index.js"(exports2, module2) {
-    "use strict";
-    module2.exports = {
-      "aliceblue": [240, 248, 255],
-      "antiquewhite": [250, 235, 215],
-      "aqua": [0, 255, 255],
-      "aquamarine": [127, 255, 212],
-      "azure": [240, 255, 255],
-      "beige": [245, 245, 220],
-      "bisque": [255, 228, 196],
-      "black": [0, 0, 0],
-      "blanchedalmond": [255, 235, 205],
-      "blue": [0, 0, 255],
-      "blueviolet": [138, 43, 226],
-      "brown": [165, 42, 42],
-      "burlywood": [222, 184, 135],
-      "cadetblue": [95, 158, 160],
-      "chartreuse": [127, 255, 0],
-      "chocolate": [210, 105, 30],
-      "coral": [255, 127, 80],
-      "cornflowerblue": [100, 149, 237],
-      "cornsilk": [255, 248, 220],
-      "crimson": [220, 20, 60],
-      "cyan": [0, 255, 255],
-      "darkblue": [0, 0, 139],
-      "darkcyan": [0, 139, 139],
-      "darkgoldenrod": [184, 134, 11],
-      "darkgray": [169, 169, 169],
-      "darkgreen": [0, 100, 0],
-      "darkgrey": [169, 169, 169],
-      "darkkhaki": [189, 183, 107],
-      "darkmagenta": [139, 0, 139],
-      "darkolivegreen": [85, 107, 47],
-      "darkorange": [255, 140, 0],
-      "darkorchid": [153, 50, 204],
-      "darkred": [139, 0, 0],
-      "darksalmon": [233, 150, 122],
-      "darkseagreen": [143, 188, 143],
-      "darkslateblue": [72, 61, 139],
-      "darkslategray": [47, 79, 79],
-      "darkslategrey": [47, 79, 79],
-      "darkturquoise": [0, 206, 209],
-      "darkviolet": [148, 0, 211],
-      "deeppink": [255, 20, 147],
-      "deepskyblue": [0, 191, 255],
-      "dimgray": [105, 105, 105],
-      "dimgrey": [105, 105, 105],
-      "dodgerblue": [30, 144, 255],
-      "firebrick": [178, 34, 34],
-      "floralwhite": [255, 250, 240],
-      "forestgreen": [34, 139, 34],
-      "fuchsia": [255, 0, 255],
-      "gainsboro": [220, 220, 220],
-      "ghostwhite": [248, 248, 255],
-      "gold": [255, 215, 0],
-      "goldenrod": [218, 165, 32],
-      "gray": [128, 128, 128],
-      "green": [0, 128, 0],
-      "greenyellow": [173, 255, 47],
-      "grey": [128, 128, 128],
-      "honeydew": [240, 255, 240],
-      "hotpink": [255, 105, 180],
-      "indianred": [205, 92, 92],
-      "indigo": [75, 0, 130],
-      "ivory": [255, 255, 240],
-      "khaki": [240, 230, 140],
-      "lavender": [230, 230, 250],
-      "lavenderblush": [255, 240, 245],
-      "lawngreen": [124, 252, 0],
-      "lemonchiffon": [255, 250, 205],
-      "lightblue": [173, 216, 230],
-      "lightcoral": [240, 128, 128],
-      "lightcyan": [224, 255, 255],
-      "lightgoldenrodyellow": [250, 250, 210],
-      "lightgray": [211, 211, 211],
-      "lightgreen": [144, 238, 144],
-      "lightgrey": [211, 211, 211],
-      "lightpink": [255, 182, 193],
-      "lightsalmon": [255, 160, 122],
-      "lightseagreen": [32, 178, 170],
-      "lightskyblue": [135, 206, 250],
-      "lightslategray": [119, 136, 153],
-      "lightslategrey": [119, 136, 153],
-      "lightsteelblue": [176, 196, 222],
-      "lightyellow": [255, 255, 224],
-      "lime": [0, 255, 0],
-      "limegreen": [50, 205, 50],
-      "linen": [250, 240, 230],
-      "magenta": [255, 0, 255],
-      "maroon": [128, 0, 0],
-      "mediumaquamarine": [102, 205, 170],
-      "mediumblue": [0, 0, 205],
-      "mediumorchid": [186, 85, 211],
-      "mediumpurple": [147, 112, 219],
-      "mediumseagreen": [60, 179, 113],
-      "mediumslateblue": [123, 104, 238],
-      "mediumspringgreen": [0, 250, 154],
-      "mediumturquoise": [72, 209, 204],
-      "mediumvioletred": [199, 21, 133],
-      "midnightblue": [25, 25, 112],
-      "mintcream": [245, 255, 250],
-      "mistyrose": [255, 228, 225],
-      "moccasin": [255, 228, 181],
-      "navajowhite": [255, 222, 173],
-      "navy": [0, 0, 128],
-      "oldlace": [253, 245, 230],
-      "olive": [128, 128, 0],
-      "olivedrab": [107, 142, 35],
-      "orange": [255, 165, 0],
-      "orangered": [255, 69, 0],
-      "orchid": [218, 112, 214],
-      "palegoldenrod": [238, 232, 170],
-      "palegreen": [152, 251, 152],
-      "paleturquoise": [175, 238, 238],
-      "palevioletred": [219, 112, 147],
-      "papayawhip": [255, 239, 213],
-      "peachpuff": [255, 218, 185],
-      "peru": [205, 133, 63],
-      "pink": [255, 192, 203],
-      "plum": [221, 160, 221],
-      "powderblue": [176, 224, 230],
-      "purple": [128, 0, 128],
-      "rebeccapurple": [102, 51, 153],
-      "red": [255, 0, 0],
-      "rosybrown": [188, 143, 143],
-      "royalblue": [65, 105, 225],
-      "saddlebrown": [139, 69, 19],
-      "salmon": [250, 128, 114],
-      "sandybrown": [244, 164, 96],
-      "seagreen": [46, 139, 87],
-      "seashell": [255, 245, 238],
-      "sienna": [160, 82, 45],
-      "silver": [192, 192, 192],
-      "skyblue": [135, 206, 235],
-      "slateblue": [106, 90, 205],
-      "slategray": [112, 128, 144],
-      "slategrey": [112, 128, 144],
-      "snow": [255, 250, 250],
-      "springgreen": [0, 255, 127],
-      "steelblue": [70, 130, 180],
-      "tan": [210, 180, 140],
-      "teal": [0, 128, 128],
-      "thistle": [216, 191, 216],
-      "tomato": [255, 99, 71],
-      "turquoise": [64, 224, 208],
-      "violet": [238, 130, 238],
-      "wheat": [245, 222, 179],
-      "white": [255, 255, 255],
-      "whitesmoke": [245, 245, 245],
-      "yellow": [255, 255, 0],
-      "yellowgreen": [154, 205, 50]
-    };
-  }
-});
-
-// node_modules/color-convert/conversions.js
-var require_conversions2 = __commonJS({
-  "node_modules/color-convert/conversions.js"(exports2, module2) {
-    "use strict";
-    var cssKeywords = require_color_name2();
-    var reverseKeywords = {};
-    for (key3 in cssKeywords) {
-      if (cssKeywords.hasOwnProperty(key3)) {
-        reverseKeywords[cssKeywords[key3]] = key3;
-      }
-    }
-    var key3;
-    var convert = module2.exports = {
-      rgb: { channels: 3, labels: "rgb" },
-      hsl: { channels: 3, labels: "hsl" },
-      hsv: { channels: 3, labels: "hsv" },
-      hwb: { channels: 3, labels: "hwb" },
-      cmyk: { channels: 4, labels: "cmyk" },
-      xyz: { channels: 3, labels: "xyz" },
-      lab: { channels: 3, labels: "lab" },
-      lch: { channels: 3, labels: "lch" },
-      hex: { channels: 1, labels: ["hex"] },
-      keyword: { channels: 1, labels: ["keyword"] },
-      ansi16: { channels: 1, labels: ["ansi16"] },
-      ansi256: { channels: 1, labels: ["ansi256"] },
-      hcg: { channels: 3, labels: ["h", "c", "g"] },
-      apple: { channels: 3, labels: ["r16", "g16", "b16"] },
-      gray: { channels: 1, labels: ["gray"] }
-    };
-    for (model in convert) {
-      if (convert.hasOwnProperty(model)) {
-        if (!("channels" in convert[model])) {
-          throw new Error("missing channels property: " + model);
-        }
-        if (!("labels" in convert[model])) {
-          throw new Error("missing channel labels property: " + model);
-        }
-        if (convert[model].labels.length !== convert[model].channels) {
-          throw new Error("channel and label counts mismatch: " + model);
-        }
-        channels = convert[model].channels;
-        labels = convert[model].labels;
-        delete convert[model].channels;
-        delete convert[model].labels;
-        Object.defineProperty(convert[model], "channels", { value: channels });
-        Object.defineProperty(convert[model], "labels", { value: labels });
-      }
-    }
-    var channels;
-    var labels;
-    var model;
-    convert.rgb.hsl = function(rgb) {
-      var r = rgb[0] / 255;
-      var g = rgb[1] / 255;
-      var b = rgb[2] / 255;
-      var min = Math.min(r, g, b);
-      var max = Math.max(r, g, b);
-      var delta = max - min;
-      var h;
-      var s;
-      var l;
-      if (max === min) {
-        h = 0;
-      } else if (r === max) {
-        h = (g - b) / delta;
-      } else if (g === max) {
-        h = 2 + (b - r) / delta;
-      } else if (b === max) {
-        h = 4 + (r - g) / delta;
-      }
-      h = Math.min(h * 60, 360);
-      if (h < 0) {
-        h += 360;
-      }
-      l = (min + max) / 2;
-      if (max === min) {
-        s = 0;
-      } else if (l <= 0.5) {
-        s = delta / (max + min);
-      } else {
-        s = delta / (2 - max - min);
-      }
-      return [h, s * 100, l * 100];
-    };
-    convert.rgb.hsv = function(rgb) {
-      var rdif;
-      var gdif;
-      var bdif;
-      var h;
-      var s;
-      var r = rgb[0] / 255;
-      var g = rgb[1] / 255;
-      var b = rgb[2] / 255;
-      var v = Math.max(r, g, b);
-      var diff = v - Math.min(r, g, b);
-      var diffc = function(c2) {
-        return (v - c2) / 6 / diff + 1 / 2;
-      };
-      if (diff === 0) {
-        h = s = 0;
-      } else {
-        s = diff / v;
-        rdif = diffc(r);
-        gdif = diffc(g);
-        bdif = diffc(b);
-        if (r === v) {
-          h = bdif - gdif;
-        } else if (g === v) {
-          h = 1 / 3 + rdif - bdif;
-        } else if (b === v) {
-          h = 2 / 3 + gdif - rdif;
-        }
-        if (h < 0) {
-          h += 1;
-        } else if (h > 1) {
-          h -= 1;
-        }
-      }
-      return [
-        h * 360,
-        s * 100,
-        v * 100
-      ];
-    };
-    convert.rgb.hwb = function(rgb) {
-      var r = rgb[0];
-      var g = rgb[1];
-      var b = rgb[2];
-      var h = convert.rgb.hsl(rgb)[0];
-      var w = 1 / 255 * Math.min(r, Math.min(g, b));
-      b = 1 - 1 / 255 * Math.max(r, Math.max(g, b));
-      return [h, w * 100, b * 100];
-    };
-    convert.rgb.cmyk = function(rgb) {
-      var r = rgb[0] / 255;
-      var g = rgb[1] / 255;
-      var b = rgb[2] / 255;
-      var c2;
-      var m;
-      var y;
-      var k;
-      k = Math.min(1 - r, 1 - g, 1 - b);
-      c2 = (1 - r - k) / (1 - k) || 0;
-      m = (1 - g - k) / (1 - k) || 0;
-      y = (1 - b - k) / (1 - k) || 0;
-      return [c2 * 100, m * 100, y * 100, k * 100];
-    };
-    function comparativeDistance(x, y) {
-      return Math.pow(x[0] - y[0], 2) + Math.pow(x[1] - y[1], 2) + Math.pow(x[2] - y[2], 2);
-    }
-    convert.rgb.keyword = function(rgb) {
-      var reversed = reverseKeywords[rgb];
-      if (reversed) {
-        return reversed;
-      }
-      var currentClosestDistance = Infinity;
-      var currentClosestKeyword;
-      for (var keyword in cssKeywords) {
-        if (cssKeywords.hasOwnProperty(keyword)) {
-          var value = cssKeywords[keyword];
-          var distance = comparativeDistance(rgb, value);
-          if (distance < currentClosestDistance) {
-            currentClosestDistance = distance;
-            currentClosestKeyword = keyword;
-          }
-        }
-      }
-      return currentClosestKeyword;
-    };
-    convert.keyword.rgb = function(keyword) {
-      return cssKeywords[keyword];
-    };
-    convert.rgb.xyz = function(rgb) {
-      var r = rgb[0] / 255;
-      var g = rgb[1] / 255;
-      var b = rgb[2] / 255;
-      r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
-      g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
-      b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
-      var x = r * 0.4124 + g * 0.3576 + b * 0.1805;
-      var y = r * 0.2126 + g * 0.7152 + b * 0.0722;
-      var z = r * 0.0193 + g * 0.1192 + b * 0.9505;
-      return [x * 100, y * 100, z * 100];
-    };
-    convert.rgb.lab = function(rgb) {
-      var xyz = convert.rgb.xyz(rgb);
-      var x = xyz[0];
-      var y = xyz[1];
-      var z = xyz[2];
-      var l;
-      var a;
-      var b;
-      x /= 95.047;
-      y /= 100;
-      z /= 108.883;
-      x = x > 8856e-6 ? Math.pow(x, 1 / 3) : 7.787 * x + 16 / 116;
-      y = y > 8856e-6 ? Math.pow(y, 1 / 3) : 7.787 * y + 16 / 116;
-      z = z > 8856e-6 ? Math.pow(z, 1 / 3) : 7.787 * z + 16 / 116;
-      l = 116 * y - 16;
-      a = 500 * (x - y);
-      b = 200 * (y - z);
-      return [l, a, b];
-    };
-    convert.hsl.rgb = function(hsl) {
-      var h = hsl[0] / 360;
-      var s = hsl[1] / 100;
-      var l = hsl[2] / 100;
-      var t1;
-      var t2;
-      var t3;
-      var rgb;
-      var val;
-      if (s === 0) {
-        val = l * 255;
-        return [val, val, val];
-      }
-      if (l < 0.5) {
-        t2 = l * (1 + s);
-      } else {
-        t2 = l + s - l * s;
-      }
-      t1 = 2 * l - t2;
-      rgb = [0, 0, 0];
-      for (var i2 = 0; i2 < 3; i2++) {
-        t3 = h + 1 / 3 * -(i2 - 1);
-        if (t3 < 0) {
-          t3++;
-        }
-        if (t3 > 1) {
-          t3--;
-        }
-        if (6 * t3 < 1) {
-          val = t1 + (t2 - t1) * 6 * t3;
-        } else if (2 * t3 < 1) {
-          val = t2;
-        } else if (3 * t3 < 2) {
-          val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
-        } else {
-          val = t1;
-        }
-        rgb[i2] = val * 255;
-      }
-      return rgb;
-    };
-    convert.hsl.hsv = function(hsl) {
-      var h = hsl[0];
-      var s = hsl[1] / 100;
-      var l = hsl[2] / 100;
-      var smin = s;
-      var lmin = Math.max(l, 0.01);
-      var sv;
-      var v;
-      l *= 2;
-      s *= l <= 1 ? l : 2 - l;
-      smin *= lmin <= 1 ? lmin : 2 - lmin;
-      v = (l + s) / 2;
-      sv = l === 0 ? 2 * smin / (lmin + smin) : 2 * s / (l + s);
-      return [h, sv * 100, v * 100];
-    };
-    convert.hsv.rgb = function(hsv) {
-      var h = hsv[0] / 60;
-      var s = hsv[1] / 100;
-      var v = hsv[2] / 100;
-      var hi = Math.floor(h) % 6;
-      var f = h - Math.floor(h);
-      var p = 255 * v * (1 - s);
-      var q = 255 * v * (1 - s * f);
-      var t = 255 * v * (1 - s * (1 - f));
-      v *= 255;
-      switch (hi) {
-        case 0:
-          return [v, t, p];
-        case 1:
-          return [q, v, p];
-        case 2:
-          return [p, v, t];
-        case 3:
-          return [p, q, v];
-        case 4:
-          return [t, p, v];
-        case 5:
-          return [v, p, q];
-      }
-    };
-    convert.hsv.hsl = function(hsv) {
-      var h = hsv[0];
-      var s = hsv[1] / 100;
-      var v = hsv[2] / 100;
-      var vmin = Math.max(v, 0.01);
-      var lmin;
-      var sl;
-      var l;
-      l = (2 - s) * v;
-      lmin = (2 - s) * vmin;
-      sl = s * vmin;
-      sl /= lmin <= 1 ? lmin : 2 - lmin;
-      sl = sl || 0;
-      l /= 2;
-      return [h, sl * 100, l * 100];
-    };
-    convert.hwb.rgb = function(hwb) {
-      var h = hwb[0] / 360;
-      var wh = hwb[1] / 100;
-      var bl = hwb[2] / 100;
-      var ratio = wh + bl;
-      var i2;
-      var v;
-      var f;
-      var n;
-      if (ratio > 1) {
-        wh /= ratio;
-        bl /= ratio;
-      }
-      i2 = Math.floor(6 * h);
-      v = 1 - bl;
-      f = 6 * h - i2;
-      if ((i2 & 1) !== 0) {
-        f = 1 - f;
-      }
-      n = wh + f * (v - wh);
-      var r;
-      var g;
-      var b;
-      switch (i2) {
-        default:
-        case 6:
-        case 0:
-          r = v;
-          g = n;
-          b = wh;
-          break;
-        case 1:
-          r = n;
-          g = v;
-          b = wh;
-          break;
-        case 2:
-          r = wh;
-          g = v;
-          b = n;
-          break;
-        case 3:
-          r = wh;
-          g = n;
-          b = v;
-          break;
-        case 4:
-          r = n;
-          g = wh;
-          b = v;
-          break;
-        case 5:
-          r = v;
-          g = wh;
-          b = n;
-          break;
-      }
-      return [r * 255, g * 255, b * 255];
-    };
-    convert.cmyk.rgb = function(cmyk) {
-      var c2 = cmyk[0] / 100;
-      var m = cmyk[1] / 100;
-      var y = cmyk[2] / 100;
-      var k = cmyk[3] / 100;
-      var r;
-      var g;
-      var b;
-      r = 1 - Math.min(1, c2 * (1 - k) + k);
-      g = 1 - Math.min(1, m * (1 - k) + k);
-      b = 1 - Math.min(1, y * (1 - k) + k);
-      return [r * 255, g * 255, b * 255];
-    };
-    convert.xyz.rgb = function(xyz) {
-      var x = xyz[0] / 100;
-      var y = xyz[1] / 100;
-      var z = xyz[2] / 100;
-      var r;
-      var g;
-      var b;
-      r = x * 3.2406 + y * -1.5372 + z * -0.4986;
-      g = x * -0.9689 + y * 1.8758 + z * 0.0415;
-      b = x * 0.0557 + y * -0.204 + z * 1.057;
-      r = r > 31308e-7 ? 1.055 * Math.pow(r, 1 / 2.4) - 0.055 : r * 12.92;
-      g = g > 31308e-7 ? 1.055 * Math.pow(g, 1 / 2.4) - 0.055 : g * 12.92;
-      b = b > 31308e-7 ? 1.055 * Math.pow(b, 1 / 2.4) - 0.055 : b * 12.92;
-      r = Math.min(Math.max(0, r), 1);
-      g = Math.min(Math.max(0, g), 1);
-      b = Math.min(Math.max(0, b), 1);
-      return [r * 255, g * 255, b * 255];
-    };
-    convert.xyz.lab = function(xyz) {
-      var x = xyz[0];
-      var y = xyz[1];
-      var z = xyz[2];
-      var l;
-      var a;
-      var b;
-      x /= 95.047;
-      y /= 100;
-      z /= 108.883;
-      x = x > 8856e-6 ? Math.pow(x, 1 / 3) : 7.787 * x + 16 / 116;
-      y = y > 8856e-6 ? Math.pow(y, 1 / 3) : 7.787 * y + 16 / 116;
-      z = z > 8856e-6 ? Math.pow(z, 1 / 3) : 7.787 * z + 16 / 116;
-      l = 116 * y - 16;
-      a = 500 * (x - y);
-      b = 200 * (y - z);
-      return [l, a, b];
-    };
-    convert.lab.xyz = function(lab) {
-      var l = lab[0];
-      var a = lab[1];
-      var b = lab[2];
-      var x;
-      var y;
-      var z;
-      y = (l + 16) / 116;
-      x = a / 500 + y;
-      z = y - b / 200;
-      var y2 = Math.pow(y, 3);
-      var x2 = Math.pow(x, 3);
-      var z2 = Math.pow(z, 3);
-      y = y2 > 8856e-6 ? y2 : (y - 16 / 116) / 7.787;
-      x = x2 > 8856e-6 ? x2 : (x - 16 / 116) / 7.787;
-      z = z2 > 8856e-6 ? z2 : (z - 16 / 116) / 7.787;
-      x *= 95.047;
-      y *= 100;
-      z *= 108.883;
-      return [x, y, z];
-    };
-    convert.lab.lch = function(lab) {
-      var l = lab[0];
-      var a = lab[1];
-      var b = lab[2];
-      var hr;
-      var h;
-      var c2;
-      hr = Math.atan2(b, a);
-      h = hr * 360 / 2 / Math.PI;
-      if (h < 0) {
-        h += 360;
-      }
-      c2 = Math.sqrt(a * a + b * b);
-      return [l, c2, h];
-    };
-    convert.lch.lab = function(lch) {
-      var l = lch[0];
-      var c2 = lch[1];
-      var h = lch[2];
-      var a;
-      var b;
-      var hr;
-      hr = h / 360 * 2 * Math.PI;
-      a = c2 * Math.cos(hr);
-      b = c2 * Math.sin(hr);
-      return [l, a, b];
-    };
-    convert.rgb.ansi16 = function(args) {
-      var r = args[0];
-      var g = args[1];
-      var b = args[2];
-      var value = 1 in arguments ? arguments[1] : convert.rgb.hsv(args)[2];
-      value = Math.round(value / 50);
-      if (value === 0) {
-        return 30;
-      }
-      var ansi = 30 + (Math.round(b / 255) << 2 | Math.round(g / 255) << 1 | Math.round(r / 255));
-      if (value === 2) {
-        ansi += 60;
-      }
-      return ansi;
-    };
-    convert.hsv.ansi16 = function(args) {
-      return convert.rgb.ansi16(convert.hsv.rgb(args), args[2]);
-    };
-    convert.rgb.ansi256 = function(args) {
-      var r = args[0];
-      var g = args[1];
-      var b = args[2];
-      if (r === g && g === b) {
-        if (r < 8) {
-          return 16;
-        }
-        if (r > 248) {
-          return 231;
-        }
-        return Math.round((r - 8) / 247 * 24) + 232;
-      }
-      var ansi = 16 + 36 * Math.round(r / 255 * 5) + 6 * Math.round(g / 255 * 5) + Math.round(b / 255 * 5);
-      return ansi;
-    };
-    convert.ansi16.rgb = function(args) {
-      var color = args % 10;
-      if (color === 0 || color === 7) {
-        if (args > 50) {
-          color += 3.5;
-        }
-        color = color / 10.5 * 255;
-        return [color, color, color];
-      }
-      var mult = (~~(args > 50) + 1) * 0.5;
-      var r = (color & 1) * mult * 255;
-      var g = (color >> 1 & 1) * mult * 255;
-      var b = (color >> 2 & 1) * mult * 255;
-      return [r, g, b];
-    };
-    convert.ansi256.rgb = function(args) {
-      if (args >= 232) {
-        var c2 = (args - 232) * 10 + 8;
-        return [c2, c2, c2];
-      }
-      args -= 16;
-      var rem;
-      var r = Math.floor(args / 36) / 5 * 255;
-      var g = Math.floor((rem = args % 36) / 6) / 5 * 255;
-      var b = rem % 6 / 5 * 255;
-      return [r, g, b];
-    };
-    convert.rgb.hex = function(args) {
-      var integer = ((Math.round(args[0]) & 255) << 16) + ((Math.round(args[1]) & 255) << 8) + (Math.round(args[2]) & 255);
-      var string = integer.toString(16).toUpperCase();
-      return "000000".substring(string.length) + string;
-    };
-    convert.hex.rgb = function(args) {
-      var match = args.toString(16).match(/[a-f0-9]{6}|[a-f0-9]{3}/i);
-      if (!match) {
-        return [0, 0, 0];
-      }
-      var colorString = match[0];
-      if (match[0].length === 3) {
-        colorString = colorString.split("").map(function(char) {
-          return char + char;
-        }).join("");
-      }
-      var integer = parseInt(colorString, 16);
-      var r = integer >> 16 & 255;
-      var g = integer >> 8 & 255;
-      var b = integer & 255;
-      return [r, g, b];
-    };
-    convert.rgb.hcg = function(rgb) {
-      var r = rgb[0] / 255;
-      var g = rgb[1] / 255;
-      var b = rgb[2] / 255;
-      var max = Math.max(Math.max(r, g), b);
-      var min = Math.min(Math.min(r, g), b);
-      var chroma = max - min;
-      var grayscale;
-      var hue;
-      if (chroma < 1) {
-        grayscale = min / (1 - chroma);
-      } else {
-        grayscale = 0;
-      }
-      if (chroma <= 0) {
-        hue = 0;
-      } else if (max === r) {
-        hue = (g - b) / chroma % 6;
-      } else if (max === g) {
-        hue = 2 + (b - r) / chroma;
-      } else {
-        hue = 4 + (r - g) / chroma + 4;
-      }
-      hue /= 6;
-      hue %= 1;
-      return [hue * 360, chroma * 100, grayscale * 100];
-    };
-    convert.hsl.hcg = function(hsl) {
-      var s = hsl[1] / 100;
-      var l = hsl[2] / 100;
-      var c2 = 1;
-      var f = 0;
-      if (l < 0.5) {
-        c2 = 2 * s * l;
-      } else {
-        c2 = 2 * s * (1 - l);
-      }
-      if (c2 < 1) {
-        f = (l - 0.5 * c2) / (1 - c2);
-      }
-      return [hsl[0], c2 * 100, f * 100];
-    };
-    convert.hsv.hcg = function(hsv) {
-      var s = hsv[1] / 100;
-      var v = hsv[2] / 100;
-      var c2 = s * v;
-      var f = 0;
-      if (c2 < 1) {
-        f = (v - c2) / (1 - c2);
-      }
-      return [hsv[0], c2 * 100, f * 100];
-    };
-    convert.hcg.rgb = function(hcg) {
-      var h = hcg[0] / 360;
-      var c2 = hcg[1] / 100;
-      var g = hcg[2] / 100;
-      if (c2 === 0) {
-        return [g * 255, g * 255, g * 255];
-      }
-      var pure = [0, 0, 0];
-      var hi = h % 1 * 6;
-      var v = hi % 1;
-      var w = 1 - v;
-      var mg = 0;
-      switch (Math.floor(hi)) {
-        case 0:
-          pure[0] = 1;
-          pure[1] = v;
-          pure[2] = 0;
-          break;
-        case 1:
-          pure[0] = w;
-          pure[1] = 1;
-          pure[2] = 0;
-          break;
-        case 2:
-          pure[0] = 0;
-          pure[1] = 1;
-          pure[2] = v;
-          break;
-        case 3:
-          pure[0] = 0;
-          pure[1] = w;
-          pure[2] = 1;
-          break;
-        case 4:
-          pure[0] = v;
-          pure[1] = 0;
-          pure[2] = 1;
-          break;
-        default:
-          pure[0] = 1;
-          pure[1] = 0;
-          pure[2] = w;
-      }
-      mg = (1 - c2) * g;
-      return [
-        (c2 * pure[0] + mg) * 255,
-        (c2 * pure[1] + mg) * 255,
-        (c2 * pure[2] + mg) * 255
-      ];
-    };
-    convert.hcg.hsv = function(hcg) {
-      var c2 = hcg[1] / 100;
-      var g = hcg[2] / 100;
-      var v = c2 + g * (1 - c2);
-      var f = 0;
-      if (v > 0) {
-        f = c2 / v;
-      }
-      return [hcg[0], f * 100, v * 100];
-    };
-    convert.hcg.hsl = function(hcg) {
-      var c2 = hcg[1] / 100;
-      var g = hcg[2] / 100;
-      var l = g * (1 - c2) + 0.5 * c2;
-      var s = 0;
-      if (l > 0 && l < 0.5) {
-        s = c2 / (2 * l);
-      } else if (l >= 0.5 && l < 1) {
-        s = c2 / (2 * (1 - l));
-      }
-      return [hcg[0], s * 100, l * 100];
-    };
-    convert.hcg.hwb = function(hcg) {
-      var c2 = hcg[1] / 100;
-      var g = hcg[2] / 100;
-      var v = c2 + g * (1 - c2);
-      return [hcg[0], (v - c2) * 100, (1 - v) * 100];
-    };
-    convert.hwb.hcg = function(hwb) {
-      var w = hwb[1] / 100;
-      var b = hwb[2] / 100;
-      var v = 1 - b;
-      var c2 = v - w;
-      var g = 0;
-      if (c2 < 1) {
-        g = (v - c2) / (1 - c2);
-      }
-      return [hwb[0], c2 * 100, g * 100];
-    };
-    convert.apple.rgb = function(apple) {
-      return [apple[0] / 65535 * 255, apple[1] / 65535 * 255, apple[2] / 65535 * 255];
-    };
-    convert.rgb.apple = function(rgb) {
-      return [rgb[0] / 255 * 65535, rgb[1] / 255 * 65535, rgb[2] / 255 * 65535];
-    };
-    convert.gray.rgb = function(args) {
-      return [args[0] / 100 * 255, args[0] / 100 * 255, args[0] / 100 * 255];
-    };
-    convert.gray.hsl = convert.gray.hsv = function(args) {
-      return [0, 0, args[0]];
-    };
-    convert.gray.hwb = function(gray) {
-      return [0, 100, gray[0]];
-    };
-    convert.gray.cmyk = function(gray) {
-      return [0, 0, 0, gray[0]];
-    };
-    convert.gray.lab = function(gray) {
-      return [gray[0], 0, 0];
-    };
-    convert.gray.hex = function(gray) {
-      var val = Math.round(gray[0] / 100 * 255) & 255;
-      var integer = (val << 16) + (val << 8) + val;
-      var string = integer.toString(16).toUpperCase();
-      return "000000".substring(string.length) + string;
-    };
-    convert.rgb.gray = function(rgb) {
-      var val = (rgb[0] + rgb[1] + rgb[2]) / 3;
-      return [val / 255 * 100];
-    };
-  }
-});
-
-// node_modules/color-convert/route.js
-var require_route2 = __commonJS({
-  "node_modules/color-convert/route.js"(exports2, module2) {
-    "use strict";
-    var conversions = require_conversions2();
-    function buildGraph() {
-      var graph = {};
-      var models = Object.keys(conversions);
-      for (var len = models.length, i2 = 0; i2 < len; i2++) {
-        graph[models[i2]] = {
-          // http://jsperf.com/1-vs-infinity
-          // micro-opt, but this is simple.
-          distance: -1,
-          parent: null
-        };
-      }
-      return graph;
-    }
-    function deriveBFS(fromModel) {
-      var graph = buildGraph();
-      var queue = [fromModel];
-      graph[fromModel].distance = 0;
-      while (queue.length) {
-        var current = queue.pop();
-        var adjacents = Object.keys(conversions[current]);
-        for (var len = adjacents.length, i2 = 0; i2 < len; i2++) {
-          var adjacent = adjacents[i2];
-          var node = graph[adjacent];
-          if (node.distance === -1) {
-            node.distance = graph[current].distance + 1;
-            node.parent = current;
-            queue.unshift(adjacent);
-          }
-        }
-      }
-      return graph;
-    }
-    function link(from, to) {
-      return function(args) {
-        return to(from(args));
-      };
-    }
-    function wrapConversion(toModel, graph) {
-      var path8 = [graph[toModel].parent, toModel];
-      var fn = conversions[graph[toModel].parent][toModel];
-      var cur = graph[toModel].parent;
-      while (graph[cur].parent) {
-        path8.unshift(graph[cur].parent);
-        fn = link(conversions[graph[cur].parent][cur], fn);
-        cur = graph[cur].parent;
-      }
-      fn.conversion = path8;
-      return fn;
-    }
-    module2.exports = function(fromModel) {
-      var graph = deriveBFS(fromModel);
-      var conversion = {};
-      var models = Object.keys(graph);
-      for (var len = models.length, i2 = 0; i2 < len; i2++) {
-        var toModel = models[i2];
-        var node = graph[toModel];
-        if (node.parent === null) {
-          continue;
-        }
-        conversion[toModel] = wrapConversion(toModel, graph);
-      }
-      return conversion;
-    };
-  }
-});
-
-// node_modules/color-convert/index.js
-var require_color_convert2 = __commonJS({
-  "node_modules/color-convert/index.js"(exports2, module2) {
-    "use strict";
-    var conversions = require_conversions2();
-    var route = require_route2();
-    var convert = {};
-    var models = Object.keys(conversions);
-    function wrapRaw(fn) {
-      var wrappedFn = function(args) {
-        if (args === void 0 || args === null) {
-          return args;
-        }
-        if (arguments.length > 1) {
-          args = Array.prototype.slice.call(arguments);
-        }
-        return fn(args);
-      };
-      if ("conversion" in fn) {
-        wrappedFn.conversion = fn.conversion;
-      }
-      return wrappedFn;
-    }
-    function wrapRounded(fn) {
-      var wrappedFn = function(args) {
-        if (args === void 0 || args === null) {
-          return args;
-        }
-        if (arguments.length > 1) {
-          args = Array.prototype.slice.call(arguments);
-        }
-        var result = fn(args);
-        if (typeof result === "object") {
-          for (var len = result.length, i2 = 0; i2 < len; i2++) {
-            result[i2] = Math.round(result[i2]);
-          }
-        }
-        return result;
-      };
-      if ("conversion" in fn) {
-        wrappedFn.conversion = fn.conversion;
-      }
-      return wrappedFn;
-    }
-    models.forEach(function(fromModel) {
-      convert[fromModel] = {};
-      Object.defineProperty(convert[fromModel], "channels", { value: conversions[fromModel].channels });
-      Object.defineProperty(convert[fromModel], "labels", { value: conversions[fromModel].labels });
-      var routes = route(fromModel);
-      var routeModels = Object.keys(routes);
-      routeModels.forEach(function(toModel) {
-        var fn = routes[toModel];
-        convert[fromModel][toModel] = wrapRounded(fn);
-        convert[fromModel][toModel].raw = wrapRaw(fn);
-      });
-    });
-    module2.exports = convert;
-  }
-});
-
-// node_modules/@babel/highlight/node_modules/ansi-styles/index.js
-var require_ansi_styles2 = __commonJS({
-  "node_modules/@babel/highlight/node_modules/ansi-styles/index.js"(exports2, module2) {
-    "use strict";
-    var colorConvert = require_color_convert2();
-    var wrapAnsi16 = (fn, offset) => function() {
-      const code = fn.apply(colorConvert, arguments);
-      return `\x1B[${code + offset}m`;
-    };
-    var wrapAnsi256 = (fn, offset) => function() {
-      const code = fn.apply(colorConvert, arguments);
-      return `\x1B[${38 + offset};5;${code}m`;
-    };
-    var wrapAnsi16m = (fn, offset) => function() {
-      const rgb = fn.apply(colorConvert, arguments);
-      return `\x1B[${38 + offset};2;${rgb[0]};${rgb[1]};${rgb[2]}m`;
-    };
-    function assembleStyles() {
-      const codes = /* @__PURE__ */ new Map();
-      const styles = {
-        modifier: {
-          reset: [0, 0],
-          // 21 isn't widely supported and 22 does the same thing
-          bold: [1, 22],
-          dim: [2, 22],
-          italic: [3, 23],
-          underline: [4, 24],
-          inverse: [7, 27],
-          hidden: [8, 28],
-          strikethrough: [9, 29]
-        },
-        color: {
-          black: [30, 39],
-          red: [31, 39],
-          green: [32, 39],
-          yellow: [33, 39],
-          blue: [34, 39],
-          magenta: [35, 39],
-          cyan: [36, 39],
-          white: [37, 39],
-          gray: [90, 39],
-          // Bright color
-          redBright: [91, 39],
-          greenBright: [92, 39],
-          yellowBright: [93, 39],
-          blueBright: [94, 39],
-          magentaBright: [95, 39],
-          cyanBright: [96, 39],
-          whiteBright: [97, 39]
-        },
-        bgColor: {
-          bgBlack: [40, 49],
-          bgRed: [41, 49],
-          bgGreen: [42, 49],
-          bgYellow: [43, 49],
-          bgBlue: [44, 49],
-          bgMagenta: [45, 49],
-          bgCyan: [46, 49],
-          bgWhite: [47, 49],
-          // Bright color
-          bgBlackBright: [100, 49],
-          bgRedBright: [101, 49],
-          bgGreenBright: [102, 49],
-          bgYellowBright: [103, 49],
-          bgBlueBright: [104, 49],
-          bgMagentaBright: [105, 49],
-          bgCyanBright: [106, 49],
-          bgWhiteBright: [107, 49]
-        }
-      };
-      styles.color.grey = styles.color.gray;
-      for (const groupName of Object.keys(styles)) {
-        const group = styles[groupName];
-        for (const styleName of Object.keys(group)) {
-          const style = group[styleName];
-          styles[styleName] = {
-            open: `\x1B[${style[0]}m`,
-            close: `\x1B[${style[1]}m`
-          };
-          group[styleName] = styles[styleName];
-          codes.set(style[0], style[1]);
-        }
-        Object.defineProperty(styles, groupName, {
-          value: group,
-          enumerable: false
-        });
-        Object.defineProperty(styles, "codes", {
-          value: codes,
-          enumerable: false
-        });
-      }
-      const ansi2ansi = (n) => n;
-      const rgb2rgb = (r, g, b) => [r, g, b];
-      styles.color.close = "\x1B[39m";
-      styles.bgColor.close = "\x1B[49m";
-      styles.color.ansi = {
-        ansi: wrapAnsi16(ansi2ansi, 0)
-      };
-      styles.color.ansi256 = {
-        ansi256: wrapAnsi256(ansi2ansi, 0)
-      };
-      styles.color.ansi16m = {
-        rgb: wrapAnsi16m(rgb2rgb, 0)
-      };
-      styles.bgColor.ansi = {
-        ansi: wrapAnsi16(ansi2ansi, 10)
-      };
-      styles.bgColor.ansi256 = {
-        ansi256: wrapAnsi256(ansi2ansi, 10)
-      };
-      styles.bgColor.ansi16m = {
-        rgb: wrapAnsi16m(rgb2rgb, 10)
-      };
-      for (let key3 of Object.keys(colorConvert)) {
-        if (typeof colorConvert[key3] !== "object") {
-          continue;
-        }
-        const suite = colorConvert[key3];
-        if (key3 === "ansi16") {
-          key3 = "ansi";
-        }
-        if ("ansi16" in suite) {
-          styles.color.ansi[key3] = wrapAnsi16(suite.ansi16, 0);
-          styles.bgColor.ansi[key3] = wrapAnsi16(suite.ansi16, 10);
-        }
-        if ("ansi256" in suite) {
-          styles.color.ansi256[key3] = wrapAnsi256(suite.ansi256, 0);
-          styles.bgColor.ansi256[key3] = wrapAnsi256(suite.ansi256, 10);
-        }
-        if ("rgb" in suite) {
-          styles.color.ansi16m[key3] = wrapAnsi16m(suite.rgb, 0);
-          styles.bgColor.ansi16m[key3] = wrapAnsi16m(suite.rgb, 10);
-        }
-      }
-      return styles;
-    }
-    Object.defineProperty(module2, "exports", {
-      enumerable: true,
-      get: assembleStyles
-    });
-  }
-});
-
-// node_modules/@babel/highlight/node_modules/has-flag/index.js
-var require_has_flag2 = __commonJS({
-  "node_modules/@babel/highlight/node_modules/has-flag/index.js"(exports2, module2) {
-    "use strict";
-    module2.exports = (flag, argv) => {
-      argv = argv || process.argv;
-      const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
-      const pos2 = argv.indexOf(prefix + flag);
-      const terminatorPos = argv.indexOf("--");
-      return pos2 !== -1 && (terminatorPos === -1 ? true : pos2 < terminatorPos);
-    };
-  }
-});
-
-// node_modules/@babel/highlight/node_modules/supports-color/index.js
-var require_supports_color2 = __commonJS({
-  "node_modules/@babel/highlight/node_modules/supports-color/index.js"(exports2, module2) {
-    "use strict";
-    var os = require("os");
-    var hasFlag = require_has_flag2();
-    var env = process.env;
-    var forceColor;
-    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false")) {
-      forceColor = false;
-    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
-      forceColor = true;
-    }
-    if ("FORCE_COLOR" in env) {
-      forceColor = env.FORCE_COLOR.length === 0 || parseInt(env.FORCE_COLOR, 10) !== 0;
-    }
-    function translateLevel(level) {
-      if (level === 0) {
-        return false;
-      }
-      return {
-        level,
-        hasBasic: true,
-        has256: level >= 2,
-        has16m: level >= 3
-      };
-    }
-    function supportsColor(stream) {
-      if (forceColor === false) {
-        return 0;
-      }
-      if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
-        return 3;
-      }
-      if (hasFlag("color=256")) {
-        return 2;
-      }
-      if (stream && !stream.isTTY && forceColor !== true) {
-        return 0;
-      }
-      const min = forceColor ? 1 : 0;
-      if (process.platform === "win32") {
-        const osRelease = os.release().split(".");
-        if (Number(process.versions.node.split(".")[0]) >= 8 && Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
-          return Number(osRelease[2]) >= 14931 ? 3 : 2;
-        }
-        return 1;
-      }
-      if ("CI" in env) {
-        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI"].some((sign2) => sign2 in env) || env.CI_NAME === "codeship") {
-          return 1;
-        }
-        return min;
-      }
-      if ("TEAMCITY_VERSION" in env) {
-        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
-      }
-      if (env.COLORTERM === "truecolor") {
-        return 3;
-      }
-      if ("TERM_PROGRAM" in env) {
-        const version = parseInt((env.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
-        switch (env.TERM_PROGRAM) {
-          case "iTerm.app":
-            return version >= 3 ? 3 : 2;
-          case "Apple_Terminal":
-            return 2;
-        }
-      }
-      if (/-256(color)?$/i.test(env.TERM)) {
-        return 2;
-      }
-      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
-        return 1;
-      }
-      if ("COLORTERM" in env) {
-        return 1;
-      }
-      if (env.TERM === "dumb") {
-        return min;
-      }
-      return min;
-    }
-    function getSupportLevel(stream) {
-      const level = supportsColor(stream);
-      return translateLevel(level);
-    }
-    module2.exports = {
-      supportsColor: getSupportLevel,
-      stdout: getSupportLevel(process.stdout),
-      stderr: getSupportLevel(process.stderr)
-    };
-  }
-});
-
-// node_modules/@babel/highlight/node_modules/chalk/templates.js
-var require_templates2 = __commonJS({
-  "node_modules/@babel/highlight/node_modules/chalk/templates.js"(exports2, module2) {
-    "use strict";
-    var TEMPLATE_REGEX = /(?:\\(u[a-f\d]{4}|x[a-f\d]{2}|.))|(?:\{(~)?(\w+(?:\([^)]*\))?(?:\.\w+(?:\([^)]*\))?)*)(?:[ \t]|(?=\r?\n)))|(\})|((?:.|[\r\n\f])+?)/gi;
-    var STYLE_REGEX = /(?:^|\.)(\w+)(?:\(([^)]*)\))?/g;
-    var STRING_REGEX = /^(['"])((?:\\.|(?!\1)[^\\])*)\1$/;
-    var ESCAPE_REGEX = /\\(u[a-f\d]{4}|x[a-f\d]{2}|.)|([^\\])/gi;
-    var ESCAPES = /* @__PURE__ */ new Map([
-      ["n", "\n"],
-      ["r", "\r"],
-      ["t", "	"],
-      ["b", "\b"],
-      ["f", "\f"],
-      ["v", "\v"],
-      ["0", "\0"],
-      ["\\", "\\"],
-      ["e", "\x1B"],
-      ["a", "\x07"]
-    ]);
-    function unescape2(c2) {
-      if (c2[0] === "u" && c2.length === 5 || c2[0] === "x" && c2.length === 3) {
-        return String.fromCharCode(parseInt(c2.slice(1), 16));
-      }
-      return ESCAPES.get(c2) || c2;
-    }
-    function parseArguments(name, args) {
-      const results = [];
-      const chunks = args.trim().split(/\s*,\s*/g);
-      let matches;
-      for (const chunk of chunks) {
-        if (!isNaN(chunk)) {
-          results.push(Number(chunk));
-        } else if (matches = chunk.match(STRING_REGEX)) {
-          results.push(matches[2].replace(ESCAPE_REGEX, (m, escape2, chr) => escape2 ? unescape2(escape2) : chr));
-        } else {
-          throw new Error(`Invalid Chalk template style argument: ${chunk} (in style '${name}')`);
-        }
-      }
-      return results;
-    }
-    function parseStyle(style) {
-      STYLE_REGEX.lastIndex = 0;
-      const results = [];
-      let matches;
-      while ((matches = STYLE_REGEX.exec(style)) !== null) {
-        const name = matches[1];
-        if (matches[2]) {
-          const args = parseArguments(name, matches[2]);
-          results.push([name].concat(args));
-        } else {
-          results.push([name]);
-        }
-      }
-      return results;
-    }
-    function buildStyle(chalk, styles) {
-      const enabled = {};
-      for (const layer of styles) {
-        for (const style of layer.styles) {
-          enabled[style[0]] = layer.inverse ? null : style.slice(1);
-        }
-      }
-      let current = chalk;
-      for (const styleName of Object.keys(enabled)) {
-        if (Array.isArray(enabled[styleName])) {
-          if (!(styleName in current)) {
-            throw new Error(`Unknown Chalk style: ${styleName}`);
-          }
-          if (enabled[styleName].length > 0) {
-            current = current[styleName].apply(current, enabled[styleName]);
-          } else {
-            current = current[styleName];
-          }
-        }
-      }
-      return current;
-    }
-    module2.exports = (chalk, tmp) => {
-      const styles = [];
-      const chunks = [];
-      let chunk = [];
-      tmp.replace(TEMPLATE_REGEX, (m, escapeChar, inverse, style, close, chr) => {
-        if (escapeChar) {
-          chunk.push(unescape2(escapeChar));
-        } else if (style) {
-          const str = chunk.join("");
-          chunk = [];
-          chunks.push(styles.length === 0 ? str : buildStyle(chalk, styles)(str));
-          styles.push({ inverse, styles: parseStyle(style) });
-        } else if (close) {
-          if (styles.length === 0) {
-            throw new Error("Found extraneous } in Chalk template literal");
-          }
-          chunks.push(buildStyle(chalk, styles)(chunk.join("")));
-          chunk = [];
-          styles.pop();
-        } else {
-          chunk.push(chr);
-        }
-      });
-      chunks.push(chunk.join(""));
-      if (styles.length > 0) {
-        const errMsg = `Chalk template literal is missing ${styles.length} closing bracket${styles.length === 1 ? "" : "s"} (\`}\`)`;
-        throw new Error(errMsg);
-      }
-      return chunks.join("");
-    };
-  }
-});
-
-// node_modules/@babel/highlight/node_modules/chalk/index.js
-var require_chalk = __commonJS({
-  "node_modules/@babel/highlight/node_modules/chalk/index.js"(exports2, module2) {
-    "use strict";
-    var escapeStringRegexp = require_escape_string_regexp();
-    var ansiStyles = require_ansi_styles2();
-    var stdoutColor = require_supports_color2().stdout;
-    var template = require_templates2();
-    var isSimpleWindowsTerm = process.platform === "win32" && !(process.env.TERM || "").toLowerCase().startsWith("xterm");
-    var levelMapping = ["ansi", "ansi", "ansi256", "ansi16m"];
-    var skipModels = /* @__PURE__ */ new Set(["gray"]);
-    var styles = /* @__PURE__ */ Object.create(null);
-    function applyOptions(obj, options) {
-      options = options || {};
-      const scLevel = stdoutColor ? stdoutColor.level : 0;
-      obj.level = options.level === void 0 ? scLevel : options.level;
-      obj.enabled = "enabled" in options ? options.enabled : obj.level > 0;
-    }
-    function Chalk(options) {
-      if (!this || !(this instanceof Chalk) || this.template) {
-        const chalk = {};
-        applyOptions(chalk, options);
-        chalk.template = function() {
-          const args = [].slice.call(arguments);
-          return chalkTag.apply(null, [chalk.template].concat(args));
-        };
-        Object.setPrototypeOf(chalk, Chalk.prototype);
-        Object.setPrototypeOf(chalk.template, chalk);
-        chalk.template.constructor = Chalk;
-        return chalk.template;
-      }
-      applyOptions(this, options);
-    }
-    if (isSimpleWindowsTerm) {
-      ansiStyles.blue.open = "\x1B[94m";
-    }
-    for (const key3 of Object.keys(ansiStyles)) {
-      ansiStyles[key3].closeRe = new RegExp(escapeStringRegexp(ansiStyles[key3].close), "g");
-      styles[key3] = {
-        get() {
-          const codes = ansiStyles[key3];
-          return build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, key3);
-        }
-      };
-    }
-    styles.visible = {
-      get() {
-        return build.call(this, this._styles || [], true, "visible");
-      }
-    };
-    ansiStyles.color.closeRe = new RegExp(escapeStringRegexp(ansiStyles.color.close), "g");
-    for (const model of Object.keys(ansiStyles.color.ansi)) {
-      if (skipModels.has(model)) {
-        continue;
-      }
-      styles[model] = {
-        get() {
-          const level = this.level;
-          return function() {
-            const open = ansiStyles.color[levelMapping[level]][model].apply(null, arguments);
-            const codes = {
-              open,
-              close: ansiStyles.color.close,
-              closeRe: ansiStyles.color.closeRe
-            };
-            return build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, model);
-          };
-        }
-      };
-    }
-    ansiStyles.bgColor.closeRe = new RegExp(escapeStringRegexp(ansiStyles.bgColor.close), "g");
-    for (const model of Object.keys(ansiStyles.bgColor.ansi)) {
-      if (skipModels.has(model)) {
-        continue;
-      }
-      const bgModel = "bg" + model[0].toUpperCase() + model.slice(1);
-      styles[bgModel] = {
-        get() {
-          const level = this.level;
-          return function() {
-            const open = ansiStyles.bgColor[levelMapping[level]][model].apply(null, arguments);
-            const codes = {
-              open,
-              close: ansiStyles.bgColor.close,
-              closeRe: ansiStyles.bgColor.closeRe
-            };
-            return build.call(this, this._styles ? this._styles.concat(codes) : [codes], this._empty, model);
-          };
-        }
-      };
-    }
-    var proto = Object.defineProperties(() => {
-    }, styles);
-    function build(_styles, _empty, key3) {
-      const builder = function() {
-        return applyStyle.apply(builder, arguments);
-      };
-      builder._styles = _styles;
-      builder._empty = _empty;
-      const self = this;
-      Object.defineProperty(builder, "level", {
-        enumerable: true,
-        get() {
-          return self.level;
-        },
-        set(level) {
-          self.level = level;
-        }
-      });
-      Object.defineProperty(builder, "enabled", {
-        enumerable: true,
-        get() {
-          return self.enabled;
-        },
-        set(enabled) {
-          self.enabled = enabled;
-        }
-      });
-      builder.hasGrey = this.hasGrey || key3 === "gray" || key3 === "grey";
-      builder.__proto__ = proto;
-      return builder;
-    }
-    function applyStyle() {
-      const args = arguments;
-      const argsLen = args.length;
-      let str = String(arguments[0]);
-      if (argsLen === 0) {
-        return "";
-      }
-      if (argsLen > 1) {
-        for (let a = 1; a < argsLen; a++) {
-          str += " " + args[a];
-        }
-      }
-      if (!this.enabled || this.level <= 0 || !str) {
-        return this._empty ? "" : str;
-      }
-      const originalDim = ansiStyles.dim.open;
-      if (isSimpleWindowsTerm && this.hasGrey) {
-        ansiStyles.dim.open = "";
-      }
-      for (const code of this._styles.slice().reverse()) {
-        str = code.open + str.replace(code.closeRe, code.open) + code.close;
-        str = str.replace(/\r?\n/g, `${code.close}$&${code.open}`);
-      }
-      ansiStyles.dim.open = originalDim;
-      return str;
-    }
-    function chalkTag(chalk, strings) {
-      if (!Array.isArray(strings)) {
-        return [].slice.call(arguments, 1).join(" ");
-      }
-      const args = [].slice.call(arguments, 2);
-      const parts = [strings.raw[0]];
-      for (let i2 = 1; i2 < strings.length; i2++) {
-        parts.push(String(args[i2 - 1]).replace(/[{}\\]/g, "\\$&"));
-        parts.push(String(strings.raw[i2]));
-      }
-      return template(chalk, parts.join(""));
-    }
-    Object.defineProperties(Chalk.prototype, styles);
-    module2.exports = Chalk();
-    module2.exports.supportsColor = stdoutColor;
-    module2.exports.default = module2.exports;
-  }
-});
-
-// node_modules/@babel/highlight/lib/index.js
-var require_lib4 = __commonJS({
-  "node_modules/@babel/highlight/lib/index.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", {
-      value: true
-    });
-    exports2.default = highlight;
-    exports2.shouldHighlight = shouldHighlight;
-    var _jsTokens = require_js_tokens();
-    var _helperValidatorIdentifier = require_lib3();
-    var _picocolors = _interopRequireWildcard(require_picocolors(), true);
-    function _getRequireWildcardCache(e) {
-      if ("function" != typeof WeakMap) return null;
-      var r = /* @__PURE__ */ new WeakMap(), t = /* @__PURE__ */ new WeakMap();
-      return (_getRequireWildcardCache = function(e2) {
-        return e2 ? t : r;
-      })(e);
-    }
-    function _interopRequireWildcard(e, r) {
-      if (!r && e && e.__esModule) return e;
-      if (null === e || "object" != typeof e && "function" != typeof e) return { default: e };
-      var t = _getRequireWildcardCache(r);
-      if (t && t.has(e)) return t.get(e);
-      var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor;
-      for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) {
-        var i2 = a ? Object.getOwnPropertyDescriptor(e, u) : null;
-        i2 && (i2.get || i2.set) ? Object.defineProperty(n, u, i2) : n[u] = e[u];
-      }
-      return n.default = e, t && t.set(e, n), n;
-    }
-    var colors = typeof process === "object" && (process.env.FORCE_COLOR === "0" || process.env.FORCE_COLOR === "false") ? (0, _picocolors.createColors)(false) : _picocolors.default;
-    var compose = (f, g) => (v) => f(g(v));
-    var sometimesKeywords = /* @__PURE__ */ new Set(["as", "async", "from", "get", "of", "set"]);
-    function getDefs(colors2) {
-      return {
-        keyword: colors2.cyan,
-        capitalized: colors2.yellow,
-        jsxIdentifier: colors2.yellow,
-        punctuator: colors2.yellow,
-        number: colors2.magenta,
-        string: colors2.green,
-        regex: colors2.magenta,
-        comment: colors2.gray,
-        invalid: compose(compose(colors2.white, colors2.bgRed), colors2.bold)
-      };
-    }
-    var NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
-    var BRACKET = /^[()[\]{}]$/;
-    var tokenize;
-    {
-      const JSX_TAG = /^[a-z][\w-]*$/i;
-      const getTokenType = function(token2, offset, text) {
-        if (token2.type === "name") {
-          if ((0, _helperValidatorIdentifier.isKeyword)(token2.value) || (0, _helperValidatorIdentifier.isStrictReservedWord)(token2.value, true) || sometimesKeywords.has(token2.value)) {
-            return "keyword";
-          }
-          if (JSX_TAG.test(token2.value) && (text[offset - 1] === "<" || text.slice(offset - 2, offset) === "</")) {
-            return "jsxIdentifier";
-          }
-          if (token2.value[0] !== token2.value[0].toLowerCase()) {
-            return "capitalized";
-          }
-        }
-        if (token2.type === "punctuator" && BRACKET.test(token2.value)) {
-          return "bracket";
-        }
-        if (token2.type === "invalid" && (token2.value === "@" || token2.value === "#")) {
-          return "punctuator";
-        }
-        return token2.type;
-      };
-      tokenize = function* (text) {
-        let match;
-        while (match = _jsTokens.default.exec(text)) {
-          const token2 = _jsTokens.matchToToken(match);
-          yield {
-            type: getTokenType(token2, match.index, text),
-            value: token2.value
-          };
-        }
-      };
-    }
-    function highlightTokens(defs, text) {
-      let highlighted = "";
-      for (const {
-        type,
-        value
-      } of tokenize(text)) {
-        const colorize = defs[type];
-        if (colorize) {
-          highlighted += value.split(NEWLINE).map((str) => colorize(str)).join("\n");
-        } else {
-          highlighted += value;
-        }
-      }
-      return highlighted;
-    }
-    function shouldHighlight(options) {
-      return colors.isColorSupported || options.forceColor;
-    }
-    var pcWithForcedColor = void 0;
-    function getColors(forceColor) {
-      if (forceColor) {
-        var _pcWithForcedColor;
-        (_pcWithForcedColor = pcWithForcedColor) != null ? _pcWithForcedColor : pcWithForcedColor = (0, _picocolors.createColors)(true);
-        return pcWithForcedColor;
-      }
-      return colors;
-    }
-    function highlight(code, options = {}) {
-      if (code !== "" && shouldHighlight(options)) {
-        const defs = getDefs(getColors(options.forceColor));
-        return highlightTokens(defs, code);
-      } else {
-        return code;
-      }
-    }
-    {
-      let chalk, chalkWithForcedColor;
-      exports2.getChalk = ({
-        forceColor
-      }) => {
-        var _chalk;
-        (_chalk = chalk) != null ? _chalk : chalk = require_chalk();
-        if (forceColor) {
-          var _chalkWithForcedColor;
-          (_chalkWithForcedColor = chalkWithForcedColor) != null ? _chalkWithForcedColor : chalkWithForcedColor = new chalk.constructor({
-            enabled: true,
-            level: 1
-          });
-          return chalkWithForcedColor;
-        }
-        return chalk;
-      };
-    }
-  }
-});
-
-// node_modules/@expo/json-file/node_modules/@babel/code-frame/lib/index.js
-var require_lib5 = __commonJS({
-  "node_modules/@expo/json-file/node_modules/@babel/code-frame/lib/index.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", {
-      value: true
-    });
-    exports2.codeFrameColumns = codeFrameColumns;
-    exports2.default = _default;
-    var _highlight = _interopRequireWildcard(require_lib4());
-    function _getRequireWildcardCache() {
-      if (typeof WeakMap !== "function") return null;
-      var cache = /* @__PURE__ */ new WeakMap();
-      _getRequireWildcardCache = function() {
-        return cache;
-      };
-      return cache;
-    }
-    function _interopRequireWildcard(obj) {
-      if (obj && obj.__esModule) {
-        return obj;
-      }
-      if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
-        return { default: obj };
-      }
-      var cache = _getRequireWildcardCache();
-      if (cache && cache.has(obj)) {
-        return cache.get(obj);
-      }
-      var newObj = {};
-      var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
-      for (var key3 in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key3)) {
-          var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key3) : null;
-          if (desc && (desc.get || desc.set)) {
-            Object.defineProperty(newObj, key3, desc);
-          } else {
-            newObj[key3] = obj[key3];
-          }
-        }
-      }
-      newObj.default = obj;
-      if (cache) {
-        cache.set(obj, newObj);
-      }
-      return newObj;
-    }
-    var deprecationWarningShown = false;
-    function getDefs(chalk) {
-      return {
-        gutter: chalk.grey,
-        marker: chalk.red.bold,
-        message: chalk.red.bold
-      };
-    }
-    var NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
-    function getMarkerLines(loc, source2, opts) {
-      const startLoc = Object.assign({
-        column: 0,
-        line: -1
-      }, loc.start);
-      const endLoc = Object.assign({}, startLoc, loc.end);
-      const {
-        linesAbove = 2,
-        linesBelow = 3
-      } = opts || {};
-      const startLine = startLoc.line;
-      const startColumn = startLoc.column;
-      const endLine = endLoc.line;
-      const endColumn = endLoc.column;
-      let start = Math.max(startLine - (linesAbove + 1), 0);
-      let end = Math.min(source2.length, endLine + linesBelow);
-      if (startLine === -1) {
-        start = 0;
-      }
-      if (endLine === -1) {
-        end = source2.length;
-      }
-      const lineDiff = endLine - startLine;
-      const markerLines = {};
-      if (lineDiff) {
-        for (let i2 = 0; i2 <= lineDiff; i2++) {
-          const lineNumber = i2 + startLine;
-          if (!startColumn) {
-            markerLines[lineNumber] = true;
-          } else if (i2 === 0) {
-            const sourceLength = source2[lineNumber - 1].length;
-            markerLines[lineNumber] = [startColumn, sourceLength - startColumn + 1];
-          } else if (i2 === lineDiff) {
-            markerLines[lineNumber] = [0, endColumn];
-          } else {
-            const sourceLength = source2[lineNumber - i2].length;
-            markerLines[lineNumber] = [0, sourceLength];
-          }
-        }
-      } else {
-        if (startColumn === endColumn) {
-          if (startColumn) {
-            markerLines[startLine] = [startColumn, 0];
-          } else {
-            markerLines[startLine] = true;
-          }
-        } else {
-          markerLines[startLine] = [startColumn, endColumn - startColumn];
-        }
-      }
-      return {
-        start,
-        end,
-        markerLines
-      };
-    }
-    function codeFrameColumns(rawLines, loc, opts = {}) {
-      const highlighted = (opts.highlightCode || opts.forceColor) && (0, _highlight.shouldHighlight)(opts);
-      const chalk = (0, _highlight.getChalk)(opts);
-      const defs = getDefs(chalk);
-      const maybeHighlight = (chalkFn, string) => {
-        return highlighted ? chalkFn(string) : string;
-      };
-      const lines = rawLines.split(NEWLINE);
-      const {
-        start,
-        end,
-        markerLines
-      } = getMarkerLines(loc, lines, opts);
-      const hasColumns = loc.start && typeof loc.start.column === "number";
-      const numberMaxWidth = String(end).length;
-      const highlightedLines = highlighted ? (0, _highlight.default)(rawLines, opts) : rawLines;
-      let frame = highlightedLines.split(NEWLINE).slice(start, end).map((line2, index) => {
-        const number = start + 1 + index;
-        const paddedNumber = ` ${number}`.slice(-numberMaxWidth);
-        const gutter = ` ${paddedNumber} | `;
-        const hasMarker = markerLines[number];
-        const lastMarkerLine = !markerLines[number + 1];
-        if (hasMarker) {
-          let markerLine = "";
-          if (Array.isArray(hasMarker)) {
-            const markerSpacing = line2.slice(0, Math.max(hasMarker[0] - 1, 0)).replace(/[^\t]/g, " ");
-            const numberOfMarkers = hasMarker[1] || 1;
-            markerLine = ["\n ", maybeHighlight(defs.gutter, gutter.replace(/\d/g, " ")), markerSpacing, maybeHighlight(defs.marker, "^").repeat(numberOfMarkers)].join("");
-            if (lastMarkerLine && opts.message) {
-              markerLine += " " + maybeHighlight(defs.message, opts.message);
-            }
-          }
-          return [maybeHighlight(defs.marker, ">"), maybeHighlight(defs.gutter, gutter), line2, markerLine].join("");
-        } else {
-          return ` ${maybeHighlight(defs.gutter, gutter)}${line2}`;
-        }
-      }).join("\n");
-      if (opts.message && !hasColumns) {
-        frame = `${" ".repeat(numberMaxWidth + 1)}${opts.message}
-${frame}`;
-      }
-      if (highlighted) {
-        return chalk.reset(frame);
-      } else {
-        return frame;
-      }
-    }
-    function _default(rawLines, lineNumber, colNumber, opts = {}) {
-      if (!deprecationWarningShown) {
-        deprecationWarningShown = true;
-        const message = "Passing lineNumber and colNumber is deprecated to @babel/code-frame. Please use `codeFrameColumns`.";
-        if (process.emitWarning) {
-          process.emitWarning(message, "DeprecationWarning");
-        } else {
-          const deprecationError = new Error(message);
-          deprecationError.name = "DeprecationWarning";
-          console.warn(new Error(message));
-        }
-      }
-      colNumber = Math.max(colNumber, 0);
-      const location = {
-        start: {
-          column: colNumber,
-          line: lineNumber
-        }
-      };
-      return codeFrameColumns(rawLines, location, opts);
-    }
-  }
-});
-
-// node_modules/json5/dist/index.mjs
-var dist_exports = {};
-__export(dist_exports, {
-  default: () => dist_default
-});
-function internalize(holder, name, reviver) {
-  const value = holder[name];
-  if (value != null && typeof value === "object") {
-    if (Array.isArray(value)) {
-      for (let i2 = 0; i2 < value.length; i2++) {
-        const key3 = String(i2);
-        const replacement = internalize(value, key3, reviver);
-        if (replacement === void 0) {
-          delete value[key3];
-        } else {
-          Object.defineProperty(value, key3, {
-            value: replacement,
-            writable: true,
-            enumerable: true,
-            configurable: true
-          });
-        }
-      }
-    } else {
-      for (const key3 in value) {
-        const replacement = internalize(value, key3, reviver);
-        if (replacement === void 0) {
-          delete value[key3];
-        } else {
-          Object.defineProperty(value, key3, {
-            value: replacement,
-            writable: true,
-            enumerable: true,
-            configurable: true
-          });
-        }
-      }
-    }
-  }
-  return reviver.call(holder, name, value);
-}
-function lex() {
-  lexState = "default";
-  buffer = "";
-  doubleQuote = false;
-  sign = 1;
-  for (; ; ) {
-    c = peek();
-    const token2 = lexStates[lexState]();
-    if (token2) {
-      return token2;
-    }
-  }
-}
-function peek() {
-  if (source[pos]) {
-    return String.fromCodePoint(source.codePointAt(pos));
-  }
-}
-function read() {
-  const c2 = peek();
-  if (c2 === "\n") {
-    line++;
-    column = 0;
-  } else if (c2) {
-    column += c2.length;
-  } else {
-    column++;
-  }
-  if (c2) {
-    pos += c2.length;
-  }
-  return c2;
-}
-function newToken(type, value) {
-  return {
-    type,
-    value,
-    line,
-    column
-  };
-}
-function literal(s) {
-  for (const c2 of s) {
-    const p = peek();
-    if (p !== c2) {
-      throw invalidChar(read());
-    }
-    read();
-  }
-}
-function escape() {
-  const c2 = peek();
-  switch (c2) {
-    case "b":
-      read();
-      return "\b";
-    case "f":
-      read();
-      return "\f";
-    case "n":
-      read();
-      return "\n";
-    case "r":
-      read();
-      return "\r";
-    case "t":
-      read();
-      return "	";
-    case "v":
-      read();
-      return "\v";
-    case "0":
-      read();
-      if (util.isDigit(peek())) {
-        throw invalidChar(read());
-      }
-      return "\0";
-    case "x":
-      read();
-      return hexEscape();
-    case "u":
-      read();
-      return unicodeEscape();
-    case "\n":
-    case "\u2028":
-    case "\u2029":
-      read();
-      return "";
-    case "\r":
-      read();
-      if (peek() === "\n") {
-        read();
-      }
-      return "";
-    case "1":
-    case "2":
-    case "3":
-    case "4":
-    case "5":
-    case "6":
-    case "7":
-    case "8":
-    case "9":
-      throw invalidChar(read());
-    case void 0:
-      throw invalidChar(read());
-  }
-  return read();
-}
-function hexEscape() {
-  let buffer2 = "";
-  let c2 = peek();
-  if (!util.isHexDigit(c2)) {
-    throw invalidChar(read());
-  }
-  buffer2 += read();
-  c2 = peek();
-  if (!util.isHexDigit(c2)) {
-    throw invalidChar(read());
-  }
-  buffer2 += read();
-  return String.fromCodePoint(parseInt(buffer2, 16));
-}
-function unicodeEscape() {
-  let buffer2 = "";
-  let count = 4;
-  while (count-- > 0) {
-    const c2 = peek();
-    if (!util.isHexDigit(c2)) {
-      throw invalidChar(read());
-    }
-    buffer2 += read();
-  }
-  return String.fromCodePoint(parseInt(buffer2, 16));
-}
-function push() {
-  let value;
-  switch (token.type) {
-    case "punctuator":
-      switch (token.value) {
-        case "{":
-          value = {};
-          break;
-        case "[":
-          value = [];
-          break;
-      }
-      break;
-    case "null":
-    case "boolean":
-    case "numeric":
-    case "string":
-      value = token.value;
-      break;
-  }
-  if (root === void 0) {
-    root = value;
-  } else {
-    const parent = stack[stack.length - 1];
-    if (Array.isArray(parent)) {
-      parent.push(value);
-    } else {
-      Object.defineProperty(parent, key2, {
-        value,
-        writable: true,
-        enumerable: true,
-        configurable: true
-      });
-    }
-  }
-  if (value !== null && typeof value === "object") {
-    stack.push(value);
-    if (Array.isArray(value)) {
-      parseState = "beforeArrayValue";
-    } else {
-      parseState = "beforePropertyName";
-    }
-  } else {
-    const current = stack[stack.length - 1];
-    if (current == null) {
-      parseState = "end";
-    } else if (Array.isArray(current)) {
-      parseState = "afterArrayValue";
-    } else {
-      parseState = "afterPropertyValue";
-    }
-  }
-}
-function pop() {
-  stack.pop();
-  const current = stack[stack.length - 1];
-  if (current == null) {
-    parseState = "end";
-  } else if (Array.isArray(current)) {
-    parseState = "afterArrayValue";
-  } else {
-    parseState = "afterPropertyValue";
-  }
-}
-function invalidChar(c2) {
-  if (c2 === void 0) {
-    return syntaxError(`JSON5: invalid end of input at ${line}:${column}`);
-  }
-  return syntaxError(`JSON5: invalid character '${formatChar(c2)}' at ${line}:${column}`);
-}
-function invalidEOF() {
-  return syntaxError(`JSON5: invalid end of input at ${line}:${column}`);
-}
-function invalidIdentifier() {
-  column -= 5;
-  return syntaxError(`JSON5: invalid identifier character at ${line}:${column}`);
-}
-function separatorChar(c2) {
-  console.warn(`JSON5: '${formatChar(c2)}' in strings is not valid ECMAScript; consider escaping`);
-}
-function formatChar(c2) {
-  const replacements = {
-    "'": "\\'",
-    '"': '\\"',
-    "\\": "\\\\",
-    "\b": "\\b",
-    "\f": "\\f",
-    "\n": "\\n",
-    "\r": "\\r",
-    "	": "\\t",
-    "\v": "\\v",
-    "\0": "\\0",
-    "\u2028": "\\u2028",
-    "\u2029": "\\u2029"
-  };
-  if (replacements[c2]) {
-    return replacements[c2];
-  }
-  if (c2 < " ") {
-    const hexString = c2.charCodeAt(0).toString(16);
-    return "\\x" + ("00" + hexString).substring(hexString.length);
-  }
-  return c2;
-}
-function syntaxError(message) {
-  const err = new SyntaxError(message);
-  err.lineNumber = line;
-  err.columnNumber = column;
-  return err;
-}
-var Space_Separator, ID_Start, ID_Continue, unicode, util, source, parseState, stack, pos, line, column, token, key2, root, parse, lexState, buffer, doubleQuote, sign, c, lexStates, parseStates, stringify, JSON5, lib, dist_default;
-var init_dist = __esm({
-  "node_modules/json5/dist/index.mjs"() {
-    "use strict";
-    Space_Separator = /[\u1680\u2000-\u200A\u202F\u205F\u3000]/;
-    ID_Start = /[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u0860-\u086A\u08A0-\u08B4\u08B6-\u08BD\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u09FC\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C60\u0C61\u0C80\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D54-\u0D56\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F8\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u1884\u1887-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1C80-\u1C88\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312E\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FEA\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6EF\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AE\uA7B0-\uA7B7\uA7F7-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]|\uD800[\uDC00-\uDC0B\uDC0D-\uDC26\uDC28-\uDC3A\uDC3C\uDC3D\uDC3F-\uDC4D\uDC50-\uDC5D\uDC80-\uDCFA\uDD40-\uDD74\uDE80-\uDE9C\uDEA0-\uDED0\uDF00-\uDF1F\uDF2D-\uDF4A\uDF50-\uDF75\uDF80-\uDF9D\uDFA0-\uDFC3\uDFC8-\uDFCF\uDFD1-\uDFD5]|\uD801[\uDC00-\uDC9D\uDCB0-\uDCD3\uDCD8-\uDCFB\uDD00-\uDD27\uDD30-\uDD63\uDE00-\uDF36\uDF40-\uDF55\uDF60-\uDF67]|\uD802[\uDC00-\uDC05\uDC08\uDC0A-\uDC35\uDC37\uDC38\uDC3C\uDC3F-\uDC55\uDC60-\uDC76\uDC80-\uDC9E\uDCE0-\uDCF2\uDCF4\uDCF5\uDD00-\uDD15\uDD20-\uDD39\uDD80-\uDDB7\uDDBE\uDDBF\uDE00\uDE10-\uDE13\uDE15-\uDE17\uDE19-\uDE33\uDE60-\uDE7C\uDE80-\uDE9C\uDEC0-\uDEC7\uDEC9-\uDEE4\uDF00-\uDF35\uDF40-\uDF55\uDF60-\uDF72\uDF80-\uDF91]|\uD803[\uDC00-\uDC48\uDC80-\uDCB2\uDCC0-\uDCF2]|\uD804[\uDC03-\uDC37\uDC83-\uDCAF\uDCD0-\uDCE8\uDD03-\uDD26\uDD50-\uDD72\uDD76\uDD83-\uDDB2\uDDC1-\uDDC4\uDDDA\uDDDC\uDE00-\uDE11\uDE13-\uDE2B\uDE80-\uDE86\uDE88\uDE8A-\uDE8D\uDE8F-\uDE9D\uDE9F-\uDEA8\uDEB0-\uDEDE\uDF05-\uDF0C\uDF0F\uDF10\uDF13-\uDF28\uDF2A-\uDF30\uDF32\uDF33\uDF35-\uDF39\uDF3D\uDF50\uDF5D-\uDF61]|\uD805[\uDC00-\uDC34\uDC47-\uDC4A\uDC80-\uDCAF\uDCC4\uDCC5\uDCC7\uDD80-\uDDAE\uDDD8-\uDDDB\uDE00-\uDE2F\uDE44\uDE80-\uDEAA\uDF00-\uDF19]|\uD806[\uDCA0-\uDCDF\uDCFF\uDE00\uDE0B-\uDE32\uDE3A\uDE50\uDE5C-\uDE83\uDE86-\uDE89\uDEC0-\uDEF8]|\uD807[\uDC00-\uDC08\uDC0A-\uDC2E\uDC40\uDC72-\uDC8F\uDD00-\uDD06\uDD08\uDD09\uDD0B-\uDD30\uDD46]|\uD808[\uDC00-\uDF99]|\uD809[\uDC00-\uDC6E\uDC80-\uDD43]|[\uD80C\uD81C-\uD820\uD840-\uD868\uD86A-\uD86C\uD86F-\uD872\uD874-\uD879][\uDC00-\uDFFF]|\uD80D[\uDC00-\uDC2E]|\uD811[\uDC00-\uDE46]|\uD81A[\uDC00-\uDE38\uDE40-\uDE5E\uDED0-\uDEED\uDF00-\uDF2F\uDF40-\uDF43\uDF63-\uDF77\uDF7D-\uDF8F]|\uD81B[\uDF00-\uDF44\uDF50\uDF93-\uDF9F\uDFE0\uDFE1]|\uD821[\uDC00-\uDFEC]|\uD822[\uDC00-\uDEF2]|\uD82C[\uDC00-\uDD1E\uDD70-\uDEFB]|\uD82F[\uDC00-\uDC6A\uDC70-\uDC7C\uDC80-\uDC88\uDC90-\uDC99]|\uD835[\uDC00-\uDC54\uDC56-\uDC9C\uDC9E\uDC9F\uDCA2\uDCA5\uDCA6\uDCA9-\uDCAC\uDCAE-\uDCB9\uDCBB\uDCBD-\uDCC3\uDCC5-\uDD05\uDD07-\uDD0A\uDD0D-\uDD14\uDD16-\uDD1C\uDD1E-\uDD39\uDD3B-\uDD3E\uDD40-\uDD44\uDD46\uDD4A-\uDD50\uDD52-\uDEA5\uDEA8-\uDEC0\uDEC2-\uDEDA\uDEDC-\uDEFA\uDEFC-\uDF14\uDF16-\uDF34\uDF36-\uDF4E\uDF50-\uDF6E\uDF70-\uDF88\uDF8A-\uDFA8\uDFAA-\uDFC2\uDFC4-\uDFCB]|\uD83A[\uDC00-\uDCC4\uDD00-\uDD43]|\uD83B[\uDE00-\uDE03\uDE05-\uDE1F\uDE21\uDE22\uDE24\uDE27\uDE29-\uDE32\uDE34-\uDE37\uDE39\uDE3B\uDE42\uDE47\uDE49\uDE4B\uDE4D-\uDE4F\uDE51\uDE52\uDE54\uDE57\uDE59\uDE5B\uDE5D\uDE5F\uDE61\uDE62\uDE64\uDE67-\uDE6A\uDE6C-\uDE72\uDE74-\uDE77\uDE79-\uDE7C\uDE7E\uDE80-\uDE89\uDE8B-\uDE9B\uDEA1-\uDEA3\uDEA5-\uDEA9\uDEAB-\uDEBB]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D\uDC20-\uDFFF]|\uD873[\uDC00-\uDEA1\uDEB0-\uDFFF]|\uD87A[\uDC00-\uDFE0]|\uD87E[\uDC00-\uDE1D]/;
-    ID_Continue = /[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0300-\u0374\u0376\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u0483-\u0487\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u05D0-\u05EA\u05F0-\u05F2\u0610-\u061A\u0620-\u0669\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06FC\u06FF\u0710-\u074A\u074D-\u07B1\u07C0-\u07F5\u07FA\u0800-\u082D\u0840-\u085B\u0860-\u086A\u08A0-\u08B4\u08B6-\u08BD\u08D4-\u08E1\u08E3-\u0963\u0966-\u096F\u0971-\u0983\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BC-\u09C4\u09C7\u09C8\u09CB-\u09CE\u09D7\u09DC\u09DD\u09DF-\u09E3\u09E6-\u09F1\u09FC\u0A01-\u0A03\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A59-\u0A5C\u0A5E\u0A66-\u0A75\u0A81-\u0A83\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABC-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AD0\u0AE0-\u0AE3\u0AE6-\u0AEF\u0AF9-\u0AFF\u0B01-\u0B03\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3C-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B56\u0B57\u0B5C\u0B5D\u0B5F-\u0B63\u0B66-\u0B6F\u0B71\u0B82\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD0\u0BD7\u0BE6-\u0BEF\u0C00-\u0C03\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C58-\u0C5A\u0C60-\u0C63\u0C66-\u0C6F\u0C80-\u0C83\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBC-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CDE\u0CE0-\u0CE3\u0CE6-\u0CEF\u0CF1\u0CF2\u0D00-\u0D03\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D44\u0D46-\u0D48\u0D4A-\u0D4E\u0D54-\u0D57\u0D5F-\u0D63\u0D66-\u0D6F\u0D7A-\u0D7F\u0D82\u0D83\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DE6-\u0DEF\u0DF2\u0DF3\u0E01-\u0E3A\u0E40-\u0E4E\u0E50-\u0E59\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB9\u0EBB-\u0EBD\u0EC0-\u0EC4\u0EC6\u0EC8-\u0ECD\u0ED0-\u0ED9\u0EDC-\u0EDF\u0F00\u0F18\u0F19\u0F20-\u0F29\u0F35\u0F37\u0F39\u0F3E-\u0F47\u0F49-\u0F6C\u0F71-\u0F84\u0F86-\u0F97\u0F99-\u0FBC\u0FC6\u1000-\u1049\u1050-\u109D\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u135D-\u135F\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F8\u1700-\u170C\u170E-\u1714\u1720-\u1734\u1740-\u1753\u1760-\u176C\u176E-\u1770\u1772\u1773\u1780-\u17D3\u17D7\u17DC\u17DD\u17E0-\u17E9\u180B-\u180D\u1810-\u1819\u1820-\u1877\u1880-\u18AA\u18B0-\u18F5\u1900-\u191E\u1920-\u192B\u1930-\u193B\u1946-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u19D0-\u19D9\u1A00-\u1A1B\u1A20-\u1A5E\u1A60-\u1A7C\u1A7F-\u1A89\u1A90-\u1A99\u1AA7\u1AB0-\u1ABD\u1B00-\u1B4B\u1B50-\u1B59\u1B6B-\u1B73\u1B80-\u1BF3\u1C00-\u1C37\u1C40-\u1C49\u1C4D-\u1C7D\u1C80-\u1C88\u1CD0-\u1CD2\u1CD4-\u1CF9\u1D00-\u1DF9\u1DFB-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u203F\u2040\u2054\u2071\u207F\u2090-\u209C\u20D0-\u20DC\u20E1\u20E5-\u20F0\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D7F-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2DE0-\u2DFF\u2E2F\u3005-\u3007\u3021-\u302F\u3031-\u3035\u3038-\u303C\u3041-\u3096\u3099\u309A\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312E\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FEA\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA62B\uA640-\uA66F\uA674-\uA67D\uA67F-\uA6F1\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AE\uA7B0-\uA7B7\uA7F7-\uA827\uA840-\uA873\uA880-\uA8C5\uA8D0-\uA8D9\uA8E0-\uA8F7\uA8FB\uA8FD\uA900-\uA92D\uA930-\uA953\uA960-\uA97C\uA980-\uA9C0\uA9CF-\uA9D9\uA9E0-\uA9FE\uAA00-\uAA36\uAA40-\uAA4D\uAA50-\uAA59\uAA60-\uAA76\uAA7A-\uAAC2\uAADB-\uAADD\uAAE0-\uAAEF\uAAF2-\uAAF6\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABEA\uABEC\uABED\uABF0-\uABF9\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE00-\uFE0F\uFE20-\uFE2F\uFE33\uFE34\uFE4D-\uFE4F\uFE70-\uFE74\uFE76-\uFEFC\uFF10-\uFF19\uFF21-\uFF3A\uFF3F\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]|\uD800[\uDC00-\uDC0B\uDC0D-\uDC26\uDC28-\uDC3A\uDC3C\uDC3D\uDC3F-\uDC4D\uDC50-\uDC5D\uDC80-\uDCFA\uDD40-\uDD74\uDDFD\uDE80-\uDE9C\uDEA0-\uDED0\uDEE0\uDF00-\uDF1F\uDF2D-\uDF4A\uDF50-\uDF7A\uDF80-\uDF9D\uDFA0-\uDFC3\uDFC8-\uDFCF\uDFD1-\uDFD5]|\uD801[\uDC00-\uDC9D\uDCA0-\uDCA9\uDCB0-\uDCD3\uDCD8-\uDCFB\uDD00-\uDD27\uDD30-\uDD63\uDE00-\uDF36\uDF40-\uDF55\uDF60-\uDF67]|\uD802[\uDC00-\uDC05\uDC08\uDC0A-\uDC35\uDC37\uDC38\uDC3C\uDC3F-\uDC55\uDC60-\uDC76\uDC80-\uDC9E\uDCE0-\uDCF2\uDCF4\uDCF5\uDD00-\uDD15\uDD20-\uDD39\uDD80-\uDDB7\uDDBE\uDDBF\uDE00-\uDE03\uDE05\uDE06\uDE0C-\uDE13\uDE15-\uDE17\uDE19-\uDE33\uDE38-\uDE3A\uDE3F\uDE60-\uDE7C\uDE80-\uDE9C\uDEC0-\uDEC7\uDEC9-\uDEE6\uDF00-\uDF35\uDF40-\uDF55\uDF60-\uDF72\uDF80-\uDF91]|\uD803[\uDC00-\uDC48\uDC80-\uDCB2\uDCC0-\uDCF2]|\uD804[\uDC00-\uDC46\uDC66-\uDC6F\uDC7F-\uDCBA\uDCD0-\uDCE8\uDCF0-\uDCF9\uDD00-\uDD34\uDD36-\uDD3F\uDD50-\uDD73\uDD76\uDD80-\uDDC4\uDDCA-\uDDCC\uDDD0-\uDDDA\uDDDC\uDE00-\uDE11\uDE13-\uDE37\uDE3E\uDE80-\uDE86\uDE88\uDE8A-\uDE8D\uDE8F-\uDE9D\uDE9F-\uDEA8\uDEB0-\uDEEA\uDEF0-\uDEF9\uDF00-\uDF03\uDF05-\uDF0C\uDF0F\uDF10\uDF13-\uDF28\uDF2A-\uDF30\uDF32\uDF33\uDF35-\uDF39\uDF3C-\uDF44\uDF47\uDF48\uDF4B-\uDF4D\uDF50\uDF57\uDF5D-\uDF63\uDF66-\uDF6C\uDF70-\uDF74]|\uD805[\uDC00-\uDC4A\uDC50-\uDC59\uDC80-\uDCC5\uDCC7\uDCD0-\uDCD9\uDD80-\uDDB5\uDDB8-\uDDC0\uDDD8-\uDDDD\uDE00-\uDE40\uDE44\uDE50-\uDE59\uDE80-\uDEB7\uDEC0-\uDEC9\uDF00-\uDF19\uDF1D-\uDF2B\uDF30-\uDF39]|\uD806[\uDCA0-\uDCE9\uDCFF\uDE00-\uDE3E\uDE47\uDE50-\uDE83\uDE86-\uDE99\uDEC0-\uDEF8]|\uD807[\uDC00-\uDC08\uDC0A-\uDC36\uDC38-\uDC40\uDC50-\uDC59\uDC72-\uDC8F\uDC92-\uDCA7\uDCA9-\uDCB6\uDD00-\uDD06\uDD08\uDD09\uDD0B-\uDD36\uDD3A\uDD3C\uDD3D\uDD3F-\uDD47\uDD50-\uDD59]|\uD808[\uDC00-\uDF99]|\uD809[\uDC00-\uDC6E\uDC80-\uDD43]|[\uD80C\uD81C-\uD820\uD840-\uD868\uD86A-\uD86C\uD86F-\uD872\uD874-\uD879][\uDC00-\uDFFF]|\uD80D[\uDC00-\uDC2E]|\uD811[\uDC00-\uDE46]|\uD81A[\uDC00-\uDE38\uDE40-\uDE5E\uDE60-\uDE69\uDED0-\uDEED\uDEF0-\uDEF4\uDF00-\uDF36\uDF40-\uDF43\uDF50-\uDF59\uDF63-\uDF77\uDF7D-\uDF8F]|\uD81B[\uDF00-\uDF44\uDF50-\uDF7E\uDF8F-\uDF9F\uDFE0\uDFE1]|\uD821[\uDC00-\uDFEC]|\uD822[\uDC00-\uDEF2]|\uD82C[\uDC00-\uDD1E\uDD70-\uDEFB]|\uD82F[\uDC00-\uDC6A\uDC70-\uDC7C\uDC80-\uDC88\uDC90-\uDC99\uDC9D\uDC9E]|\uD834[\uDD65-\uDD69\uDD6D-\uDD72\uDD7B-\uDD82\uDD85-\uDD8B\uDDAA-\uDDAD\uDE42-\uDE44]|\uD835[\uDC00-\uDC54\uDC56-\uDC9C\uDC9E\uDC9F\uDCA2\uDCA5\uDCA6\uDCA9-\uDCAC\uDCAE-\uDCB9\uDCBB\uDCBD-\uDCC3\uDCC5-\uDD05\uDD07-\uDD0A\uDD0D-\uDD14\uDD16-\uDD1C\uDD1E-\uDD39\uDD3B-\uDD3E\uDD40-\uDD44\uDD46\uDD4A-\uDD50\uDD52-\uDEA5\uDEA8-\uDEC0\uDEC2-\uDEDA\uDEDC-\uDEFA\uDEFC-\uDF14\uDF16-\uDF34\uDF36-\uDF4E\uDF50-\uDF6E\uDF70-\uDF88\uDF8A-\uDFA8\uDFAA-\uDFC2\uDFC4-\uDFCB\uDFCE-\uDFFF]|\uD836[\uDE00-\uDE36\uDE3B-\uDE6C\uDE75\uDE84\uDE9B-\uDE9F\uDEA1-\uDEAF]|\uD838[\uDC00-\uDC06\uDC08-\uDC18\uDC1B-\uDC21\uDC23\uDC24\uDC26-\uDC2A]|\uD83A[\uDC00-\uDCC4\uDCD0-\uDCD6\uDD00-\uDD4A\uDD50-\uDD59]|\uD83B[\uDE00-\uDE03\uDE05-\uDE1F\uDE21\uDE22\uDE24\uDE27\uDE29-\uDE32\uDE34-\uDE37\uDE39\uDE3B\uDE42\uDE47\uDE49\uDE4B\uDE4D-\uDE4F\uDE51\uDE52\uDE54\uDE57\uDE59\uDE5B\uDE5D\uDE5F\uDE61\uDE62\uDE64\uDE67-\uDE6A\uDE6C-\uDE72\uDE74-\uDE77\uDE79-\uDE7C\uDE7E\uDE80-\uDE89\uDE8B-\uDE9B\uDEA1-\uDEA3\uDEA5-\uDEA9\uDEAB-\uDEBB]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D\uDC20-\uDFFF]|\uD873[\uDC00-\uDEA1\uDEB0-\uDFFF]|\uD87A[\uDC00-\uDFE0]|\uD87E[\uDC00-\uDE1D]|\uDB40[\uDD00-\uDDEF]/;
-    unicode = {
-      Space_Separator,
-      ID_Start,
-      ID_Continue
-    };
-    util = {
-      isSpaceSeparator(c2) {
-        return typeof c2 === "string" && unicode.Space_Separator.test(c2);
-      },
-      isIdStartChar(c2) {
-        return typeof c2 === "string" && (c2 >= "a" && c2 <= "z" || c2 >= "A" && c2 <= "Z" || c2 === "$" || c2 === "_" || unicode.ID_Start.test(c2));
-      },
-      isIdContinueChar(c2) {
-        return typeof c2 === "string" && (c2 >= "a" && c2 <= "z" || c2 >= "A" && c2 <= "Z" || c2 >= "0" && c2 <= "9" || c2 === "$" || c2 === "_" || c2 === "\u200C" || c2 === "\u200D" || unicode.ID_Continue.test(c2));
-      },
-      isDigit(c2) {
-        return typeof c2 === "string" && /[0-9]/.test(c2);
-      },
-      isHexDigit(c2) {
-        return typeof c2 === "string" && /[0-9A-Fa-f]/.test(c2);
-      }
-    };
-    parse = function parse2(text, reviver) {
-      source = String(text);
-      parseState = "start";
-      stack = [];
-      pos = 0;
-      line = 1;
-      column = 0;
-      token = void 0;
-      key2 = void 0;
-      root = void 0;
-      do {
-        token = lex();
-        parseStates[parseState]();
-      } while (token.type !== "eof");
-      if (typeof reviver === "function") {
-        return internalize({ "": root }, "", reviver);
-      }
-      return root;
-    };
-    lexStates = {
-      default() {
-        switch (c) {
-          case "	":
-          case "\v":
-          case "\f":
-          case " ":
-          case "\xA0":
-          case "\uFEFF":
-          case "\n":
-          case "\r":
-          case "\u2028":
-          case "\u2029":
-            read();
-            return;
-          case "/":
-            read();
-            lexState = "comment";
-            return;
-          case void 0:
-            read();
-            return newToken("eof");
-        }
-        if (util.isSpaceSeparator(c)) {
-          read();
-          return;
-        }
-        return lexStates[parseState]();
-      },
-      comment() {
-        switch (c) {
-          case "*":
-            read();
-            lexState = "multiLineComment";
-            return;
-          case "/":
-            read();
-            lexState = "singleLineComment";
-            return;
-        }
-        throw invalidChar(read());
-      },
-      multiLineComment() {
-        switch (c) {
-          case "*":
-            read();
-            lexState = "multiLineCommentAsterisk";
-            return;
-          case void 0:
-            throw invalidChar(read());
-        }
-        read();
-      },
-      multiLineCommentAsterisk() {
-        switch (c) {
-          case "*":
-            read();
-            return;
-          case "/":
-            read();
-            lexState = "default";
-            return;
-          case void 0:
-            throw invalidChar(read());
-        }
-        read();
-        lexState = "multiLineComment";
-      },
-      singleLineComment() {
-        switch (c) {
-          case "\n":
-          case "\r":
-          case "\u2028":
-          case "\u2029":
-            read();
-            lexState = "default";
-            return;
-          case void 0:
-            read();
-            return newToken("eof");
-        }
-        read();
-      },
-      value() {
-        switch (c) {
-          case "{":
-          case "[":
-            return newToken("punctuator", read());
-          case "n":
-            read();
-            literal("ull");
-            return newToken("null", null);
-          case "t":
-            read();
-            literal("rue");
-            return newToken("boolean", true);
-          case "f":
-            read();
-            literal("alse");
-            return newToken("boolean", false);
-          case "-":
-          case "+":
-            if (read() === "-") {
-              sign = -1;
-            }
-            lexState = "sign";
-            return;
-          case ".":
-            buffer = read();
-            lexState = "decimalPointLeading";
-            return;
-          case "0":
-            buffer = read();
-            lexState = "zero";
-            return;
-          case "1":
-          case "2":
-          case "3":
-          case "4":
-          case "5":
-          case "6":
-          case "7":
-          case "8":
-          case "9":
-            buffer = read();
-            lexState = "decimalInteger";
-            return;
-          case "I":
-            read();
-            literal("nfinity");
-            return newToken("numeric", Infinity);
-          case "N":
-            read();
-            literal("aN");
-            return newToken("numeric", NaN);
-          case '"':
-          case "'":
-            doubleQuote = read() === '"';
-            buffer = "";
-            lexState = "string";
-            return;
-        }
-        throw invalidChar(read());
-      },
-      identifierNameStartEscape() {
-        if (c !== "u") {
-          throw invalidChar(read());
-        }
-        read();
-        const u = unicodeEscape();
-        switch (u) {
-          case "$":
-          case "_":
-            break;
-          default:
-            if (!util.isIdStartChar(u)) {
-              throw invalidIdentifier();
-            }
-            break;
-        }
-        buffer += u;
-        lexState = "identifierName";
-      },
-      identifierName() {
-        switch (c) {
-          case "$":
-          case "_":
-          case "\u200C":
-          case "\u200D":
-            buffer += read();
-            return;
-          case "\\":
-            read();
-            lexState = "identifierNameEscape";
-            return;
-        }
-        if (util.isIdContinueChar(c)) {
-          buffer += read();
-          return;
-        }
-        return newToken("identifier", buffer);
-      },
-      identifierNameEscape() {
-        if (c !== "u") {
-          throw invalidChar(read());
-        }
-        read();
-        const u = unicodeEscape();
-        switch (u) {
-          case "$":
-          case "_":
-          case "\u200C":
-          case "\u200D":
-            break;
-          default:
-            if (!util.isIdContinueChar(u)) {
-              throw invalidIdentifier();
-            }
-            break;
-        }
-        buffer += u;
-        lexState = "identifierName";
-      },
-      sign() {
-        switch (c) {
-          case ".":
-            buffer = read();
-            lexState = "decimalPointLeading";
-            return;
-          case "0":
-            buffer = read();
-            lexState = "zero";
-            return;
-          case "1":
-          case "2":
-          case "3":
-          case "4":
-          case "5":
-          case "6":
-          case "7":
-          case "8":
-          case "9":
-            buffer = read();
-            lexState = "decimalInteger";
-            return;
-          case "I":
-            read();
-            literal("nfinity");
-            return newToken("numeric", sign * Infinity);
-          case "N":
-            read();
-            literal("aN");
-            return newToken("numeric", NaN);
-        }
-        throw invalidChar(read());
-      },
-      zero() {
-        switch (c) {
-          case ".":
-            buffer += read();
-            lexState = "decimalPoint";
-            return;
-          case "e":
-          case "E":
-            buffer += read();
-            lexState = "decimalExponent";
-            return;
-          case "x":
-          case "X":
-            buffer += read();
-            lexState = "hexadecimal";
-            return;
-        }
-        return newToken("numeric", sign * 0);
-      },
-      decimalInteger() {
-        switch (c) {
-          case ".":
-            buffer += read();
-            lexState = "decimalPoint";
-            return;
-          case "e":
-          case "E":
-            buffer += read();
-            lexState = "decimalExponent";
-            return;
-        }
-        if (util.isDigit(c)) {
-          buffer += read();
-          return;
-        }
-        return newToken("numeric", sign * Number(buffer));
-      },
-      decimalPointLeading() {
-        if (util.isDigit(c)) {
-          buffer += read();
-          lexState = "decimalFraction";
-          return;
-        }
-        throw invalidChar(read());
-      },
-      decimalPoint() {
-        switch (c) {
-          case "e":
-          case "E":
-            buffer += read();
-            lexState = "decimalExponent";
-            return;
-        }
-        if (util.isDigit(c)) {
-          buffer += read();
-          lexState = "decimalFraction";
-          return;
-        }
-        return newToken("numeric", sign * Number(buffer));
-      },
-      decimalFraction() {
-        switch (c) {
-          case "e":
-          case "E":
-            buffer += read();
-            lexState = "decimalExponent";
-            return;
-        }
-        if (util.isDigit(c)) {
-          buffer += read();
-          return;
-        }
-        return newToken("numeric", sign * Number(buffer));
-      },
-      decimalExponent() {
-        switch (c) {
-          case "+":
-          case "-":
-            buffer += read();
-            lexState = "decimalExponentSign";
-            return;
-        }
-        if (util.isDigit(c)) {
-          buffer += read();
-          lexState = "decimalExponentInteger";
-          return;
-        }
-        throw invalidChar(read());
-      },
-      decimalExponentSign() {
-        if (util.isDigit(c)) {
-          buffer += read();
-          lexState = "decimalExponentInteger";
-          return;
-        }
-        throw invalidChar(read());
-      },
-      decimalExponentInteger() {
-        if (util.isDigit(c)) {
-          buffer += read();
-          return;
-        }
-        return newToken("numeric", sign * Number(buffer));
-      },
-      hexadecimal() {
-        if (util.isHexDigit(c)) {
-          buffer += read();
-          lexState = "hexadecimalInteger";
-          return;
-        }
-        throw invalidChar(read());
-      },
-      hexadecimalInteger() {
-        if (util.isHexDigit(c)) {
-          buffer += read();
-          return;
-        }
-        return newToken("numeric", sign * Number(buffer));
-      },
-      string() {
-        switch (c) {
-          case "\\":
-            read();
-            buffer += escape();
-            return;
-          case '"':
-            if (doubleQuote) {
-              read();
-              return newToken("string", buffer);
-            }
-            buffer += read();
-            return;
-          case "'":
-            if (!doubleQuote) {
-              read();
-              return newToken("string", buffer);
-            }
-            buffer += read();
-            return;
-          case "\n":
-          case "\r":
-            throw invalidChar(read());
-          case "\u2028":
-          case "\u2029":
-            separatorChar(c);
-            break;
-          case void 0:
-            throw invalidChar(read());
-        }
-        buffer += read();
-      },
-      start() {
-        switch (c) {
-          case "{":
-          case "[":
-            return newToken("punctuator", read());
-        }
-        lexState = "value";
-      },
-      beforePropertyName() {
-        switch (c) {
-          case "$":
-          case "_":
-            buffer = read();
-            lexState = "identifierName";
-            return;
-          case "\\":
-            read();
-            lexState = "identifierNameStartEscape";
-            return;
-          case "}":
-            return newToken("punctuator", read());
-          case '"':
-          case "'":
-            doubleQuote = read() === '"';
-            lexState = "string";
-            return;
-        }
-        if (util.isIdStartChar(c)) {
-          buffer += read();
-          lexState = "identifierName";
-          return;
-        }
-        throw invalidChar(read());
-      },
-      afterPropertyName() {
-        if (c === ":") {
-          return newToken("punctuator", read());
-        }
-        throw invalidChar(read());
-      },
-      beforePropertyValue() {
-        lexState = "value";
-      },
-      afterPropertyValue() {
-        switch (c) {
-          case ",":
-          case "}":
-            return newToken("punctuator", read());
-        }
-        throw invalidChar(read());
-      },
-      beforeArrayValue() {
-        if (c === "]") {
-          return newToken("punctuator", read());
-        }
-        lexState = "value";
-      },
-      afterArrayValue() {
-        switch (c) {
-          case ",":
-          case "]":
-            return newToken("punctuator", read());
-        }
-        throw invalidChar(read());
-      },
-      end() {
-        throw invalidChar(read());
-      }
-    };
-    parseStates = {
-      start() {
-        if (token.type === "eof") {
-          throw invalidEOF();
-        }
-        push();
-      },
-      beforePropertyName() {
-        switch (token.type) {
-          case "identifier":
-          case "string":
-            key2 = token.value;
-            parseState = "afterPropertyName";
-            return;
-          case "punctuator":
-            pop();
-            return;
-          case "eof":
-            throw invalidEOF();
-        }
-      },
-      afterPropertyName() {
-        if (token.type === "eof") {
-          throw invalidEOF();
-        }
-        parseState = "beforePropertyValue";
-      },
-      beforePropertyValue() {
-        if (token.type === "eof") {
-          throw invalidEOF();
-        }
-        push();
-      },
-      beforeArrayValue() {
-        if (token.type === "eof") {
-          throw invalidEOF();
-        }
-        if (token.type === "punctuator" && token.value === "]") {
-          pop();
-          return;
-        }
-        push();
-      },
-      afterPropertyValue() {
-        if (token.type === "eof") {
-          throw invalidEOF();
-        }
-        switch (token.value) {
-          case ",":
-            parseState = "beforePropertyName";
-            return;
-          case "}":
-            pop();
-        }
-      },
-      afterArrayValue() {
-        if (token.type === "eof") {
-          throw invalidEOF();
-        }
-        switch (token.value) {
-          case ",":
-            parseState = "beforeArrayValue";
-            return;
-          case "]":
-            pop();
-        }
-      },
-      end() {
-      }
-    };
-    stringify = function stringify2(value, replacer, space) {
-      const stack2 = [];
-      let indent = "";
-      let propertyList;
-      let replacerFunc;
-      let gap = "";
-      let quote;
-      if (replacer != null && typeof replacer === "object" && !Array.isArray(replacer)) {
-        space = replacer.space;
-        quote = replacer.quote;
-        replacer = replacer.replacer;
-      }
-      if (typeof replacer === "function") {
-        replacerFunc = replacer;
-      } else if (Array.isArray(replacer)) {
-        propertyList = [];
-        for (const v of replacer) {
-          let item;
-          if (typeof v === "string") {
-            item = v;
-          } else if (typeof v === "number" || v instanceof String || v instanceof Number) {
-            item = String(v);
-          }
-          if (item !== void 0 && propertyList.indexOf(item) < 0) {
-            propertyList.push(item);
-          }
-        }
-      }
-      if (space instanceof Number) {
-        space = Number(space);
-      } else if (space instanceof String) {
-        space = String(space);
-      }
-      if (typeof space === "number") {
-        if (space > 0) {
-          space = Math.min(10, Math.floor(space));
-          gap = "          ".substr(0, space);
-        }
-      } else if (typeof space === "string") {
-        gap = space.substr(0, 10);
-      }
-      return serializeProperty("", { "": value });
-      function serializeProperty(key3, holder) {
-        let value2 = holder[key3];
-        if (value2 != null) {
-          if (typeof value2.toJSON5 === "function") {
-            value2 = value2.toJSON5(key3);
-          } else if (typeof value2.toJSON === "function") {
-            value2 = value2.toJSON(key3);
-          }
-        }
-        if (replacerFunc) {
-          value2 = replacerFunc.call(holder, key3, value2);
-        }
-        if (value2 instanceof Number) {
-          value2 = Number(value2);
-        } else if (value2 instanceof String) {
-          value2 = String(value2);
-        } else if (value2 instanceof Boolean) {
-          value2 = value2.valueOf();
-        }
-        switch (value2) {
-          case null:
-            return "null";
-          case true:
-            return "true";
-          case false:
-            return "false";
-        }
-        if (typeof value2 === "string") {
-          return quoteString(value2, false);
-        }
-        if (typeof value2 === "number") {
-          return String(value2);
-        }
-        if (typeof value2 === "object") {
-          return Array.isArray(value2) ? serializeArray(value2) : serializeObject(value2);
-        }
-        return void 0;
-      }
-      function quoteString(value2) {
-        const quotes = {
-          "'": 0.1,
-          '"': 0.2
-        };
-        const replacements = {
-          "'": "\\'",
-          '"': '\\"',
-          "\\": "\\\\",
-          "\b": "\\b",
-          "\f": "\\f",
-          "\n": "\\n",
-          "\r": "\\r",
-          "	": "\\t",
-          "\v": "\\v",
-          "\0": "\\0",
-          "\u2028": "\\u2028",
-          "\u2029": "\\u2029"
-        };
-        let product = "";
-        for (let i2 = 0; i2 < value2.length; i2++) {
-          const c2 = value2[i2];
-          switch (c2) {
-            case "'":
-            case '"':
-              quotes[c2]++;
-              product += c2;
-              continue;
-            case "\0":
-              if (util.isDigit(value2[i2 + 1])) {
-                product += "\\x00";
-                continue;
-              }
-          }
-          if (replacements[c2]) {
-            product += replacements[c2];
-            continue;
-          }
-          if (c2 < " ") {
-            let hexString = c2.charCodeAt(0).toString(16);
-            product += "\\x" + ("00" + hexString).substring(hexString.length);
-            continue;
-          }
-          product += c2;
-        }
-        const quoteChar = quote || Object.keys(quotes).reduce((a, b) => quotes[a] < quotes[b] ? a : b);
-        product = product.replace(new RegExp(quoteChar, "g"), replacements[quoteChar]);
-        return quoteChar + product + quoteChar;
-      }
-      function serializeObject(value2) {
-        if (stack2.indexOf(value2) >= 0) {
-          throw TypeError("Converting circular structure to JSON5");
-        }
-        stack2.push(value2);
-        let stepback = indent;
-        indent = indent + gap;
-        let keys = propertyList || Object.keys(value2);
-        let partial = [];
-        for (const key3 of keys) {
-          const propertyString = serializeProperty(key3, value2);
-          if (propertyString !== void 0) {
-            let member = serializeKey(key3) + ":";
-            if (gap !== "") {
-              member += " ";
-            }
-            member += propertyString;
-            partial.push(member);
-          }
-        }
-        let final;
-        if (partial.length === 0) {
-          final = "{}";
-        } else {
-          let properties;
-          if (gap === "") {
-            properties = partial.join(",");
-            final = "{" + properties + "}";
-          } else {
-            let separator = ",\n" + indent;
-            properties = partial.join(separator);
-            final = "{\n" + indent + properties + ",\n" + stepback + "}";
-          }
-        }
-        stack2.pop();
-        indent = stepback;
-        return final;
-      }
-      function serializeKey(key3) {
-        if (key3.length === 0) {
-          return quoteString(key3, true);
-        }
-        const firstChar = String.fromCodePoint(key3.codePointAt(0));
-        if (!util.isIdStartChar(firstChar)) {
-          return quoteString(key3, true);
-        }
-        for (let i2 = firstChar.length; i2 < key3.length; i2++) {
-          if (!util.isIdContinueChar(String.fromCodePoint(key3.codePointAt(i2)))) {
-            return quoteString(key3, true);
-          }
-        }
-        return key3;
-      }
-      function serializeArray(value2) {
-        if (stack2.indexOf(value2) >= 0) {
-          throw TypeError("Converting circular structure to JSON5");
-        }
-        stack2.push(value2);
-        let stepback = indent;
-        indent = indent + gap;
-        let partial = [];
-        for (let i2 = 0; i2 < value2.length; i2++) {
-          const propertyString = serializeProperty(String(i2), value2);
-          partial.push(propertyString !== void 0 ? propertyString : "null");
-        }
-        let final;
-        if (partial.length === 0) {
-          final = "[]";
-        } else {
-          if (gap === "") {
-            let properties = partial.join(",");
-            final = "[" + properties + "]";
-          } else {
-            let separator = ",\n" + indent;
-            let properties = partial.join(separator);
-            final = "[\n" + indent + properties + ",\n" + stepback + "]";
-          }
-        }
-        stack2.pop();
-        indent = stepback;
-        return final;
-      }
-    };
-    JSON5 = {
-      parse,
-      stringify
-    };
-    lib = JSON5;
-    dist_default = lib;
-  }
-});
-
-// node_modules/@expo/json-file/build/JsonFileError.js
-var require_JsonFileError = __commonJS({
-  "node_modules/@expo/json-file/build/JsonFileError.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.EmptyJsonFileError = void 0;
-    var JsonFileError = class extends Error {
-      cause;
-      code;
-      fileName;
-      isJsonFileError;
-      constructor(message, cause, code, fileName) {
-        let fullMessage = message;
-        if (fileName) {
-          fullMessage += `
-${cause ? "\u251C" : "\u2514"}\u2500 File: ${fileName}`;
-        }
-        if (cause) {
-          fullMessage += `
-\u2514\u2500 Cause: ${cause.name}: ${cause.message}`;
-        }
-        super(fullMessage);
-        this.name = this.constructor.name;
-        this.cause = cause;
-        this.code = code;
-        this.fileName = fileName;
-        this.isJsonFileError = true;
-      }
-    };
-    exports2.default = JsonFileError;
-    var EmptyJsonFileError = class extends JsonFileError {
-      constructor(fileName) {
-        super(`Cannot parse an empty JSON string`, void 0, "EJSONEMPTY", fileName);
-      }
-    };
-    exports2.EmptyJsonFileError = EmptyJsonFileError;
-  }
-});
-
-// node_modules/@expo/json-file/build/writeAtomic.js
-var require_writeAtomic = __commonJS({
-  "node_modules/@expo/json-file/build/writeAtomic.js"(exports2) {
-    "use strict";
-    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
-      if (k2 === void 0) k2 = k;
-      var desc = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function() {
-          return m[k];
-        } };
-      }
-      Object.defineProperty(o, k2, desc);
-    } : function(o, m, k, k2) {
-      if (k2 === void 0) k2 = k;
-      o[k2] = m[k];
-    });
-    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
-      Object.defineProperty(o, "default", { enumerable: true, value: v });
-    } : function(o, v) {
-      o["default"] = v;
-    });
-    var __importStar = exports2 && exports2.__importStar || /* @__PURE__ */ function() {
-      var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function(o2) {
-          var ar = [];
-          for (var k in o2) if (Object.prototype.hasOwnProperty.call(o2, k)) ar[ar.length] = k;
-          return ar;
-        };
-        return ownKeys(o);
-      };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
-        }
-        __setModuleDefault(result, mod);
-        return result;
-      };
-    }();
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.writeFileAtomicSync = writeFileAtomicSync;
-    exports2.writeFileAtomic = writeFileAtomic;
-    var node_crypto_1 = require("crypto");
-    var fs3 = __importStar(require("fs"));
-    function getTarget(filename, data) {
-      const hash = (0, node_crypto_1.createHash)("sha256").update(data).digest("base64url");
-      return `${filename}.${hash}`;
-    }
-    function writeFileAtomicSync(filename, data) {
-      const tmpfile = getTarget(filename, data);
-      fs3.writeFileSync(tmpfile, data);
-      fs3.renameSync(tmpfile, filename);
-    }
-    async function writeFileAtomic(filename, data) {
-      const tmpfile = getTarget(filename, data);
-      await fs3.promises.writeFile(tmpfile, data);
-      await fs3.promises.rename(tmpfile, filename);
-    }
-  }
-});
-
-// node_modules/@expo/json-file/build/JsonFile.js
-var require_JsonFile = __commonJS({
-  "node_modules/@expo/json-file/build/JsonFile.js"(exports2) {
-    "use strict";
-    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
-      if (k2 === void 0) k2 = k;
-      var desc = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function() {
-          return m[k];
-        } };
-      }
-      Object.defineProperty(o, k2, desc);
-    } : function(o, m, k, k2) {
-      if (k2 === void 0) k2 = k;
-      o[k2] = m[k];
-    });
-    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
-      Object.defineProperty(o, "default", { enumerable: true, value: v });
-    } : function(o, v) {
-      o["default"] = v;
-    });
-    var __importStar = exports2 && exports2.__importStar || /* @__PURE__ */ function() {
-      var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function(o2) {
-          var ar = [];
-          for (var k in o2) if (Object.prototype.hasOwnProperty.call(o2, k)) ar[ar.length] = k;
-          return ar;
-        };
-        return ownKeys(o);
-      };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
-        }
-        __setModuleDefault(result, mod);
-        return result;
-      };
-    }();
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    var code_frame_1 = require_lib5();
-    var json5_1 = __importDefault((init_dist(), __toCommonJS(dist_exports)));
-    var node_fs_1 = __importDefault(require("fs"));
-    var node_path_1 = __importDefault(require("path"));
-    var JsonFileError_1 = __importStar(require_JsonFileError());
-    var writeAtomic_1 = require_writeAtomic();
-    var DEFAULT_OPTIONS2 = {
-      badJsonDefault: void 0,
-      jsonParseErrorDefault: void 0,
-      cantReadFileDefault: void 0,
-      ensureDir: false,
-      default: void 0,
-      json5: false,
-      space: 2,
-      addNewLineAtEOF: true
-    };
-    var JsonFile = class {
-      file;
-      options;
-      static read = read2;
-      static readAsync = readAsync;
-      static parseJsonString = parseJsonString;
-      static write = write;
-      static writeAsync = writeAsync;
-      static get = getSync;
-      static getAsync = getAsync;
-      static set = setSync;
-      static setAsync = setAsync;
-      static merge = merge;
-      static mergeAsync = mergeAsync;
-      static deleteKey = deleteKey;
-      static deleteKeyAsync = deleteKeyAsync;
-      static deleteKeys = deleteKeys;
-      static deleteKeysAsync = deleteKeysAsync;
-      static rewrite = rewrite;
-      static rewriteAsync = rewriteAsync;
-      constructor(file, options = {}) {
-        this.file = file;
-        this.options = options;
-      }
-      read(options) {
-        return read2(this.file, this._getOptions(options));
-      }
-      async readAsync(options) {
-        return readAsync(this.file, this._getOptions(options));
-      }
-      write(object, options) {
-        return write(this.file, object, this._getOptions(options));
-      }
-      async writeAsync(object, options) {
-        return writeAsync(this.file, object, this._getOptions(options));
-      }
-      parseJsonString(json, options) {
-        return parseJsonString(json, options);
-      }
-      get(key3, defaultValue, options) {
-        return getSync(this.file, key3, defaultValue, this._getOptions(options));
-      }
-      async getAsync(key3, defaultValue, options) {
-        return getAsync(this.file, key3, defaultValue, this._getOptions(options));
-      }
-      set(key3, value, options) {
-        return setSync(this.file, key3, value, this._getOptions(options));
-      }
-      async setAsync(key3, value, options) {
-        return setAsync(this.file, key3, value, this._getOptions(options));
-      }
-      async merge(sources, options) {
-        return merge(this.file, sources, this._getOptions(options));
-      }
-      async mergeAsync(sources, options) {
-        return mergeAsync(this.file, sources, this._getOptions(options));
-      }
-      deleteKey(key3, options) {
-        return deleteKey(this.file, key3, this._getOptions(options));
-      }
-      async deleteKeyAsync(key3, options) {
-        return deleteKeyAsync(this.file, key3, this._getOptions(options));
-      }
-      deleteKeys(keys, options) {
-        return deleteKeys(this.file, keys, this._getOptions(options));
-      }
-      async deleteKeysAsync(keys, options) {
-        return deleteKeysAsync(this.file, keys, this._getOptions(options));
-      }
-      rewrite(options) {
-        return rewrite(this.file, this._getOptions(options));
-      }
-      async rewriteAsync(options) {
-        return rewriteAsync(this.file, this._getOptions(options));
-      }
-      _getOptions(options) {
-        return {
-          ...this.options,
-          ...options
-        };
-      }
-    };
-    exports2.default = JsonFile;
-    function read2(file, options) {
-      let json;
-      try {
-        json = node_fs_1.default.readFileSync(file, "utf8");
-      } catch (error) {
-        assertEmptyJsonString(json, file);
-        const defaultValue = cantReadFileDefault(options);
-        if (defaultValue === void 0) {
-          throw new JsonFileError_1.default(`Can't read JSON file: ${file}`, error, error.code, file);
-        } else {
-          return defaultValue;
-        }
-      }
-      return parseJsonString(json, options, file);
-    }
-    async function readAsync(file, options) {
-      let json;
-      try {
-        json = await node_fs_1.default.promises.readFile(file, "utf8");
-      } catch (error) {
-        assertEmptyJsonString(json, file);
-        const defaultValue = cantReadFileDefault(options);
-        if (defaultValue === void 0) {
-          throw new JsonFileError_1.default(`Can't read JSON file: ${file}`, error, error.code);
-        } else {
-          return defaultValue;
-        }
-      }
-      return parseJsonString(json, options);
-    }
-    function parseJsonString(json, options, fileName) {
-      assertEmptyJsonString(json, fileName);
-      try {
-        if (_getOption(options, "json5")) {
-          return json5_1.default.parse(json);
-        } else {
-          return JSON.parse(json);
-        }
-      } catch (e) {
-        const defaultValue = jsonParseErrorDefault(options);
-        if (defaultValue === void 0) {
-          const location = locationFromSyntaxError(e, json);
-          if (location) {
-            const codeFrame = (0, code_frame_1.codeFrameColumns)(json, { start: location });
-            e.codeFrame = codeFrame;
-            e.message += `
-${codeFrame}`;
-          }
-          throw new JsonFileError_1.default(`Error parsing JSON: ${json}`, e, "EJSONPARSE", fileName);
-        } else {
-          return defaultValue;
-        }
-      }
-    }
-    function getSync(file, key3, defaultValue, options) {
-      const object = read2(file, options);
-      if (key3 in object) {
-        return object[key3];
-      }
-      if (defaultValue === void 0) {
-        throw new JsonFileError_1.default(`No value at key path "${String(key3)}" in JSON object from: ${file}`);
-      }
-      return defaultValue;
-    }
-    async function getAsync(file, key3, defaultValue, options) {
-      const object = await readAsync(file, options);
-      if (key3 in object) {
-        return object[key3];
-      }
-      if (defaultValue === void 0) {
-        throw new JsonFileError_1.default(`No value at key path "${String(key3)}" in JSON object from: ${file}`);
-      }
-      return defaultValue;
-    }
-    function write(file, object, options) {
-      if (options?.ensureDir) {
-        node_fs_1.default.mkdirSync(node_path_1.default.dirname(file), { recursive: true });
-      }
-      const space = _getOption(options, "space");
-      const json5 = _getOption(options, "json5");
-      const addNewLineAtEOF = _getOption(options, "addNewLineAtEOF");
-      let json;
-      try {
-        if (json5) {
-          json = json5_1.default.stringify(object, null, space);
-        } else {
-          json = JSON.stringify(object, null, space);
-        }
-      } catch (e) {
-        throw new JsonFileError_1.default(`Couldn't JSON.stringify object for file: ${file}`, e);
-      }
-      const data = addNewLineAtEOF ? `${json}
-` : json;
-      (0, writeAtomic_1.writeFileAtomicSync)(file, data);
-      return object;
-    }
-    async function writeAsync(file, object, options) {
-      if (options?.ensureDir) {
-        await node_fs_1.default.promises.mkdir(node_path_1.default.dirname(file), { recursive: true });
-      }
-      const space = _getOption(options, "space");
-      const json5 = _getOption(options, "json5");
-      const addNewLineAtEOF = _getOption(options, "addNewLineAtEOF");
-      let json;
-      try {
-        if (json5) {
-          json = json5_1.default.stringify(object, null, space);
-        } else {
-          json = JSON.stringify(object, null, space);
-        }
-      } catch (e) {
-        throw new JsonFileError_1.default(`Couldn't JSON.stringify object for file: ${file}`, e);
-      }
-      const data = addNewLineAtEOF ? `${json}
-` : json;
-      await (0, writeAtomic_1.writeFileAtomic)(file, data);
-      return object;
-    }
-    function setSync(file, key3, value, options) {
-      const object = read2(file, options);
-      return write(file, { ...object, [key3]: value }, options);
-    }
-    async function setAsync(file, key3, value, options) {
-      const object = await readAsync(file, options);
-      return writeAsync(file, { ...object, [key3]: value }, options);
-    }
-    async function mergeAsync(file, sources, options) {
-      const object = await readAsync(file, options);
-      if (Array.isArray(sources)) {
-        Object.assign(object, ...sources);
-      } else {
-        Object.assign(object, sources);
-      }
-      return writeAsync(file, object, options);
-    }
-    function merge(file, sources, options) {
-      const object = read2(file, options);
-      if (Array.isArray(sources)) {
-        Object.assign(object, ...sources);
-      } else {
-        Object.assign(object, sources);
-      }
-      return write(file, object, options);
-    }
-    async function deleteKeyAsync(file, key3, options) {
-      return deleteKeysAsync(file, [key3], options);
-    }
-    function deleteKey(file, key3, options) {
-      return deleteKeys(file, [key3], options);
-    }
-    async function deleteKeysAsync(file, keys, options) {
-      const object = await readAsync(file, options);
-      let didDelete = false;
-      for (let i2 = 0; i2 < keys.length; i2++) {
-        const key3 = keys[i2];
-        if (object.hasOwnProperty(key3)) {
-          delete object[key3];
-          didDelete = true;
-        }
-      }
-      if (didDelete) {
-        return writeAsync(file, object, options);
-      }
-      return object;
-    }
-    function deleteKeys(file, keys, options) {
-      const object = read2(file, options);
-      let didDelete = false;
-      for (let i2 = 0; i2 < keys.length; i2++) {
-        const key3 = keys[i2];
-        if (object.hasOwnProperty(key3)) {
-          delete object[key3];
-          didDelete = true;
-        }
-      }
-      if (didDelete) {
-        return write(file, object, options);
-      }
-      return object;
-    }
-    async function rewriteAsync(file, options) {
-      const object = await readAsync(file, options);
-      return writeAsync(file, object, options);
-    }
-    function rewrite(file, options) {
-      return write(file, read2(file, options), options);
-    }
-    function jsonParseErrorDefault(options = {}) {
-      if (options.jsonParseErrorDefault === void 0) {
-        return options.default;
-      } else {
-        return options.jsonParseErrorDefault;
-      }
-    }
-    function cantReadFileDefault(options = {}) {
-      if (options.cantReadFileDefault === void 0) {
-        return options.default;
-      } else {
-        return options.cantReadFileDefault;
-      }
-    }
-    function _getOption(options, field) {
-      if (options) {
-        if (options[field] !== void 0) {
-          return options[field];
-        }
-      }
-      return DEFAULT_OPTIONS2[field];
-    }
-    function locationFromSyntaxError(error, sourceString) {
-      if ("lineNumber" in error && "columnNumber" in error) {
-        return { line: error.lineNumber, column: error.columnNumber };
-      }
-      const match = /at position (\d+)/.exec(error.message);
-      if (match) {
-        const index = parseInt(match[1], 10);
-        const lines = sourceString.slice(0, index + 1).split("\n");
-        return { line: lines.length, column: lines[lines.length - 1].length };
-      }
-      return null;
-    }
-    function assertEmptyJsonString(json, file) {
-      if (json?.trim() === "") {
-        throw new JsonFileError_1.EmptyJsonFileError(file);
-      }
-    }
-  }
-});
-
 // node_modules/@expo/config-plugins/build/ios/Locales.js
-var require_Locales = __commonJS({
+var require_Locales2 = __commonJS({
   "node_modules/@expo/config-plugins/build/ios/Locales.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", {
       value: true
     });
     exports2.getLocales = getLocales;
-    exports2.getResolvedLocalesAsync = getResolvedLocalesAsync;
     exports2.setLocalesAsync = setLocalesAsync;
     exports2.withLocales = void 0;
-    function _jsonFile() {
-      const data = _interopRequireDefault(require_JsonFile());
-      _jsonFile = function() {
-        return data;
-      };
-      return data;
-    }
     function _fs() {
       const data = _interopRequireDefault(require("fs"));
       _fs = function() {
@@ -34395,7 +34555,7 @@ var require_Locales = __commonJS({
       return data;
     }
     function _path() {
-      const data = require("path");
+      const data = _interopRequireDefault(require("path"));
       _path = function() {
         return data;
       };
@@ -34415,9 +34575,9 @@ var require_Locales = __commonJS({
       };
       return data;
     }
-    function _warnings() {
-      const data = require_warnings();
-      _warnings = function() {
+    function _locales() {
+      const data = require_locales();
+      _locales = function() {
         return data;
       };
       return data;
@@ -34446,16 +34606,16 @@ var require_Locales = __commonJS({
       if (!locales) {
         return project;
       }
-      const localesMap = await getResolvedLocalesAsync(projectRoot, locales);
+      const localesMap = await (0, _locales().getResolvedLocalesAsync)(projectRoot, locales, "ios");
       const projectName = (0, _Xcodeproj().getProjectName)(projectRoot);
-      const supportingDirectory = (0, _path().join)(projectRoot, "ios", projectName, "Supporting");
+      const supportingDirectory = _path().default.join(projectRoot, "ios", projectName, "Supporting");
       const stringName = "InfoPlist.strings";
       for (const [lang, localizationObj] of Object.entries(localesMap)) {
-        const dir = (0, _path().join)(supportingDirectory, `${lang}.lproj`);
+        const dir = _path().default.join(supportingDirectory, `${lang}.lproj`);
         await _fs().default.promises.mkdir(dir, {
           recursive: true
         });
-        const strings = (0, _path().join)(dir, stringName);
+        const strings = _path().default.join(dir, stringName);
         const buffer2 = [];
         for (const [plistKey, localVersion] of Object.entries(localizationObj)) {
           buffer2.push(`${plistKey} = "${localVersion}";`);
@@ -34467,7 +34627,7 @@ var require_Locales = __commonJS({
           comment
         }) => comment === stringName)) {
           project = (0, _Xcodeproj().addResourceFileToGroup)({
-            filepath: (0, _path().relative)(supportingDirectory, strings),
+            filepath: _path().default.relative(supportingDirectory, strings),
             groupName,
             project,
             isBuildFile: true,
@@ -34476,21 +34636,6 @@ var require_Locales = __commonJS({
         }
       }
       return project;
-    }
-    async function getResolvedLocalesAsync(projectRoot, input) {
-      const locales = {};
-      for (const [lang, localeJsonPath] of Object.entries(input)) {
-        if (typeof localeJsonPath === "string") {
-          try {
-            locales[lang] = await _jsonFile().default.readAsync((0, _path().join)(projectRoot, localeJsonPath));
-          } catch {
-            (0, _warnings().addWarningIOS)(`locales.${lang}`, `Failed to parse JSON of locale file for language: ${lang}`, "https://docs.expo.dev/distribution/app-stores/#localizing-your-ios-app");
-          }
-        } else {
-          locales[lang] = localeJsonPath;
-        }
-      }
-      return locales;
     }
   }
 });
@@ -35662,7 +35807,7 @@ var require_ios = __commonJS({
       return data;
     }
     function Locales() {
-      const data = _interopRequireWildcard(require_Locales());
+      const data = _interopRequireWildcard(require_Locales2());
       Locales = function() {
         return data;
       };

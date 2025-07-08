@@ -7596,8 +7596,8 @@ var require_commonjs4 = __commonJS({
        *
        * @internal
        */
-      constructor(cwd = process.cwd(), pathImpl, sep, { nocase, childrenCacheSize = 16 * 1024, fs: fs3 = defaultFS } = {}) {
-        this.#fs = fsFromOption(fs3);
+      constructor(cwd = process.cwd(), pathImpl, sep, { nocase, childrenCacheSize = 16 * 1024, fs: fs4 = defaultFS } = {}) {
+        this.#fs = fsFromOption(fs4);
         if (cwd instanceof URL || cwd.startsWith("file://")) {
           cwd = (0, node_url_1.fileURLToPath)(cwd);
         }
@@ -8156,8 +8156,8 @@ var require_commonjs4 = __commonJS({
       /**
        * @internal
        */
-      newRoot(fs3) {
-        return new PathWin32(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs3 });
+      newRoot(fs4) {
+        return new PathWin32(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs4 });
       }
       /**
        * Return true if the provided path string is an absolute path
@@ -8186,8 +8186,8 @@ var require_commonjs4 = __commonJS({
       /**
        * @internal
        */
-      newRoot(fs3) {
-        return new PathPosix(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs3 });
+      newRoot(fs4) {
+        return new PathPosix(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs4 });
       }
       /**
        * Return true if the provided path string is an absolute path
@@ -13634,20 +13634,20 @@ var require_writeAtomic = __commonJS({
     exports2.writeFileAtomicSync = writeFileAtomicSync;
     exports2.writeFileAtomic = writeFileAtomic;
     var node_crypto_1 = require("crypto");
-    var fs3 = __importStar(require("fs"));
+    var fs4 = __importStar(require("fs"));
     function getTarget(filename, data) {
       const hash = (0, node_crypto_1.createHash)("sha256").update(data).digest("base64url");
       return `${filename}.${hash}`;
     }
     function writeFileAtomicSync(filename, data) {
       const tmpfile = getTarget(filename, data);
-      fs3.writeFileSync(tmpfile, data);
-      fs3.renameSync(tmpfile, filename);
+      fs4.writeFileSync(tmpfile, data);
+      fs4.renameSync(tmpfile, filename);
     }
     async function writeFileAtomic(filename, data) {
       const tmpfile = getTarget(filename, data);
-      await fs3.promises.writeFile(tmpfile, data);
-      await fs3.promises.rename(tmpfile, filename);
+      await fs4.promises.writeFile(tmpfile, data);
+      await fs4.promises.rename(tmpfile, filename);
     }
   }
 });
@@ -16097,7 +16097,7 @@ var require_resolve_from = __commonJS({
     "use strict";
     var path8 = require("path");
     var Module = require("module");
-    var fs3 = require("fs");
+    var fs4 = require("fs");
     var resolveFrom = (fromDirectory, moduleId, silent) => {
       if (typeof fromDirectory !== "string") {
         throw new TypeError(`Expected \`fromDir\` to be of type \`string\`, got \`${typeof fromDirectory}\``);
@@ -16106,7 +16106,7 @@ var require_resolve_from = __commonJS({
         throw new TypeError(`Expected \`moduleId\` to be of type \`string\`, got \`${typeof moduleId}\``);
       }
       try {
-        fromDirectory = fs3.realpathSync(fromDirectory);
+        fromDirectory = fs4.realpathSync(fromDirectory);
       } catch (error) {
         if (error.code === "ENOENT") {
           fromDirectory = path8.resolve(fromDirectory);
@@ -21991,7 +21991,7 @@ var require_pbxProject = __commonJS({
     var fork = require("child_process").fork;
     var pbxWriter = require_pbxWriter();
     var pbxFile = require_pbxFile();
-    var fs3 = require("fs");
+    var fs4 = require("fs");
     var parser = require_pbxproj();
     var plist = require_dist();
     var COMMENT_KEY = /_comment$/;
@@ -22018,7 +22018,7 @@ var require_pbxProject = __commonJS({
       return this;
     };
     pbxProject.prototype.parseSync = function() {
-      var file_contents = fs3.readFileSync(this.filepath, "utf-8");
+      var file_contents = fs4.readFileSync(this.filepath, "utf-8");
       this.hash = parser.parse(file_contents);
       return this;
     };
@@ -23479,7 +23479,7 @@ var require_pbxProject = __commonJS({
       this.addToPbxSourcesBuildPhase(file);
       file.models = [];
       var currentVersionName;
-      var modelFiles = fs3.readdirSync(file.path);
+      var modelFiles = fs4.readdirSync(file.path);
       for (var index in modelFiles) {
         var modelFileName = modelFiles[index];
         var modelFilePath = path8.join(filePath, modelFileName);
@@ -39639,6 +39639,7 @@ var withGlanceWidgetFiles = (config, options = {}) => {
 };
 
 // modules/expo-glance-widget/plugins/withPlugins.ts
+var import_fs9 = __toESM(require("fs"));
 var DEFAULT_OPTIONS = {
   widgetFilesPath: "widgets/android",
   manifestPath: "widgets/android/AndroidManifest.xml",
@@ -39653,6 +39654,7 @@ function getDefaultedOptions(options) {
     ...DEFAULT_OPTIONS,
     ...options
   };
+  FileUtils.ensureDir(mergedOptions.widgetFilesPath);
   mergedOptions.widgetFilesPath = import_path7.default.resolve(mergedOptions.widgetFilesPath);
   mergedOptions.manifestPath = import_path7.default.resolve(mergedOptions.manifestPath);
   mergedOptions.resPath = import_path7.default.resolve(mergedOptions.resPath);
@@ -39665,9 +39667,9 @@ function getDefaultedOptions(options) {
     );
     const defaultWidgetPath = import_path7.default.resolve(DEFAULT_OPTIONS.widgetFilesPath);
     if (!FileUtils.exists(defaultWidgetPath)) {
-      throw new Error(
-        `ExpoGlanceWidgets: widgetFilesPath does not exist: ${mergedOptions.widgetFilesPath}`
-      );
+      import_fs9.default.writeFileSync(defaultWidgetPath, `
+        <manifest></manifest>
+        `);
     }
     Logger.warn(`Using default widgetFilesPath: ${defaultWidgetPath}
 `);
@@ -39677,9 +39679,7 @@ function getDefaultedOptions(options) {
     Logger.warn(`ExpoGlanceWidgets: manifestPath does not exist: ${mergedOptions.manifestPath}`);
     const defaultManifestPath = import_path7.default.resolve(DEFAULT_OPTIONS.manifestPath);
     if (!FileUtils.exists(defaultManifestPath)) {
-      throw new Error(
-        `ExpoGlanceWidgets: manifestPath does not exist: ${mergedOptions.manifestPath}`
-      );
+      FileUtils.ensureDir(import_path7.default.dirname(defaultManifestPath));
     }
     Logger.warn(`Using default manifestPath: ${defaultManifestPath}
 `);
@@ -39689,7 +39689,7 @@ function getDefaultedOptions(options) {
     Logger.warn(`ExpoGlanceWidgets: resPath does not exist: ${mergedOptions.resPath}`);
     const defaultResPath = import_path7.default.resolve(DEFAULT_OPTIONS.resPath);
     if (!FileUtils.exists(defaultResPath)) {
-      throw new Error(`ExpoGlanceWidgets: resPath does not exist: ${mergedOptions.resPath}`);
+      FileUtils.ensureDir(import_path7.default.dirname(defaultResPath));
     }
     Logger.warn(`Using default resPath: ${defaultResPath}
 `);

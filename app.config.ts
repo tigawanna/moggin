@@ -17,7 +17,7 @@ resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\
 }
 const isDev = process.env.NODE_ENV === "development"
 
-const widgetSources = !isDev ? externalWidgetSources : defaultWidgetSources;
+const widgetSources = isDev ? externalWidgetSources : defaultWidgetSources;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {

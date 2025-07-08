@@ -19,12 +19,13 @@ const isDev = process.env.NODE_ENV === "development"
 
 const widgetSources = !isDev ? externalWidgetSources : defaultWidgetSources;
 
-export default ({ config }: ConfigContext): ExpoConfig => ({
-  ...config,
-  name: "moggin",
-  slug: "moggin",
-  version: "1.0.0",
-  orientation: "portrait",
+export default ({ config }: ConfigContext): ExpoConfig => {
+  return {
+    ...config,
+    name: "moggin",
+    slug: "moggin",
+    version: "1.0.0",
+    orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "moggin",
   userInterfaceStyle: "automatic",
@@ -81,9 +82,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
   },
     extra: {
+      ...config.extra,
       eas: {
         projectId: "bef58162-7beb-4614-9e99-06ac846b57e1",
       },
     },
   
-});
+}};

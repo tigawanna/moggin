@@ -2,9 +2,9 @@ import { useSettingsStore } from "@/stores/use-app-settings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
-import { Button, Card, ProgressBar, Text, useTheme } from "react-native-paper";
-import { useWakatimeMiniStats } from "./use-wakatime-mini";
+import { StyleSheet, View } from "react-native";
+import { Button, Card, Text, useTheme } from "react-native-paper";
+import { useWakatimeDailyDuaration } from "./use-wakatime-mini";
 import { WakatimeWeeklyChart } from "./WakatimeWeeklyChart";
 
 // const { width: screenWidth } = Dimensions.get('window');
@@ -28,7 +28,7 @@ export function WakatimeMiniScreen() {
   // });
 
   // Wakatime query using the durations endpoint
-  const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeMiniStats({
+  const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeDailyDuaration({
     selectedDate,
     wakatimeApiKey,
   });

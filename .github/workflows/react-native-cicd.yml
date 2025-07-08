@@ -28,9 +28,8 @@ jobs:
       - name: Skip CI check
         run: echo "Proceeding with workflow"
 
-  build-and-deploy:
+  test:
     needs: check-skip
-    if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Checkout repository
@@ -42,17 +41,25 @@ jobs:
           node-version: "20"
           cache: "yarn"
 
-      - name: 📦 Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+      - name: 📦 Install dependencies
+        run: yarn install
 
-      - name: 📦 Setup yarn cache
-        uses: actions/cache@v3
+      - name: 🧪 Run TypeScript check
+        run: yarn tsc
+
+  build-and-deploy:
+    needs: test
+    if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: "20"
+          cache: "yarn"
 
       - name: 📦 Install dependencies
         run: |

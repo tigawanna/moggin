@@ -32,6 +32,14 @@ export function createThemeFromSystemSchemes(schemes: { light: SystemScheme; dar
   return {
     light: { ...schemes.light, ...generateMissingFields(schemes.light, palettes, 'light') } as MaterialDynamicColors,
     dark: { ...schemes.dark, ...generateMissingFields(schemes.dark, palettes, 'dark') } as MaterialDynamicColors,
+    elevation:{
+      level0: 'transparent',
+      level1: color(schemes.light.surface).mix(color(schemes.light.primary), 0.05).hex(),
+      level2: color(schemes.light.surface).mix(color(schemes.light.primary), 0.08).hex(),
+      level3: color(schemes.light.surface).mix(color(schemes.light.primary), 0.11).hex(),
+      level4: color(schemes.light.surface).mix(color(schemes.light.primary), 0.12).hex(),
+      level5: color(schemes.light.surface).mix(color(schemes.light.primary), 0.14).hex(),
+    }
   };
 }
 
@@ -41,6 +49,14 @@ export function createThemeFromSourceColor(sourceColor: string): MaterialDynamic
   return {
     light: { ...light, ...generateMissingFields(light, palettes, 'light') } as MaterialDynamicColors,
     dark: { ...dark, ...generateMissingFields(dark, palettes, 'dark') } as MaterialDynamicColors,
+    elevation: {
+      level0: 'transparent',
+      level1: color(light.surface).mix(color(light.primary), 0.05).hex(),
+      level2: color(light.surface).mix(color(light.primary), 0.08).hex(),
+      level3: color(light.surface).mix(color(light.primary), 0.11).hex(),
+      level4: color(light.surface).mix(color(light.primary), 0.12).hex(),
+      level5: color(light.surface).mix(color(light.primary), 0.14).hex(),
+    },
   };
 }
 

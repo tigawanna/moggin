@@ -19,16 +19,7 @@
         android:theme="@style/Theme.Bidii"
         tools:targetApi="31">
 
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Bidii">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!-- Widget receivers only - MainActivity is provided by Expo -->
         <receiver
             android:name=".wakatime.BidiiHoursWidgetReceiver"
             android:exported="true">

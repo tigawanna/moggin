@@ -1,8 +1,8 @@
 import path from 'path';
 import { DEFAULT_OPTIONS } from '../withPlugins';
 import { FileUtils, Logger } from './fs';
-import { ManifestSync } from './manifestSync';
 import { ResourceSync } from './resourceSync';
+import { SyncWidget } from './syncWidget';
 import { WidgetFilesSync } from './widgetFilesSync';
 
 export interface WithExpoGlanceWidgetsProps {
@@ -71,7 +71,7 @@ export class WidgetSync {
     });
 
     // Sync manifest file
-    ManifestSync.syncToDefaults(
+    SyncWidget.syncToDefaults(
       projectRoot, 
       options.manifestPath, 
       targetManifestPath
@@ -127,16 +127,20 @@ export class WidgetSync {
   }
 
   /**
-   * Adds widget receivers to Android manifest
+   * Adds widget receivers to Android manifest using the new SyncWidget utility
    * @param config - Expo config object
    * @param projectRoot - Root directory of the Expo project
    * @param manifestPath - Path to the widget manifest file
    */
-  static addReceiversToManifest(
+  static async addReceiversToManifest(
     config: any,
     projectRoot: string,
     manifestPath: string
-  ): void {
-    ManifestSync.addReceiversToMainManifest(config, projectRoot, manifestPath);
+  ): Promise<void> {
+    // Use the new mergeXmlManifest method for flexible merging
+    await SyncWidget.mergeXmlManifest(config, projectRoot, manifestPath);
+    
+    // Also add WorkManager fix to prevent initialization issues
+    SyncWidget.addWorkManagerFix(config);
   }
 }

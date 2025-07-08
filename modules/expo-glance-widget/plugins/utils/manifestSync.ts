@@ -1,11 +1,11 @@
 import path from 'path';
-import { FileUtils, Logger } from './fs';
 import { Parser } from 'xml2js';
+import { FileUtils, Logger } from './fs';
 
 /**
- * Utility functions for syncing and processing Android manifest files
+ * Utility functions for syncing widget files and merging Android manifests
  */
-export class ManifestSync {  /**
+export class SyncWidget {  /**
    * Syncs manifest file to default location
    * @param projectRoot - Root directory of the Expo project
    * @param customManifestPath - Custom path to manifest file (can be relative or absolute)

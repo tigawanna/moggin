@@ -1,21 +1,24 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
-import { useSettingsStore } from "@/stores/use-app-settings";
 import { useThemeSetup } from "@/hooks/useThemeSetup";
+import { useAppState, useOnlineManager } from "@/lib/tanstack/hooks";
+import { useSettingsStore } from "@/stores/use-app-settings";
+import { focusManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useEffect } from "react";
+import { AppStateStatus, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
-import { focusManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AppStateStatus, Platform } from "react-native";
-import { useOnlineManager, useAppState } from "@/lib/tanstack/hooks";
 
-import { getWakatimeCurrrentUser } from "@/utils/api/wakatime";
 import { GlobalSnackbar } from "@/components/shared/snackbar/GlobalSnackbar";
+import { getWakatimeCurrrentUser } from "@/utils/api/wakatime";
 
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 function onAppStateChange(status: AppStateStatus) {
@@ -46,10 +49,15 @@ export default function RootLayout() {
       console.error("Error fetching Wakatime user:", error);
     }
     );
-  },[])
+  },[wakatimeToken])
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 

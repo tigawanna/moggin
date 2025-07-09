@@ -1,5 +1,7 @@
+import { WakatimeSDK } from "@/lib/api/wakatime/wakatime-sdk";
 import { useSettingsStore } from "@/stores/use-app-settings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -16,16 +18,17 @@ export function WakatimeMiniScreen() {
   const router = useRouter();
   const { colors } = useTheme();
 
-  // Get the last five days for the date selector
-  // const lastFiveDays = Array.from({ length: 5 }).map((_, index) => {
-  //   const date = new Date();
-  //   date.setDate(date.getDate() - index);
-  //   const value = date.toISOString().split("T")[0];
-  //   return {
-  //     value,
-  //     label: index === 0 ? "Today" : `${date.getMonth() + 1}/${date.getDate()}`,
-  //   };
-  // });
+  // Get current user data
+  const { data: currentUserData } = useQuery({
+    queryKey: ["wakatime-current-user", wakatimeApiKey],
+    queryFn: async () => {
+      if (!wakatimeApiKey) return null;
+      const sdk = new WakatimeSDK(wakatimeApiKey);
+      const result = await sdk.getCurrentUser();
+      return result.data?.data;
+    },
+    enabled: !!wakatimeApiKey,
+  });
 
   // Wakatime query using the durations endpoint
   const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeDailyDuaration({
@@ -121,21 +124,47 @@ export function WakatimeMiniScreen() {
       <Card.Content>
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
           <MaterialCommunityIcons name="clock-outline" size={24} color={colors.primary} />
-          <Text variant="titleMedium" style={{ marginLeft: 8 , fontSize: 20 }}>
-            Wakatime Stats
-          </Text>
+          <View style={{ marginLeft: 8, flex: 1 }}>
+            <Text variant="titleMedium" style={{ fontSize: 20, fontWeight: 'bold' }}>
+              Wakatime Stats
+            </Text>
+            {currentUserData?.display_name && (
+              <Text variant="bodySmall" style={{ opacity: 0.7, marginTop: 2 }}>
+                Welcome, {currentUserData.display_name}
+              </Text>
+            )}
+          </View>
         </View>
 
         {/* Chart showing last 5 days */}
         <WakatimeWeeklyChart selectedDate={selectedDate} wakatimeApiKey={wakatimeApiKey} />
 
         <View style={styles.statsContainer}>
-          <Text variant="bodyLarge" style={styles.hoursValue}>
-            Today: {wakatimeData.todayHours}
-          </Text>
-          <Text variant="bodyMedium" style={{ opacity: 0.7,width: "100%" }}>
-            {wakatimeData.totalDurations} coding sessions
-          </Text>
+          <View style={styles.mainStatContainer}>
+            <Text variant="headlineMedium" style={styles.hoursValue}>
+              {wakatimeData.todayHours}
+            </Text>
+            <Text variant="bodySmall" style={styles.todayLabel}>
+              Today&apos;s coding time
+            </Text>
+          </View>
+          
+          <View style={styles.secondaryStats}>
+            <View style={styles.statItem}>
+              <MaterialCommunityIcons name="code-tags" size={16} color={colors.primary} />
+              <Text variant="bodySmall" style={styles.statText}>
+                {wakatimeData.totalDurations} sessions
+              </Text>
+            </View>
+            {wakatimeData.currentProject && (
+              <View style={styles.statItem}>
+                <MaterialCommunityIcons name="folder-outline" size={16} color={colors.primary} />
+                <Text variant="bodySmall" style={styles.statText}>
+                  {wakatimeData.currentProject}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
       </Card.Content>
       <Card.Actions>
@@ -158,7 +187,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 12,
   },
-
   simpleChart: {
     flexDirection: "row",
     alignItems: "flex-end",
@@ -202,9 +230,33 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 2,
   },
+  mainStatContainer: {
+    alignItems: "center",
+    marginBottom: 8,
+  },
   hoursValue: {
-    width: "100%",
-    fontSize: 35,
+    fontSize: 32,
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  todayLabel: {
+    opacity: 0.7,
+    marginTop: 4,
+    textAlign: "center",
+  },
+  secondaryStats: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 16,
+    flexWrap: "wrap",
+  },
+  statItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  statText: {
+    opacity: 0.8,
+    fontSize: 13,
   },
 });

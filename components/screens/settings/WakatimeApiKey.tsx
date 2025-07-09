@@ -3,7 +3,7 @@ import { WakatimeSDK } from "@/lib/api/wakatime/wakatime-sdk";
 import { useApiKeysStore } from "@/stores/use-app-settings";
 import { EvilIcons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { Button, Surface, Text, TextInput, useTheme } from "react-native-paper";
@@ -14,6 +14,7 @@ export function WakatimeApiKey() {
   const { wakatimeApiKey, setWakatimeApiKey } = useApiKeysStore();
   const [wakatimeKey, setWakatimeKey] = useState(wakatimeApiKey || "");
   const [wakatimeSecure, setWakatimeSecure] = useState(true);
+  const router = useRouter();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ token }: { token: string }) => {
@@ -26,24 +27,26 @@ export function WakatimeApiKey() {
     onSuccess: (data, { token }) => {
       setWakatimeApiKey(token);
       if(!data.isValid){
-        showSnackbar(data?.error??"XSomething went wrong", {
+        showSnackbar(data?.error??"Something went wrong", {
           onDismiss: () => {
             console.log("Snackbar dismissed");
           },
         });
         return;
       }
-      showSnackbar("Wakatime API key saved", {
-        duration: 5000, // 5 seconds
+      showSnackbar("Wakatime API key saved successfully!", {
+        duration: 3000,
         action: {
-          label: "Undo",
+          label: "Go Home",
           onPress: () => {
-            // Logic to undo the reset
-            console.log("Undo reset");
+            router.push("/");
           },
         },
         onDismiss: () => {
-          console.log("Snackbar dismissed");
+          // Auto redirect to home after 3 seconds
+          setTimeout(() => {
+            router.push("/");
+          }, 500);
         },
       });
     },

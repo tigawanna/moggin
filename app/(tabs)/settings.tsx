@@ -29,58 +29,14 @@ export default function Settings() {
       </List.Section>
 
       <List.Section>
-        <List.Subheader style={[styles.listSubHeader]}>API Integrations</List.Subheader>
+        <List.Subheader style={[styles.listSubHeader]}>API Integration</List.Subheader>
         <List.Item
-          title="API Keys"
-          description="Configure GitHub, Wakatime, and Spotify API keys"
+          title="API Key"
+          description="Configure your Wakatime API key"
           left={(props) => <List.Icon {...props} icon="key" />}
           onPress={() => router.push("/api-keys")}
         />
         <Divider />
-      </List.Section>
-
-      <List.Section>
-        <List.Subheader style={[styles.listSubHeader]}>Notifications</List.Subheader>
-        <List.Item
-          title="Push Notifications"
-          description="Get notified about new transactions"
-          left={(props) => <List.Icon {...props} icon="bell" />}
-          right={() => <Switch disabled value={false} />}
-        />
-        <Divider />
-      </List.Section>
-
-      <List.Section>
-        <List.Subheader style={[styles.listSubHeader]}>Security</List.Subheader>
-        <List.Item
-          title="Biometric Authentication"
-          description="Use fingerprint or face ID"
-          left={(props) => <List.Icon {...props} icon="fingerprint" />}
-          right={() => <Switch disabled value={false} />}
-        />
-        <List.Item
-          title="PIN Lock"
-          description="Require PIN to open app"
-          left={(props) => <List.Icon {...props} icon="lock" />}
-          right={() => <Switch disabled value={false} />}
-        />
-        <Divider />
-      </List.Section>
-
-      <List.Section>
-        <List.Subheader style={[styles.listSubHeader]}>Data</List.Subheader>
-        <List.Item
-          title="Auto-Sync"
-          description="Keep transactions up to date"
-          left={(props) => <List.Icon {...props} icon="sync" />}
-          right={() => <Switch disabled value={false} />}
-        />
-        <List.Item
-          title="Clear Cache"
-          description="Free up space on your device"
-          left={(props) => <List.Icon {...props} icon="trash-can" />}
-          onPress={() => {}}
-        />
       </List.Section>
 
       <List.Section>

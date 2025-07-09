@@ -99,6 +99,15 @@ export class WakatimeSDK {
   async getUserLanguagesStats(params: { start?: string; end?: string }) {
     return this.fetchData("/api/v1/users/current/languages/stats", params);
   }
+
+  // Leaderboard methods
+  async getLeaderboard(params: { country?: string; page?: number; language?: string }) {
+    return this.fetchData("/api/v1/leaders", params);
+  }
+
+  async getCountryLeaderboard(params: { country: string; page?: number }) {
+    return this.fetchData("/api/v1/leaders", params);
+  }
 }
 
 

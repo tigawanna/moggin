@@ -1,23 +1,34 @@
+import { useApiKeysStore } from '@/stores/use-app-settings';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
-import { GitHubMiniScreen } from '../github/GitHubMiniScreen';
-import { SpotifyMiniScreen } from '../spotify/SpotifyMiniScreen';
 import { WakatimeMiniScreen } from '../wakatime/WakatimeMiniScreen';
-import { useQueryClient } from '@tanstack/react-query';
+import { CurrentUserLeaderboardPosition } from './CurrentUserLeaderboardPosition';
 
 export function Overview() {
   const qc = useQueryClient();
-  // Simple refresh function - each mini screen handles its own data fetching
+  const { wakatimeApiKey } = useApiKeysStore();
+  const router = useRouter();
+
+  // Redirect to API keys if no Wakatime key is present
+  useEffect(() => {
+    if (!wakatimeApiKey) {
+      router.push('/api-keys');
+    }
+  }, [wakatimeApiKey, router]);
+
+  // Simple refresh function - refreshes Wakatime data
   const onRefresh = async () => {
-    // Refresh will be handled by individual mini screens
     qc.invalidateQueries({
-      queryKey: ['wakatime-stats'],
-    })
-    qc.invalidateQueries({
-      queryKey: ['github-activity'],
+      queryKey: ['wakatime-durations'],
     });
     qc.invalidateQueries({
-      queryKey: ['spotify-tracks'],
+      queryKey: ['wakatime-leaderboard'],
+    });
+    qc.invalidateQueries({
+      queryKey: ['wakatime-current-user'],
     });
   };
 
@@ -31,8 +42,7 @@ export function Overview() {
         }
       >
         <WakatimeMiniScreen />
-        <GitHubMiniScreen />
-        <SpotifyMiniScreen />
+        <CurrentUserLeaderboardPosition />
         
         <View style={styles.bottomPadding} />
       </ScrollView>

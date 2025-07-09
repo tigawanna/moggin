@@ -1,5 +1,10 @@
+import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/leaderboard-hooks";
+import { WakatimeSDK } from "@/lib/api/wakatime/wakatime-sdk";
+import { useApiKeysStore } from "@/stores/use-app-settings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { Avatar, Button, Card, Chip, Surface, Text, useTheme } from "react-native-paper";
 
@@ -11,6 +16,12 @@ type LeaderboardEntry = {
   human_readable_total: string;
   languages: string[];
   country?: string;
+  user?: {
+    id: string;
+    display_name: string;
+    photo?: string;
+    location?: string;
+  };
 };
 
 const mockLeaderboardData: LeaderboardEntry[] = [
@@ -63,16 +74,43 @@ const mockLeaderboardData: LeaderboardEntry[] = [
 
 export function WakatimeLeaderboardScreen() {
   const { colors } = useTheme();
+  const { wakatimeApiKey } = useApiKeysStore();
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('week');
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  // Get current user data
+  const { data: currentUserData } = useQuery({
+    queryKey: ["wakatime-current-user", wakatimeApiKey],
+    queryFn: async () => {
+      if (!wakatimeApiKey) return null;
+      const sdk = new WakatimeSDK(wakatimeApiKey);
+      const result = await sdk.getCurrentUser();
+      return result.data;
+    },
+    enabled: !!wakatimeApiKey,
+  });
+
+  // Get leaderboard data
+  const { data: leaderboardData, refetch } = useQuery(
+    wakatimeLeaderboardQueryOptions({
+      wakatimeApiKey,
+      country: currentUserData?.data?.location || undefined,
+    })
+  );
+
+  useEffect(() => {
+    if (currentUserData?.data) {
+      setCurrentUser(currentUserData.data);
+    }
+  }, [currentUserData]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    // Simulate API call
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  }, []);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -100,6 +138,32 @@ export function WakatimeLeaderboardScreen() {
     }
   };
 
+  // If no API key, show message
+  if (!wakatimeApiKey) {
+    return (
+      <ScrollView style={styles.container}>
+        <Surface style={styles.header} elevation={0}>
+          <Text variant="headlineMedium" style={styles.title}>
+            Wakatime Leaderboard
+          </Text>
+          <Text variant="bodyMedium" style={styles.subtitle}>
+            Please add your Wakatime API key to view the leaderboard
+          </Text>
+          <Button 
+            mode="contained" 
+            onPress={() => router.push('/api-keys')}
+            style={{ marginTop: 16 }}
+          >
+            Add API Key
+          </Button>
+        </Surface>
+      </ScrollView>
+    );
+  }
+
+  // Use real data if available, fallback to mock data
+  const displayData = leaderboardData?.data || mockLeaderboardData;
+
   return (
     <ScrollView
       style={styles.container}
@@ -113,6 +177,7 @@ export function WakatimeLeaderboardScreen() {
         </Text>
         <Text variant="bodyMedium" style={styles.subtitle}>
           Top coding time this {selectedPeriod}
+          {currentUser?.location && ` in ${currentUser.location}`}
         </Text>
       </Surface>
 
@@ -142,63 +207,79 @@ export function WakatimeLeaderboardScreen() {
         </View>
       </Surface>
 
-      {mockLeaderboardData.map((entry, index) => (
-        <Card key={index} style={styles.leaderboardCard} mode="elevated">
-          <Card.Content>
-            <View style={styles.entryHeader}>
-              <View style={styles.rankContainer}>
-                <MaterialCommunityIcons
-                  name={getRankIcon(entry.rank)}
-                  size={32}
-                  color={getRankColor(entry.rank)}
-                />
-                <Text variant="titleMedium" style={styles.rankText}>
-                  #{entry.rank}
-                </Text>
-              </View>
-              
-              <View style={styles.userInfo}>
-                <Avatar.Image
-                  size={48}
-                  source={{ uri: entry.avatar_url || "https://github.com/github.png" }}
-                />
-                <View style={styles.userDetails}>
-                  <Text variant="titleMedium" style={styles.username}>
-                    {entry.username}
+      {displayData.map((entry: LeaderboardEntry, index: number) => {
+        const isCurrentUser = currentUser && (
+          entry.user?.id === currentUser.id || 
+          entry.username === currentUser.username ||
+          entry.user?.display_name === currentUser.display_name
+        );
+        
+        return (
+          <Card key={index} style={[
+            styles.leaderboardCard,
+            isCurrentUser && { borderColor: colors.primary, borderWidth: 2 }
+          ]} mode="elevated">
+            <Card.Content>
+              <View style={styles.entryHeader}>
+                <View style={styles.rankContainer}>
+                  <MaterialCommunityIcons
+                    name={getRankIcon(entry.rank)}
+                    size={32}
+                    color={getRankColor(entry.rank)}
+                  />
+                  <Text variant="titleMedium" style={styles.rankText}>
+                    #{entry.rank}
                   </Text>
-                  {entry.country && (
-                    <Text variant="bodySmall" style={styles.country}>
-                      {entry.country}
+                </View>
+                
+                <View style={styles.userInfo}>
+                  <Avatar.Image
+                    size={48}
+                    source={{ 
+                      uri: entry.user?.photo || entry.avatar_url || "https://github.com/github.png" 
+                    }}
+                  />
+                  <View style={styles.userDetails}>
+                    <Text variant="titleMedium" style={styles.username}>
+                      {entry.user?.display_name || entry.username}
+                      {isCurrentUser && (
+                        <Text style={{ color: colors.primary, fontWeight: 'bold' }}> (You)</Text>
+                      )}
                     </Text>
-                  )}
+                    {(entry.user?.location || entry.country) && (
+                      <Text variant="bodySmall" style={styles.country}>
+                        {entry.user?.location || entry.country}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+                
+                <View style={styles.timeContainer}>
+                  <Text variant="headlineSmall" style={styles.timeValue}>
+                    {entry.human_readable_total}
+                  </Text>
+                  <Text variant="bodySmall" style={styles.timeLabel}>
+                    Total Time
+                  </Text>
                 </View>
               </View>
-              
-              <View style={styles.timeContainer}>
-                <Text variant="headlineSmall" style={styles.timeValue}>
-                  {entry.human_readable_total}
-                </Text>
-                <Text variant="bodySmall" style={styles.timeLabel}>
-                  Total Time
-                </Text>
-              </View>
-            </View>
 
-            <View style={styles.languagesContainer}>
-              {entry.languages.map((lang, langIndex) => (
-                <Chip
-                  key={langIndex}
-                  mode="outlined"
-                  compact
-                  style={styles.languageChip}
-                >
-                  {lang}
-                </Chip>
-              ))}
-            </View>
-          </Card.Content>
-        </Card>
-      ))}
+              <View style={styles.languagesContainer}>
+                {entry.languages?.map((lang: string, langIndex: number) => (
+                  <Chip
+                    key={langIndex}
+                    mode="outlined"
+                    compact
+                    style={styles.languageChip}
+                  >
+                    {lang}
+                  </Chip>
+                ))}
+              </View>
+            </Card.Content>
+          </Card>
+        );
+      })}
 
       <View style={styles.bottomPadding} />
     </ScrollView>

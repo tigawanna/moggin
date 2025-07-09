@@ -51,11 +51,11 @@ export default function RootLayout() {
     );
   },[wakatimeToken])
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+  // useEffect(() => {
+  //   if (loaded) {
+  //     SplashScreen.hideAsync();
+  //   }
+  // }, [loaded]);
 
   if (!loaded) {
     return null;

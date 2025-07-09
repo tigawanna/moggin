@@ -24,9 +24,21 @@ export class ResourceSync {  /**
       return;
     }
 
-    const defaultDir = path.join(projectRoot, defaultResPath);    Logger.file(`Syncing resources to ${defaultResPath} directory...`);
+    const defaultDir = path.join(projectRoot, defaultResPath);
+    Logger.file(`Syncing resources to ${defaultResPath} directory...`);
+    
+    // Filter to exclude mipmap directories (to avoid conflicts with Expo-generated app icons)
+    const filter = (itemName: string, isDirectory: boolean) => {
+      if (isDirectory && itemName.startsWith('mipmap')) {
+        Logger.warn(`Skipping mipmap directory during sync (conflicts with Expo icons): ${itemName}`);
+        return false;
+      }
+      return true;
+    };
+    
     FileUtils.copyRecursively(resolvedSource, defaultDir, (targetPath) => {
-      Logger.success(`Synced resource: ${path.relative(projectRoot, targetPath)}`);    }, (targetPath: string, sourcePath: string) => {
+      Logger.success(`Synced resource: ${path.relative(projectRoot, targetPath)}`);
+    }, (targetPath: string, sourcePath: string) => {
       // Handle conflicts intelligently during sync as well
       if (path.extname(targetPath) === '.xml') {
         // Try to merge XML files instead of skipping
@@ -39,7 +51,7 @@ export class ResourceSync {  /**
       } else {
         Logger.warn(`Resource file already exists during sync, skipping: ${path.relative(projectRoot, targetPath)}`);
       }
-    });
+    }, filter);
   }
   /**
    * Copies resource files to Android build directory
@@ -58,13 +70,25 @@ export class ResourceSync {  /**
     if (!resolvedSource) {
       Logger.warn(`Resources directory not found: ${resPath}`);
       return;
-    }    const destinationResDir = path.join(platformRoot, 'app/src/main/res');
+    }
+
+    const destinationResDir = path.join(platformRoot, 'app/src/main/res');
     
     Logger.file(`Copying resources from ${resPath}...`);
 
+    // Filter to exclude mipmap directories (to avoid conflicts with Expo-generated app icons)
+    const filter = (itemName: string, isDirectory: boolean) => {
+      if (isDirectory && itemName.startsWith('mipmap')) {
+        Logger.warn(`Skipping mipmap directory during build copy (conflicts with Expo icons): ${itemName}`);
+        return false;
+      }
+      return true;
+    };
+
     // Copy resources with intelligent XML merging
     FileUtils.copyRecursively(resolvedSource, destinationResDir, (targetPath) => {
-      Logger.success(`Copying resource: ${path.relative(destinationResDir, targetPath)}`);    }, (targetPath: string, sourcePath: string) => {
+      Logger.success(`Copying resource: ${path.relative(destinationResDir, targetPath)}`);
+    }, (targetPath: string, sourcePath: string) => {
       // Handle conflicts intelligently
       if (path.extname(targetPath) === '.xml') {
         // Try to merge XML files instead of skipping
@@ -77,7 +101,7 @@ export class ResourceSync {  /**
       } else {
         Logger.warn(`Resource file already exists, skipping: ${path.relative(destinationResDir, targetPath)}`);
       }
-    });
+    }, filter);
   }
 
   /**

@@ -83,12 +83,14 @@ export class FileUtils {
    * @param destDir - Destination directory
    * @param onSuccess - Callback called when a file is successfully copied
    * @param onSkip - Callback called when a file is skipped (already exists)
+   * @param filter - Optional filter function to exclude certain paths
    */
   static copyRecursively(
     sourceDir: string,
     destDir: string,
     onSuccess?: (targetPath: string) => void,
-    onSkip?: (targetPath: string, sourcePath: string) => void
+    onSkip?: (targetPath: string, sourcePath: string) => void,
+    filter?: (itemName: string, isDirectory: boolean) => boolean
   ): void {
     this.ensureDir(destDir);
     const items = this.readdirSync(sourceDir);
@@ -96,9 +98,15 @@ export class FileUtils {
     items.forEach((item: string) => {
       const sourcePath = path.join(sourceDir, item);
       const destPath = path.join(destDir, item);
+      const isDir = this.isDirectory(sourcePath);
 
-      if (this.isDirectory(sourcePath)) {
-        this.copyRecursively(sourcePath, destPath, onSuccess, onSkip);
+      // Apply filter if provided
+      if (filter && !filter(item, isDir)) {
+        return; // Skip this item
+      }
+
+      if (isDir) {
+        this.copyRecursively(sourcePath, destPath, onSuccess, onSkip, filter);
       } else {
         if (this.exists(destPath)) {
           onSkip?.(destPath, sourcePath);

@@ -38105,15 +38105,20 @@ var FileUtils = class {
    * @param destDir - Destination directory
    * @param onSuccess - Callback called when a file is successfully copied
    * @param onSkip - Callback called when a file is skipped (already exists)
+   * @param filter - Optional filter function to exclude certain paths
    */
-  static copyRecursively(sourceDir, destDir, onSuccess, onSkip) {
+  static copyRecursively(sourceDir, destDir, onSuccess, onSkip, filter) {
     this.ensureDir(destDir);
     const items = this.readdirSync(sourceDir);
     items.forEach((item) => {
       const sourcePath = import_path.default.join(sourceDir, item);
       const destPath = import_path.default.join(destDir, item);
-      if (this.isDirectory(sourcePath)) {
-        this.copyRecursively(sourcePath, destPath, onSuccess, onSkip);
+      const isDir = this.isDirectory(sourcePath);
+      if (filter && !filter(item, isDir)) {
+        return;
+      }
+      if (isDir) {
+        this.copyRecursively(sourcePath, destPath, onSuccess, onSkip, filter);
       } else {
         if (this.exists(destPath)) {
           onSkip?.(destPath, sourcePath);
@@ -38640,6 +38645,13 @@ var ResourceSync = class {
     }
     const defaultDir = import_path2.default.join(projectRoot, defaultResPath);
     Logger.file(`Syncing resources to ${defaultResPath} directory...`);
+    const filter = (itemName, isDirectory) => {
+      if (isDirectory && itemName.startsWith("mipmap")) {
+        Logger.warn(`Skipping mipmap directory during sync (conflicts with Expo icons): ${itemName}`);
+        return false;
+      }
+      return true;
+    };
     FileUtils.copyRecursively(resolvedSource, defaultDir, (targetPath) => {
       Logger.success(`Synced resource: ${import_path2.default.relative(projectRoot, targetPath)}`);
     }, (targetPath, sourcePath) => {
@@ -38653,7 +38665,7 @@ var ResourceSync = class {
       } else {
         Logger.warn(`Resource file already exists during sync, skipping: ${import_path2.default.relative(projectRoot, targetPath)}`);
       }
-    });
+    }, filter);
   }
   /**
    * Copies resource files to Android build directory
@@ -38674,6 +38686,13 @@ var ResourceSync = class {
     }
     const destinationResDir = import_path2.default.join(platformRoot, "app/src/main/res");
     Logger.file(`Copying resources from ${resPath}...`);
+    const filter = (itemName, isDirectory) => {
+      if (isDirectory && itemName.startsWith("mipmap")) {
+        Logger.warn(`Skipping mipmap directory during build copy (conflicts with Expo icons): ${itemName}`);
+        return false;
+      }
+      return true;
+    };
     FileUtils.copyRecursively(resolvedSource, destinationResDir, (targetPath) => {
       Logger.success(`Copying resource: ${import_path2.default.relative(destinationResDir, targetPath)}`);
     }, (targetPath, sourcePath) => {
@@ -38687,7 +38706,7 @@ var ResourceSync = class {
       } else {
         Logger.warn(`Resource file already exists, skipping: ${import_path2.default.relative(destinationResDir, targetPath)}`);
       }
-    });
+    }, filter);
   }
   /**
    * Resolves resource path - handles both directory paths with robust validation

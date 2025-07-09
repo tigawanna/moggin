@@ -1,14 +1,14 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\AndroidManifest.xml:1:1-2:12
-INJECTED from C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\AndroidManifest.xml:1:1-2:12
+ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-glance-widget/android/src/main/AndroidManifest.xml:1:1-2:12
+INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-glance-widget/android/src/main/AndroidManifest.xml:1:1-2:12
 	package
-		INJECTED from C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\AndroidManifest.xml
+		INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-glance-widget/android/src/main/AndroidManifest.xml
 uses-sdk
-INJECTED from C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\AndroidManifest.xml
-INJECTED from C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\AndroidManifest.xml
+INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-glance-widget/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-glance-widget/android/src/main/AndroidManifest.xml
+INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-glance-widget/android/src/main/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\AndroidManifest.xml
+		INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-glance-widget/android/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\user\Desktop\code\expo\moggin\modules\expo-glance-widget\android\src\main\AndroidManifest.xml
+		INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-glance-widget/android/src/main/AndroidManifest.xml

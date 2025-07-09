@@ -14169,7 +14169,7 @@ var require_Locales = __commonJS({
                 $: {
                   name: k
                 },
-                _: v
+                _: `"${v}"`
               }
             }))
           }

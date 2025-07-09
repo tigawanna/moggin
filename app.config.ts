@@ -10,11 +10,10 @@ const defaultWidgetSources = {
 };
 const externalWidgetSources = {
   widgetFilesPath:
-  "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\java\\com\\tigawanna\\bidii",
-manifestPath:
-  "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\AndroidManifest.xml",
-resPath: "C:\\Users\\user\\AndroidStudioProjects\\Bidii-kotlin-widget\\app\\src\\main\\res",
-}
+    "/home/dennis/AndroidStudioProjects/Bidii-kotlin-widget/app/src/main/java/com/tigawanna/bidii",
+  manifestPath: "/home/dennis/AndroidStudioProjects/Bidii-kotlin-widget/app/src/main/AndroidManifest.xml",
+  resPath: "/home/dennis/AndroidStudioProjects/Bidii-kotlin-widget/app/src/main/res",
+};
 const isDev = process.env.NODE_ENV === "development"
 
 const widgetSources = isDev ? externalWidgetSources : defaultWidgetSources;

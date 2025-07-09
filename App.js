@@ -4,6 +4,5 @@ import { ExpoRoot } from "expo-router";
 
 export function App() {
     const ctx = require.context("./app"); //Path with src folder
-    console.log("=====ctx  in the entry point =====", ctx);
     return <ExpoRoot context={ctx} />;
   }

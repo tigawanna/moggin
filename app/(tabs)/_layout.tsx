@@ -1,9 +1,8 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-
 import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol, MaterialIcon } from "@/components/ui/IconSymbol";
+import { IconSymbol, MaterialCommunityIcon, MaterialIcon } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { useTheme } from "react-native-paper";
 
@@ -12,7 +11,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        lazy:false,
+        lazy: false,
         animation: "shift",
         //  headerShown: false, // Hide headers for all tab screens
         headerStyle: {
@@ -40,11 +39,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="activity"
         options={{
           animation: "none",
-          title: "Weekly Stats",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
+          title: "Activity",
+          tabBarIcon: ({ color }) => <MaterialIcon size={28} name="auto-graph" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -52,7 +51,9 @@ export default function TabLayout() {
         options={{
           animation: "none",
           title: "Leaderboard",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="trophy.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcon size={28} name="trophy" color={color} />
+          ),
         }}
       />
       <Tabs.Screen

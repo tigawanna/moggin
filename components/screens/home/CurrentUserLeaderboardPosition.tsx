@@ -31,6 +31,7 @@ export function CurrentUserLeaderboardPosition() {
       country: currentUserData?.data?.location || undefined,
     })
   );
+  // console.log("Leaderboard Data:===>", leaderboardData);
 
   // Find current user position
   const currentUser = currentUserData?.data;
@@ -74,7 +75,7 @@ export function CurrentUserLeaderboardPosition() {
             
             <View style={styles.stats}>
               <Text variant="bodyMedium" style={styles.timeValue}>
-                {userEntry.human_readable_total}
+                {userEntry.running_total.human_readable_total}
               </Text>
               <Text variant="bodySmall" style={styles.timeLabel}>
                 This week

@@ -17,7 +17,7 @@ export function wakatimeLeaderboardQueryOptions({
     queryKey: ["wakatime-leaderboard", wakatimeApiKey, country, page],
     queryFn: async () => {
       if (!sdk) return null;
-      
+    
       const params: { country?: string; page?: number } = { page };
       if (country) {
         params.country = country;

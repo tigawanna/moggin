@@ -1,6 +1,8 @@
 import { settings$ } from "@/stores/use-app-settings";
 import { computed } from "@legendapp/state";
 import { use$ } from "@legendapp/state/react";
+import { WakatimeLeaderboard } from "./types/leaderboard-types";
+import { UserDailyDurations, WakatimeUser } from "./types/current-user-types";
 
 export class WakatimeSDK {
   private apiKey: string;
@@ -11,10 +13,11 @@ export class WakatimeSDK {
     this.baseUrl = "https://wakatime.com";
   }
 
-  private async fetchData<T= any>(endpoint: string, params: Record<string, any> = {}) {
+  private async fetchData<T = any>(endpoint: string, params: Record<string, any> = {}) {
     const url = new URL(`${this.baseUrl}${endpoint}`);
     params.api_key = this.apiKey;
     Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
+    console.log("WakatimeSDK fetchData url: ===> ", url.toString());
     const response = await fetch(url.toString());
     if (!response.ok) {
       return {
@@ -22,7 +25,7 @@ export class WakatimeSDK {
         error: `Error: ${response.status} ${response.statusText}`,
       };
     }
-    const dataRes = (await response.json()) as T
+    const dataRes = (await response.json()) as T;
     // console.log("WakatimeSDK fetchData response: === ", dataRes);
     return {
       data: dataRes,
@@ -41,7 +44,7 @@ export class WakatimeSDK {
     }
     const url = new URL(`${baseUrl}/api/v1/users/current`);
     url.searchParams.append("api_key", token);
-    
+
     try {
       const response = await fetch(url.toString());
       if (!response.ok) {
@@ -50,7 +53,7 @@ export class WakatimeSDK {
           error: `Error: ${response.status} ${response.statusText}`,
         };
       }
-      
+
       const { data } = await response.json();
       return {
         isValid: true,
@@ -75,6 +78,12 @@ export class WakatimeSDK {
   async getUserDurations(params: { date: string }) {
     return this.fetchData<UserDailyDurations>("/api/v1/users/current/durations", params);
   }
+
+  // Leaderboard methods
+  async getLeaderboard(params: { country?: string; page?: number; language?: string }) {
+    return this.fetchData<WakatimeLeaderboard>("/api/v1/leaders", params);
+  }
+
   async getUserHeartbeats(params: { start?: string; end?: string }) {
     return this.fetchData("/api/v1/users/current/heartbeats", params);
   }
@@ -100,11 +109,6 @@ export class WakatimeSDK {
     return this.fetchData("/api/v1/users/current/languages/stats", params);
   }
 
-  // Leaderboard methods
-  async getLeaderboard(params: { country?: string; page?: number; language?: string }) {
-    return this.fetchData("/api/v1/leaders", params);
-  }
-
   async getCountryLeaderboard(params: { country: string; page?: number }) {
     return this.fetchData("/api/v1/leaders", params);
   }
@@ -123,82 +127,4 @@ export function useWakatimeSDK() {
 
 
 
-export interface UserDailyDurations {
-  data: UserDailyDurationsData[];
-  end: string;
-  start: string;
-  timezone: string;
-}
 
-export interface UserDailyDurationsData {
-  color: any;
-  duration: number;
-  project: string;
-  time: number;
-}
-
-
-export type WakatimeUser = {
-  bio: any;
-  categories_used_public: boolean;
-  city: any;
-  color_scheme: string;
-  created_at: string;
-  date_format: string;
-  default_dashboard_range: string;
-  display_name: string;
-  durations_slice_by: string;
-  editors_used_public: boolean;
-  email: string;
-  full_name: any;
-  github_username: any;
-  has_basic_features: boolean;
-  has_premium_features: boolean;
-  human_readable_website: any;
-  id: string;
-  invoice_counter: number;
-  invoice_id_format: string;
-  is_email_confirmed: boolean;
-  is_email_public: boolean;
-  is_hireable: boolean;
-  is_onboarding_finished: boolean;
-  languages_used_public: boolean;
-  last_branch: string;
-  last_heartbeat_at: string;
-  last_language: string;
-  last_plugin: string;
-  last_plugin_name: string;
-  last_project: string;
-  linkedin_username: any;
-  location: any;
-  logged_time_public: boolean;
-  modified_at: string;
-  needs_payment_method: boolean;
-  os_used_public: boolean;
-  photo: string;
-  photo_public: boolean;
-  plan: string;
-  profile_url: string;
-  profile_url_escaped: string;
-  public_email: any;
-  public_profile_time_range: string;
-  share_all_time_badge: any;
-  share_last_year_days: any;
-  show_machine_name_ip: boolean;
-  suggest_dangling_branches: boolean;
-  time_format_24hr: any;
-  time_format_display: string;
-  timeout: number;
-  timezone: string;
-  twitter_username: any;
-  username: any;
-  website: any;
-  weekday_start: number;
-  wonderfuldev_username: any;
-  writes_only: boolean;
-};
-export type WakatimeUserResponse = {
-  data: WakatimeUser | null;
-  status: string;
-  error?: string | null;
-};

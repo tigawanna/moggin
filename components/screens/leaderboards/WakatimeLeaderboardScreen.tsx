@@ -1,76 +1,17 @@
 import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/leaderboard-hooks";
+import { LeaderboardEntry } from "@/lib/api/wakatime/types/leaderboard-types";
 import { WakatimeSDK } from "@/lib/api/wakatime/wakatime-sdk";
 import { useApiKeysStore } from "@/stores/use-app-settings";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, ListRenderItem, StyleSheet, View } from "react-native";
-import { Avatar, Button, Card, Chip, Surface, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
+import { LeaderboardHeader } from "./LeaderboardHeader";
+import { LeaderboardItem } from "./LeaderboardItem";
+import { getRankColor, getRankIcon } from "./leaderboard-utils";
 
-type LeaderboardEntry = {
-  rank: number;
-  username: string;
-  avatar_url?: string;
-  total_seconds: number;
-  human_readable_total: string;
-  languages: string[];
-  country?: string;
-  user?: {
-    id: string;
-    display_name: string;
-    photo?: string;
-    location?: string;
-  };
-};
 
-const mockLeaderboardData: LeaderboardEntry[] = [
-  {
-    rank: 1,
-    username: "codingmaster",
-    avatar_url: "https://github.com/codingmaster.png",
-    total_seconds: 432000,
-    human_readable_total: "120 hrs",
-    languages: ["TypeScript", "Python", "Go"],
-    country: "USA",
-  },
-  {
-    rank: 2,
-    username: "devninja",
-    avatar_url: "https://github.com/devninja.png",
-    total_seconds: 378000,
-    human_readable_total: "105 hrs",
-    languages: ["JavaScript", "React", "Node.js"],
-    country: "Canada",
-  },
-  {
-    rank: 3,
-    username: "pythonista",
-    avatar_url: "https://github.com/pythonista.png",
-    total_seconds: 324000,
-    human_readable_total: "90 hrs",
-    languages: ["Python", "Django", "FastAPI"],
-    country: "Germany",
-  },
-  {
-    rank: 4,
-    username: "rustacean",
-    avatar_url: "https://github.com/rustacean.png",
-    total_seconds: 270000,
-    human_readable_total: "75 hrs",
-    languages: ["Rust", "WebAssembly", "C++"],
-    country: "Japan",
-  },
-  {
-    rank: 5,
-    username: "fullstackdev",
-    avatar_url: "https://github.com/fullstackdev.png",
-    total_seconds: 216000,
-    human_readable_total: "60 hrs",
-    languages: ["Vue.js", "PHP", "MySQL"],
-    country: "UK",
-  },
-];
 
 export function WakatimeLeaderboardScreen() {
   const { colors } = useTheme();
@@ -106,32 +47,6 @@ export function WakatimeLeaderboardScreen() {
     }
   }, [currentUserData]);
 
-  const getRankIcon = useCallback((rank: number) => {
-    switch (rank) {
-      case 1:
-        return "trophy" as const
-      case 2:
-        return "medal" as const
-      case 3:
-        return "medal-outline" as const
-      default:
-        return "medal" as const;
-    }
-  }, []);
-
-  const getRankColor = useCallback((rank: number) => {
-    switch (rank) {
-      case 1:
-        return "#FFD700"; // Gold
-      case 2:
-        return "#C0C0C0"; // Silver
-      case 3:
-        return "#CD7F32"; // Bronze
-      default:
-        return colors.primary;
-    }
-  }, [colors.primary]);
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refetch();
@@ -139,155 +54,45 @@ export function WakatimeLeaderboardScreen() {
   }, [refetch]);
 
   const renderLeaderboardItem: ListRenderItem<LeaderboardEntry> = useCallback(({ item: entry, index }) => {
-    const isCurrentUser = currentUser && (
-      entry.user?.id === currentUser.id || 
-      entry.username === currentUser.username ||
-      entry.user?.display_name === currentUser.display_name
-    );
-    
     return (
-      <Card style={[
-        styles.leaderboardCard,
-        isCurrentUser && { borderColor: colors.primary, borderWidth: 2 }
-      ]} mode="elevated">
-        <Card.Content>
-          <View style={styles.entryHeader}>
-            <View style={styles.rankContainer}>
-              <MaterialCommunityIcons
-                name={getRankIcon(entry.rank)}
-                size={32}
-                color={getRankColor(entry.rank)}
-              />
-              <Text variant="titleMedium" style={styles.rankText}>
-                #{entry.rank}
-              </Text>
-            </View>
-            
-            <View style={styles.userInfo}>
-              <Avatar.Image
-                size={48}
-                source={{ 
-                  uri: entry.user?.photo || entry.avatar_url || "https://github.com/github.png" 
-                }}
-              />
-              <View style={styles.userDetails}>
-                <Text variant="titleMedium" style={styles.username}>
-                  {entry.user?.display_name || entry.username}
-                  {isCurrentUser && (
-                    <Text style={{ color: colors.primary, fontWeight: 'bold' }}> (You)</Text>
-                  )}
-                </Text>
-                {(entry.user?.location || entry.country) && (
-                  <Text variant="bodySmall" style={styles.country}>
-                    {entry.user?.location || entry.country}
-                  </Text>
-                )}
-              </View>
-            </View>
-            
-            <View style={styles.timeContainer}>
-              <Text variant="headlineSmall" style={styles.timeValue}>
-                {entry.human_readable_total}
-              </Text>
-              <Text variant="bodySmall" style={styles.timeLabel}>
-                Total Time
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.languagesContainer}>
-            {entry.languages?.map((lang: string, langIndex: number) => (
-              <Chip
-                key={langIndex}
-                mode="outlined"
-                compact
-                style={styles.languageChip}
-              >
-                {lang}
-              </Chip>
-            ))}
-          </View>
-        </Card.Content>
-      </Card>
+      <LeaderboardItem
+        entry={entry}
+        index={index}
+        currentUser={currentUser}
+        getRankIcon={getRankIcon}
+        getRankColor={(rank) => getRankColor(rank, colors.primary)}
+      />
     );
-  }, [currentUser, colors.primary, getRankIcon, getRankColor]);
+  }, [currentUser, colors.primary]);
 
   const renderHeader = useCallback(() => (
-    <>
-      <Surface style={styles.header} elevation={0}>
-        <Text variant="headlineMedium" style={styles.title}>
-          Wakatime Leaderboard
-        </Text>
-        <Text variant="bodyMedium" style={styles.subtitle}>
-          Top coding time this {selectedPeriod}
-          {currentUser?.location && ` in ${currentUser.location}`}
-        </Text>
-      </Surface>
+    <LeaderboardHeader
+      selectedPeriod={selectedPeriod}
+      setSelectedPeriod={setSelectedPeriod}
+      currentUser={currentUser}
+    />
+  ), [selectedPeriod, currentUser]);
 
-      <Surface style={styles.periodSelector} elevation={0}>
-        <View style={styles.periodButtons}>
-          <Button
-            mode={selectedPeriod === 'week' ? 'contained' : 'outlined'}
-            onPress={() => setSelectedPeriod('week')}
-            style={styles.periodButton}
-          >
-            This Week
-          </Button>
-          <Button
-            mode={selectedPeriod === 'month' ? 'contained' : 'outlined'}
-            onPress={() => setSelectedPeriod('month')}
-            style={styles.periodButton}
-          >
-            This Month
-          </Button>
-          <Button
-            mode={selectedPeriod === 'year' ? 'contained' : 'outlined'}
-            onPress={() => setSelectedPeriod('year')}
-            style={styles.periodButton}
-          >
-            This Year
-          </Button>
-        </View>
-      </Surface>
-    </>
-  ), [selectedPeriod, currentUser?.location]);
+  const keyExtractor = useCallback((item: LeaderboardEntry, index: number) => {
+    return `${item.user.username}-${item.rank}-${index}`;
+  }, []);
 
-  // If no API key, show message
-  if (!wakatimeApiKey) {
+
+  if (!leaderboardData || !leaderboardData.data || leaderboardData.data.length === 0) {
     return (
       <View style={[styles.container, { padding: 16 }]}>
-        <Surface style={styles.header} elevation={0}>
-          <Text variant="headlineMedium" style={styles.title}>
-            Wakatime Leaderboard
-          </Text>
-          <Text variant="bodyMedium" style={styles.subtitle}>
-            Please add your Wakatime API key to view the leaderboard
-          </Text>
-          <Button 
-            mode="contained" 
-            onPress={() => router.push('/api-keys')}
-            style={{ marginTop: 16 }}
-          >
-            Add API Key
-          </Button>
-        </Surface>
+        <Text variant="bodyMedium" style={styles.subtitle}>
+          No data available for the selected period.
+        </Text>
       </View>
     );
   }
 
-  // Use real data if available, fallback to mock data
-  const displayData = useMemo(() => {
-    return leaderboardData?.data || mockLeaderboardData;
-  }, [leaderboardData?.data]);
-
-  const keyExtractor = useCallback((item: LeaderboardEntry, index: number) => {
-    return `${item.username}-${item.rank}-${index}`;
-  }, []);
 
   return (
     <FlatList
       style={styles.container}
-      data={displayData}
+      data={leaderboardData?.data}
       renderItem={renderLeaderboardItem}
       keyExtractor={keyExtractor}
       ListHeaderComponent={renderHeader}
@@ -307,80 +112,8 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 24,
   },
-  header: {
-    marginBottom: 16,
-    paddingBottom: 8,
-  },
-  title: {
-    fontWeight: "bold",
-  },
   subtitle: {
     marginTop: 4,
     opacity: 0.7,
-  },
-  periodSelector: {
-    marginBottom: 16,
-  },
-  periodButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 8,
-  },
-  periodButton: {
-    flex: 1,
-  },
-  leaderboardCard: {
-    marginBottom: 12,
-    elevation: 4,
-  },
-  entryHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  rankContainer: {
-    alignItems: 'center',
-    marginRight: 16,
-    minWidth: 60,
-  },
-  rankText: {
-    fontWeight: 'bold',
-    marginTop: 2,
-  },
-  userInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  userDetails: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  username: {
-    fontWeight: 'bold',
-  },
-  country: {
-    opacity: 0.7,
-  },
-  timeContainer: {
-    alignItems: 'center',
-  },
-  timeValue: {
-    fontWeight: 'bold',
-    color: '#4CAF50',
-  },
-  timeLabel: {
-    opacity: 0.7,
-    textAlign: 'center',
-  },
-  languagesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  languageChip: {
-    backgroundColor: 'transparent',
-    elevation: 1,
   },
 });

@@ -1,4 +1,3 @@
-import { wakatimeCurrentUserQueryOptions } from "@/lib/api/wakatime/current-user-hooks";
 import { updateWakatimeWidgetKey } from "@/lib/datastore/store";
 import { observable, syncState } from "@legendapp/state";
 import { observablePersistAsyncStorage } from "@legendapp/state/persist-plugins/async-storage";
@@ -79,7 +78,7 @@ export function useApiKeysStore() {
     
     // Invalidate current user query when API key changes
     queryClient.invalidateQueries({
-      queryKey: wakatimeCurrentUserQueryOptions(value).queryKey,
+      queryKey: ["wakatime-current-user", value],
     });
   };
 

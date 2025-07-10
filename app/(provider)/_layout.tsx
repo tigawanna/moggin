@@ -1,18 +1,13 @@
 import { LoadingFallback } from "@/components/shared/LoadingFallback";
-import { wakatimeCurrentUserQueryOptions } from "@/lib/api/wakatime/current-user-hooks";
+import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
 
-import { useApiKeysStore, useSettingsStore } from "@/stores/use-app-settings";
-import { useQuery } from "@tanstack/react-query";
+import { useSettingsStore } from "@/stores/use-app-settings";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 
 export default function _ProtectedLayout() {
   const {settings} = useSettingsStore();
   // Use the new current user hook
-  const { data: currentUserData, isLoading: isCurrentUserLoading,error } = useQuery(
-    wakatimeCurrentUserQueryOptions(settings.wakatimeApiKey)
-  );
+  const { data: currentUserData, isLoading: isCurrentUserLoading, error } = useCurrentUser();
 
   // Keep splash screen visible while loading user data
   //   useEffect(() => {

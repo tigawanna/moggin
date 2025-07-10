@@ -1,16 +1,15 @@
 
+import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
 import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/leaderboard-hooks";
 import { LeaderboardEntry } from "@/lib/api/wakatime/types/leaderboard-types";
 import { useApiKeysStore } from "@/stores/use-app-settings";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, ListRenderItem, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { LeaderboardHeader } from "./LeaderboardHeader";
 import { LeaderboardItem } from "./LeaderboardItem";
 import { getRankColor, getRankIcon } from "./leaderboard-utils";
-import { wakatimeCurrentUserQueryOptions } from "@/lib/api/wakatime/current-user-hooks";
 
 
 
@@ -22,9 +21,7 @@ export function WakatimeLeaderboardScreen() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
   // Use the new current user hook
-  const { data: currentUserData, isLoading: isCurrentUserLoading } = useQuery(
-    wakatimeCurrentUserQueryOptions(wakatimeApiKey)
-  )
+  const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser();
 
   // Set default country based on current user location
   useEffect(() => {

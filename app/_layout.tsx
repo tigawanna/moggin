@@ -69,8 +69,7 @@ export default function RootLayout() {
                   headerShown: false,
                   contentStyle: { flex: 1, backgroundColor: "transparent" },
                 }}>
-                <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
+                <Stack.Screen name="(provider)" options={{ headerShown: false }} />
               </Stack>
               <GlobalSnackbar />
             </ThemeProvider>

@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
+
 import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/leaderboard-hooks";
 import { LeaderboardEntry } from "@/lib/api/wakatime/types/leaderboard-types";
 import { useApiKeysStore } from "@/stores/use-app-settings";
@@ -10,26 +10,31 @@ import { Text, useTheme } from "react-native-paper";
 import { LeaderboardHeader } from "./LeaderboardHeader";
 import { LeaderboardItem } from "./LeaderboardItem";
 import { getRankColor, getRankIcon } from "./leaderboard-utils";
+import { wakatimeCurrentUserQueryOptions } from "@/lib/api/wakatime/current-user-hooks";
 
 
 
 export function WakatimeLeaderboardScreen() {
   const { colors } = useTheme();
   const { wakatimeApiKey } = useApiKeysStore();
-  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('week');
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
   // Use the new current user hook
-  const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { data: currentUserData, isLoading: isCurrentUserLoading } = useQuery(
+    wakatimeCurrentUserQueryOptions(wakatimeApiKey)
+  )
 
   // Set default country based on current user location
   useEffect(() => {
-    if (currentUserData?.data?.location && !selectedCountry) {
-      // Extract country code from location if possible
-      const userCountry = extractCountryCode(currentUserData.data.location);
-      setSelectedCountry(userCountry);
+    if (currentUserData?.data?.status === "success"){
+      if (currentUserData?.data.data?.location && !selectedCountry) {
+        // Extract country code from location if possible
+        const userCountry = extractCountryCode(currentUserData.data.data.location);
+        setSelectedCountry(userCountry);
+      }
+      
     }
   }, [currentUserData, selectedCountry]);
 

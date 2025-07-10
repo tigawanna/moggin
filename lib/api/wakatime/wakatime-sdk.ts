@@ -2,7 +2,7 @@ import { settings$ } from "@/stores/use-app-settings";
 import { computed } from "@legendapp/state";
 import { use$ } from "@legendapp/state/react";
 import { WakatimeLeaderboard } from "./types/leaderboard-types";
-import { UserDailyDurations, WakatimeUser } from "./types/current-user-types";
+import { UserDailyDurations, WakatimeUser, WakatimeUserResponse } from "./types/current-user-types";
 
 export class WakatimeSDK {
   private apiKey: string;
@@ -22,6 +22,7 @@ export class WakatimeSDK {
     if (!response.ok) {
       return {
         data: null,
+        type: "error",
         error: `Error: ${response.status} ${response.statusText}`,
       };
     }
@@ -29,6 +30,7 @@ export class WakatimeSDK {
     // console.log("WakatimeSDK fetchData response: === ", dataRes);
     return {
       data: dataRes,
+      type: "success",
       error: null,
     };
   }
@@ -68,7 +70,7 @@ export class WakatimeSDK {
   }
 
   async getCurrentUser() {
-    return this.fetchData("/api/v1/users/current");
+    return this.fetchData<WakatimeUserResponse>("/api/v1/users/current");
   }
 
   async getUserStats(params: { start?: string; end?: string; project?: string }) {

@@ -16,6 +16,7 @@ import { PaperProvider } from "react-native-paper";
 
 import { GlobalSnackbar } from "@/components/shared/snackbar/GlobalSnackbar";
 import { getWakatimeCurrrentUser } from "@/utils/api/wakatime";
+import { use$ } from "@legendapp/state/react";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -29,35 +30,26 @@ function onAppStateChange(status: AppStateStatus) {
 }
 
 export default function RootLayout() {
-  const { settings } = useSettingsStore();
-  const { colorScheme, paperTheme } = useThemeSetup(settings.dynamicColors);
-  const wakatimeToken = process.env.EXPO_PUBLIC_WAKATIME_KEY;
+  
   useOnlineManager();
   useAppState(onAppStateChange);
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  const { wakatimeApiKey } = useApiKeysStore();
-
-  useEffect(() => {
-    getWakatimeCurrrentUser({
-      token: wakatimeToken as string,
-    })
-      .then((res) => {
-        console.log("Wakatime user data:", res.data?.bio);
-      })
-      .catch((error) => {
-        console.error("Error fetching Wakatime user:", error);
-      });
-  }, [wakatimeToken]);
-
+  
+  
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+        SplashScreen.hideAsync();
     }
   }, [loaded]);
+  
+  const { settings } = useSettingsStore();
+  const wakatimeApiKey = use$(() => settings?.wakatimeApiKey);
+  const { colorScheme, paperTheme } = useThemeSetup(settings.dynamicColors);
 
+  console.log("Wakatime API Key:", wakatimeApiKey);
   if (!loaded) {
     return null;
   }

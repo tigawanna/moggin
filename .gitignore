@@ -41,3 +41,5 @@ app-example
 /ios
 
 /reference
+
+*.apk

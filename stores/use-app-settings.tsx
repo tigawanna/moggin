@@ -9,22 +9,20 @@ type SettingsStoreType = {
   theme: "dark" | "light" | null;
   localBackupPath: string | null;
   dynamicColors: boolean;
-  githubApiKey: string | null;
   wakatimeApiKey: string | null;
-  spotifyAccessToken: string | null;
   toggleDynamicColors: () => void;
   toggleTheme: () => void;
   lastBackup: Date | null;
 };
+
+
 
 // Observables can be primitives or deep objects
 export const settings$ = observable<SettingsStoreType>({
   theme: null,
   localBackupPath: null,
   dynamicColors: true,
-  githubApiKey: null,
   wakatimeApiKey: null,
-  spotifyAccessToken: null,
   toggleDynamicColors: () => {
     settings$.dynamicColors.set(!settings$.dynamicColors.get());
   },
@@ -63,29 +61,15 @@ export function useThemeStore() {
 }
 
 export function useApiKeysStore() {
-  const githubApiKey = use$(() => settings$.githubApiKey.get());
   const wakatimeApiKey = use$(() => settings$.wakatimeApiKey.get());
-  const spotifyAccessToken = use$(() => settings$.spotifyAccessToken.get());
-
-  const setGithubApiKey = (value: string | null) => {
-    settings$.githubApiKey.set(value);
-  };
 
   const setWakatimeApiKey = (value: string | null) => {
     settings$.wakatimeApiKey.set(value);
     updateWakatimeWidgetKey(value);
   };
 
-  const setSpotifyAccessToken = (value: string | null) => {
-    settings$.spotifyAccessToken.set(value);
-  };
-
   return {
-    githubApiKey,
     wakatimeApiKey,
-    spotifyAccessToken,
-    setGithubApiKey,
     setWakatimeApiKey,
-    setSpotifyAccessToken,
   };
 }

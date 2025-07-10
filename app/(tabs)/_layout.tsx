@@ -12,11 +12,13 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        lazy: false,
+
+        animation: "none", // Disables screen transition animations
         //  headerShown: false, // Hide headers for all tab screens
         headerStyle: {
           backgroundColor: colors.surface,
           borderBottomWidth: 0,
-          // backgroundColor: colors.surface,
         },
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
@@ -33,6 +35,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          animation: "none",
           title: "Home",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
@@ -40,6 +43,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
+          animation: "none",
           title: "Weekly Stats",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
         }}
@@ -47,6 +51,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="leaderboard"
         options={{
+          animation: "none",
           title: "Leaderboard",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="trophy.fill" color={color} />,
         }}
@@ -54,6 +59,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
+          animation: "none",
           title: "Settings",
           tabBarIcon: ({ color }) => <MaterialIcon size={28} name="settings" color={color} />,
         }}

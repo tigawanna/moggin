@@ -4,17 +4,21 @@ import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
 import { useSettingsStore } from "@/stores/use-app-settings";
 import { Stack } from "expo-router";
 
-export default function _ProtectedLayout() {
+export default function ProtectedLayout() {
   const { settings } = useSettingsStore();
+  const wakatimeKey = settings.wakatimeApiKey;
+  const {
+    data: currentUserData,
+    isLoading: isCurrentUserLoading,
+    error,
+  } = useCurrentUser(wakatimeKey);
 
-  const { data: currentUserData, isLoading: isCurrentUserLoading, error } = useCurrentUser();
-
-  if (settings.wakatimeApiKey && isCurrentUserLoading && !currentUserData) {
+  if (isCurrentUserLoading && !currentUserData) {
     return <LoadingFallback />;
   }
 
   const hasValidUserData = currentUserData?.data?.data?.username;
-  const isAuthenticated = Boolean(settings.wakatimeApiKey && hasValidUserData && !error);
+  const isAuthenticated = Boolean(hasValidUserData && !error);
   return (
     <Stack>
       <Stack.Protected guard={isAuthenticated}>

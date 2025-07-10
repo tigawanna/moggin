@@ -1,13 +1,11 @@
 
 import { Overview } from "@/components/screens/home/Overview";
-import { TestDatastore } from "@/components/test/TestDatastore";
 import { StyleSheet } from "react-native";
-import { Surface,Text } from "react-native-paper";
+import { Surface } from "react-native-paper";
 
 export default function HomeScreen() {
   return (
     <Surface style={styles.container}>
-      {/* <TestDatastore /> */}
       <Overview />
       {/* <Text>Home Screen</Text> */}
     </Surface>

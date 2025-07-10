@@ -1,4 +1,4 @@
-import { useApiKeysStore } from "@/stores/use-app-settings";
+import { useApiKeysStore, useSettingsStore } from "@/stores/use-app-settings";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { fetchCurrentUser } from "./wakatime-sdk";
 
@@ -16,13 +16,12 @@ export const wakatimeCurrentUserQueryOptions = (wakatimeApiKey: string | null) =
     enabled: !!wakatimeApiKey,
     staleTime: 1000 * 60 * 30, // 30 minutes
     gcTime: 1000 * 60 * 60, // 1 hour
-    refetchOnWindowFocus: false, // Prevent refetch on focus
-    refetchOnReconnect: false, // Prevent refetch on reconnect
+    // refetchOnWindowFocus: false, // Prevent refetch on focus
+    // refetchOnReconnect: false, // Prevent refetch on reconnect
     retry: 1, // Only retry once on failure
-    placeholderData: (previousData) => previousData, // Keep previous data during refetch
+    // placeholderData: (previousData) => previousData, // Keep previous data during refetch
   });
 
-export function useCurrentUser() {
-  const { wakatimeApiKey } = useApiKeysStore();
-  return useQuery(wakatimeCurrentUserQueryOptions(wakatimeApiKey));
+export function useCurrentUser(apikey: string | null = null) {
+  return useQuery(wakatimeCurrentUserQueryOptions(apikey));
 }

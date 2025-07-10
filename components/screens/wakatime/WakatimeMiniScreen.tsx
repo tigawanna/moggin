@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text, useTheme } from "react-native-paper";
-import { useWakatimeDailyDuration } from "../../../lib/api/wakatime/wakatime-durations";
+import { useWakatimeDailyDuration } from "./wakatime-durations";
 import { WakatimeWeeklyChart } from "./WakatimeWeeklyChart";
 
 // const { width: screenWidth } = Dimensions.get('window');
@@ -16,7 +16,7 @@ export function WakatimeMiniScreen() {
   const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
   const router = useRouter();
   const { colors } = useTheme();
-  const { data: currentUserData } = useCurrentUser();
+  const { data: currentUserData } = useCurrentUser(settings.wakatimeApiKey);
 
 // Wakatime query using the durations endpoint
   const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeDailyDuration({

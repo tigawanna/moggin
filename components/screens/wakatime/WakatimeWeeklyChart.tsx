@@ -2,7 +2,7 @@ import { useFont } from "@shopify/react-native-skia";
 import { StyleSheet, View } from "react-native";
 import { Surface, Text, useTheme } from "react-native-paper";
 import { CartesianChart, Line } from "victory-native";
-import { useWakatimeWeeklyStats } from "../../../lib/api/wakatime/wakatime-durations";
+import { useWakatimeWeeklyStats } from "./wakatime-durations";
 
 interface WakatimeWeeklyChartProps {
   selectedDate: string;

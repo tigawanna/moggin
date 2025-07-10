@@ -21,7 +21,7 @@ export function WakatimeLeaderboardScreen() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
   // Use the new current user hook
-  const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser(wakatimeApiKey);
 
   // Set default country based on current user location
   useEffect(() => {

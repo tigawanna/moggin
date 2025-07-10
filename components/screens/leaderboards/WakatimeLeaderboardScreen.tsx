@@ -4,8 +4,8 @@ import { useApiKeysStore } from "@/stores/use-app-settings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FlatList, ListRenderItem, StyleSheet, View } from "react-native";
 import { Avatar, Button, Card, Chip, Surface, Text, useTheme } from "react-native-paper";
 
 type LeaderboardEntry = {
@@ -106,13 +106,7 @@ export function WakatimeLeaderboardScreen() {
     }
   }, [currentUserData]);
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
-
-  const getRankIcon = (rank: number) => {
+  const getRankIcon = useCallback((rank: number) => {
     switch (rank) {
       case 1:
         return "trophy" as const
@@ -123,9 +117,9 @@ export function WakatimeLeaderboardScreen() {
       default:
         return "medal" as const;
     }
-  };
+  }, []);
 
-  const getRankColor = (rank: number) => {
+  const getRankColor = useCallback((rank: number) => {
     switch (rank) {
       case 1:
         return "#FFD700"; // Gold
@@ -136,41 +130,90 @@ export function WakatimeLeaderboardScreen() {
       default:
         return colors.primary;
     }
-  };
+  }, [colors.primary]);
 
-  // If no API key, show message
-  if (!wakatimeApiKey) {
-    return (
-      <ScrollView style={styles.container}>
-        <Surface style={styles.header} elevation={0}>
-          <Text variant="headlineMedium" style={styles.title}>
-            Wakatime Leaderboard
-          </Text>
-          <Text variant="bodyMedium" style={styles.subtitle}>
-            Please add your Wakatime API key to view the leaderboard
-          </Text>
-          <Button 
-            mode="contained" 
-            onPress={() => router.push('/api-keys')}
-            style={{ marginTop: 16 }}
-          >
-            Add API Key
-          </Button>
-        </Surface>
-      </ScrollView>
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
+
+  const renderLeaderboardItem: ListRenderItem<LeaderboardEntry> = useCallback(({ item: entry, index }) => {
+    const isCurrentUser = currentUser && (
+      entry.user?.id === currentUser.id || 
+      entry.username === currentUser.username ||
+      entry.user?.display_name === currentUser.display_name
     );
-  }
+    
+    return (
+      <Card style={[
+        styles.leaderboardCard,
+        isCurrentUser && { borderColor: colors.primary, borderWidth: 2 }
+      ]} mode="elevated">
+        <Card.Content>
+          <View style={styles.entryHeader}>
+            <View style={styles.rankContainer}>
+              <MaterialCommunityIcons
+                name={getRankIcon(entry.rank)}
+                size={32}
+                color={getRankColor(entry.rank)}
+              />
+              <Text variant="titleMedium" style={styles.rankText}>
+                #{entry.rank}
+              </Text>
+            </View>
+            
+            <View style={styles.userInfo}>
+              <Avatar.Image
+                size={48}
+                source={{ 
+                  uri: entry.user?.photo || entry.avatar_url || "https://github.com/github.png" 
+                }}
+              />
+              <View style={styles.userDetails}>
+                <Text variant="titleMedium" style={styles.username}>
+                  {entry.user?.display_name || entry.username}
+                  {isCurrentUser && (
+                    <Text style={{ color: colors.primary, fontWeight: 'bold' }}> (You)</Text>
+                  )}
+                </Text>
+                {(entry.user?.location || entry.country) && (
+                  <Text variant="bodySmall" style={styles.country}>
+                    {entry.user?.location || entry.country}
+                  </Text>
+                )}
+              </View>
+            </View>
+            
+            <View style={styles.timeContainer}>
+              <Text variant="headlineSmall" style={styles.timeValue}>
+                {entry.human_readable_total}
+              </Text>
+              <Text variant="bodySmall" style={styles.timeLabel}>
+                Total Time
+              </Text>
+            </View>
+          </View>
 
-  // Use real data if available, fallback to mock data
-  const displayData = leaderboardData?.data || mockLeaderboardData;
+          <View style={styles.languagesContainer}>
+            {entry.languages?.map((lang: string, langIndex: number) => (
+              <Chip
+                key={langIndex}
+                mode="outlined"
+                compact
+                style={styles.languageChip}
+              >
+                {lang}
+              </Chip>
+            ))}
+          </View>
+        </Card.Content>
+      </Card>
+    );
+  }, [currentUser, colors.primary, getRankIcon, getRankColor]);
 
-  return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
+  const renderHeader = useCallback(() => (
+    <>
       <Surface style={styles.header} elevation={0}>
         <Text variant="headlineMedium" style={styles.title}>
           Wakatime Leaderboard
@@ -206,90 +249,63 @@ export function WakatimeLeaderboardScreen() {
           </Button>
         </View>
       </Surface>
+    </>
+  ), [selectedPeriod, currentUser?.location]);
 
-      {displayData.map((entry: LeaderboardEntry, index: number) => {
-        const isCurrentUser = currentUser && (
-          entry.user?.id === currentUser.id || 
-          entry.username === currentUser.username ||
-          entry.user?.display_name === currentUser.display_name
-        );
-        
-        return (
-          <Card key={index} style={[
-            styles.leaderboardCard,
-            isCurrentUser && { borderColor: colors.primary, borderWidth: 2 }
-          ]} mode="elevated">
-            <Card.Content>
-              <View style={styles.entryHeader}>
-                <View style={styles.rankContainer}>
-                  <MaterialCommunityIcons
-                    name={getRankIcon(entry.rank)}
-                    size={32}
-                    color={getRankColor(entry.rank)}
-                  />
-                  <Text variant="titleMedium" style={styles.rankText}>
-                    #{entry.rank}
-                  </Text>
-                </View>
-                
-                <View style={styles.userInfo}>
-                  <Avatar.Image
-                    size={48}
-                    source={{ 
-                      uri: entry.user?.photo || entry.avatar_url || "https://github.com/github.png" 
-                    }}
-                  />
-                  <View style={styles.userDetails}>
-                    <Text variant="titleMedium" style={styles.username}>
-                      {entry.user?.display_name || entry.username}
-                      {isCurrentUser && (
-                        <Text style={{ color: colors.primary, fontWeight: 'bold' }}> (You)</Text>
-                      )}
-                    </Text>
-                    {(entry.user?.location || entry.country) && (
-                      <Text variant="bodySmall" style={styles.country}>
-                        {entry.user?.location || entry.country}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-                
-                <View style={styles.timeContainer}>
-                  <Text variant="headlineSmall" style={styles.timeValue}>
-                    {entry.human_readable_total}
-                  </Text>
-                  <Text variant="bodySmall" style={styles.timeLabel}>
-                    Total Time
-                  </Text>
-                </View>
-              </View>
+  // If no API key, show message
+  if (!wakatimeApiKey) {
+    return (
+      <View style={[styles.container, { padding: 16 }]}>
+        <Surface style={styles.header} elevation={0}>
+          <Text variant="headlineMedium" style={styles.title}>
+            Wakatime Leaderboard
+          </Text>
+          <Text variant="bodyMedium" style={styles.subtitle}>
+            Please add your Wakatime API key to view the leaderboard
+          </Text>
+          <Button 
+            mode="contained" 
+            onPress={() => router.push('/api-keys')}
+            style={{ marginTop: 16 }}
+          >
+            Add API Key
+          </Button>
+        </Surface>
+      </View>
+    );
+  }
 
-              <View style={styles.languagesContainer}>
-                {entry.languages?.map((lang: string, langIndex: number) => (
-                  <Chip
-                    key={langIndex}
-                    mode="outlined"
-                    compact
-                    style={styles.languageChip}
-                  >
-                    {lang}
-                  </Chip>
-                ))}
-              </View>
-            </Card.Content>
-          </Card>
-        );
-      })}
+  // Use real data if available, fallback to mock data
+  const displayData = useMemo(() => {
+    return leaderboardData?.data || mockLeaderboardData;
+  }, [leaderboardData?.data]);
 
-      <View style={styles.bottomPadding} />
-    </ScrollView>
+  const keyExtractor = useCallback((item: LeaderboardEntry, index: number) => {
+    return `${item.username}-${item.rank}-${index}`;
+  }, []);
+
+  return (
+    <FlatList
+      style={styles.container}
+      data={displayData}
+      renderItem={renderLeaderboardItem}
+      keyExtractor={keyExtractor}
+      ListHeaderComponent={renderHeader}
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      contentContainerStyle={styles.flatListContent}
+      showsVerticalScrollIndicator={false}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  flatListContent: {
     padding: 16,
+    paddingBottom: 24,
   },
   header: {
     marginBottom: 16,
@@ -366,8 +382,5 @@ const styles = StyleSheet.create({
   languageChip: {
     backgroundColor: 'transparent',
     elevation: 1,
-  },
-  bottomPadding: {
-    height: 24,
   },
 });

@@ -12,9 +12,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        lazy: false,
-
-        animation: "none", // Disables screen transition animations
+        lazy:false,
+        animation: "shift",
         //  headerShown: false, // Hide headers for all tab screens
         headerStyle: {
           backgroundColor: colors.surface,

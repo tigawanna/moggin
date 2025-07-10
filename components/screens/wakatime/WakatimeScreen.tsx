@@ -1,4 +1,5 @@
-import { WakatimeSDK } from '@/lib/api/wakatime/wakatime-sdk';
+
+import { getUserStats } from '@/lib/api/wakatime/wakatime-sdk';
 import { useApiKeysStore } from '@/stores/use-app-settings';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -34,13 +35,13 @@ export function WakatimeScreen() {
     if (!wakatimeApiKey) return;
     
     try {
-      const sdk = new WakatimeSDK(wakatimeApiKey);
+
       const today = new Date().toISOString().split('T')[0];
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       
       const [todayResponse, weekResponse] = await Promise.all([
-        sdk.getUserStats({ start: today, end: today }),
-        sdk.getUserStats({ start: weekAgo, end: today })
+        getUserStats({ start: today, end: today,api_key: wakatimeApiKey }),
+        getUserStats({ start: weekAgo, end: today,api_key: wakatimeApiKey })
       ]);
       
       setStats({

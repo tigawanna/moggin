@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text, useTheme } from "react-native-paper";
-import { useWakatimeDailyDuaration } from "../use-wakatime-mini";
+import { useWakatimeDailyDuration } from "../use-wakatime-mini";
 import { useSettingsStore } from "@/stores/use-app-settings";
 import { useState } from "react";
 import { useRouter } from "expo-router";
@@ -18,7 +18,7 @@ export function TodayActivityCard({ date }: TodayActivityCardProps) {
   const router = useRouter();
   const { colors } = useTheme();
   // Wakatime query using the durations endpoint
-  const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeDailyDuaration({
+  const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeDailyDuration({
     selectedDate,
     wakatimeApiKey,
   });

@@ -1,5 +1,6 @@
 import { wakatimeLeaderboardQueryOptions } from '@/lib/api/wakatime/leaderboard-hooks';
-import { WakatimeSDK } from '@/lib/api/wakatime/wakatime-sdk';
+import { fetchCurrentUser } from '@/lib/api/wakatime/wakatime-sdk';
+
 import { useApiKeysStore } from '@/stores/use-app-settings';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
@@ -17,9 +18,7 @@ export function CurrentUserLeaderboardPosition() {
     queryKey: ["wakatime-current-user", wakatimeApiKey],
     queryFn: async () => {
       if (!wakatimeApiKey) return null;
-      const sdk = new WakatimeSDK(wakatimeApiKey);
-      const result = await sdk.getCurrentUser();
-      return result.data;
+      return await fetchCurrentUser(wakatimeApiKey);
     },
     enabled: !!wakatimeApiKey,
   });

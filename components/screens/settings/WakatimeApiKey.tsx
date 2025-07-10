@@ -1,5 +1,6 @@
 import { useSnackbar } from "@/components/shared/snackbar/store";
-import { WakatimeSDK } from "@/lib/api/wakatime/wakatime-sdk";
+import { checkIfTokenIsValid } from "@/lib/api/wakatime/wakatime-sdk";
+
 import { useApiKeysStore } from "@/stores/use-app-settings";
 import { EvilIcons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
@@ -19,7 +20,7 @@ export function WakatimeApiKey() {
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ token }: { token: string }) => {
       // Your mutation logic here
-      return WakatimeSDK.checkIfTokenIsValid({
+      return checkIfTokenIsValid({
         token,
       });
     },

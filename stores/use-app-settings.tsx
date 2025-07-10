@@ -73,12 +73,13 @@ export function useApiKeysStore() {
   const queryClient = useQueryClient();
 
   const setWakatimeApiKey = (value: string | null) => {
+    const oldKey = wakatimeApiKey;
     settings$.wakatimeApiKey.set(value);
     updateWakatimeWidgetKey(value);
     
-    // Invalidate current user query when API key changes
+    // Invalidate all current user queries when API key changes
     queryClient.invalidateQueries({
-      queryKey: ["wakatime-current-user", value],
+      queryKey: ["wakatime-current-user"],
     });
   };
 

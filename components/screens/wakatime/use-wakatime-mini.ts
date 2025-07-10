@@ -1,4 +1,5 @@
-import { wakatimeSDK$ } from "@/lib/api/wakatime/wakatime-sdk";
+
+import { getUserDurations } from "@/lib/api/wakatime/wakatime-sdk";
 import { getLastFiveDates } from "@/utils/date";
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
 
@@ -16,13 +17,16 @@ export function wakatimeUserTimeQueryoptions({
   selectedDate,
   wakatimeApiKey,
 }: WakatimeUserTimeQueryOptions) {
-  const sdk = wakatimeSDK$.get();
+
   return queryOptions({
     queryKey: ["wakatime-durations", selectedDate, wakatimeApiKey],
     queryFn: async () => {
-      if (!sdk) return null;
+      if (!wakatimeApiKey) {
+        console.warn("No Wakatime API key provided");
+        return null;
+      }
       // "https://wakatime.com/api/v1/users/current/durations?date=2025-07-03"
-      const result = await sdk?.getUserDurations?.({ date: selectedDate });
+      const result = await getUserDurations({ date: selectedDate, api_key: wakatimeApiKey });
       if (!result) return null;
 
       if (result.data) {
@@ -43,11 +47,11 @@ export function wakatimeUserTimeQueryoptions({
       }
       return null;
     },
-    enabled: !!sdk && !!wakatimeApiKey,
+    enabled: !!wakatimeApiKey,
   });
 }
 
-export function useWakatimeDailyDuaration({ selectedDate, wakatimeApiKey }: UseWakatimeDailyDurationProps) {
+export function useWakatimeDailyDuration({ selectedDate, wakatimeApiKey }: UseWakatimeDailyDurationProps) {
   const { data, isLoading, refetch } = useQuery(
     wakatimeUserTimeQueryoptions({
       selectedDate,

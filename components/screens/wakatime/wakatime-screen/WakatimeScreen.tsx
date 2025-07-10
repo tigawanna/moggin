@@ -1,9 +1,10 @@
-import { WakatimeSDK } from '@/lib/api/wakatime/wakatime-sdk';
+
 import { useApiKeysStore } from '@/stores/use-app-settings';
 import { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
 
+import { getUserStats } from '@/lib/api/wakatime/wakatime-sdk';
 import { EditorsAndOSCards } from './EditorsAndOSCards';
 import { LanguagesCard } from './LanguagesCard';
 import { NoApiKeyCard } from './NoApiKeyCard';
@@ -37,13 +38,13 @@ export function WakatimeScreen() {
     if (!wakatimeApiKey) return;
     
     try {
-      const sdk = new WakatimeSDK(wakatimeApiKey);
+
       const today = new Date().toISOString().split('T')[0];
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       
       const [todayResponse, weekResponse] = await Promise.all([
-        sdk.getUserStats({ start: today, end: today }),
-        sdk.getUserStats({ start: weekAgo, end: today })
+        getUserStats({ start: today, end: today, api_key: wakatimeApiKey }),
+        getUserStats({ start: weekAgo, end: today, api_key: wakatimeApiKey })
       ]);
       
       setStats({

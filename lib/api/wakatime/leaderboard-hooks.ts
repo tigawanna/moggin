@@ -1,5 +1,5 @@
-import { wakatimeSDK$ } from "@/lib/api/wakatime/wakatime-sdk";
 import { queryOptions } from "@tanstack/react-query";
+import { getLeaderboard } from "./wakatime-sdk";
 
 interface WakatimeLeaderboardQueryOptions {
   wakatimeApiKey: string | null;
@@ -12,21 +12,24 @@ export function wakatimeLeaderboardQueryOptions({
   country,
   page = 1,
 }: WakatimeLeaderboardQueryOptions) {
-  const sdk = wakatimeSDK$.get();
+
   return queryOptions({
     queryKey: ["wakatime-leaderboard", wakatimeApiKey, country, page],
     queryFn: async () => {
-      if (!sdk) return null;
+      if (!wakatimeApiKey) {
+        console.warn("No Wakatime API key provided");
+        return null;
+      }
     
       const params: { country?: string; page?: number } = { page };
       if (country) {
         params.country = country;
       }
-      
-      const result = await sdk?.getLeaderboard?.(params);
+
+      const result = await getLeaderboard({ api_key: wakatimeApiKey, ...params });
       return result?.data || null;
     },
-    enabled: !!sdk && !!wakatimeApiKey,
+    enabled: !!wakatimeApiKey,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
     gcTime: 1000 * 60 * 60 * 24, // 24 hours
   });

@@ -18,15 +18,15 @@ export default function _ProtectedLayout() {
   //     }
   //   }, [wakatimeApiKey, isCurrentUserLoading]);
 
-  // Show splash screen while loading
-    if (settings.wakatimeApiKey && isCurrentUserLoading) {
-      return <LoadingFallback/>
-    }
+  // Show splash screen while loading user data initially
+  if (settings.wakatimeApiKey && isCurrentUserLoading && !currentUserData) {
+    return <LoadingFallback/>
+  }
 
   // Determine if user is authenticated
-  const isAuthenticated = Boolean(settings.wakatimeApiKey && currentUserData?.data?.data && !error);
-  console.log("wakatimeKey,isAuthenticated", settings.wakatimeApiKey,isAuthenticated);
-  console.log(" current user.data ==== >> ", currentUserData?.data?.data?.username);
+  // Only check authentication status when we have data or an error (not during refetch)
+  const hasValidUserData = currentUserData?.data?.data?.username;
+  const isAuthenticated = Boolean(settings.wakatimeApiKey && hasValidUserData && !error);
   return (
     <Stack>
       <Stack.Protected guard={isAuthenticated}>

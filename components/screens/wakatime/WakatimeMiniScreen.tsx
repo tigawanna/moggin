@@ -1,13 +1,12 @@
-import { WakatimeSDK } from "@/lib/api/wakatime/wakatime-sdk";
 import { useSettingsStore } from "@/stores/use-app-settings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text, useTheme } from "react-native-paper";
-import { useWakatimeDailyDuaration } from "./use-wakatime-mini";
+import { useWakatimeDailyDuration } from "./use-wakatime-mini";
 import { WakatimeWeeklyChart } from "./WakatimeWeeklyChart";
+import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
 
 // const { width: screenWidth } = Dimensions.get('window');
 
@@ -17,21 +16,10 @@ export function WakatimeMiniScreen() {
   const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
   const router = useRouter();
   const { colors } = useTheme();
+  const { data: currentUserData } = useCurrentUser();
 
-  // Get current user data
-  const { data: currentUserData } = useQuery({
-    queryKey: ["wakatime-current-user", wakatimeApiKey],
-    queryFn: async () => {
-      if (!wakatimeApiKey) return null;
-      const sdk = new WakatimeSDK(wakatimeApiKey);
-      const result = await sdk.getCurrentUser();
-      return result.data?.data;
-    },
-    enabled: !!wakatimeApiKey,
-  });
-
-  // Wakatime query using the durations endpoint
-  const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeDailyDuaration({
+// Wakatime query using the durations endpoint
+  const { data: wakatimeData, isLoading: wakatimeLoading } = useWakatimeDailyDuration({
     selectedDate,
     wakatimeApiKey,
   });
@@ -128,9 +116,9 @@ export function WakatimeMiniScreen() {
             <Text variant="titleMedium" style={{ fontSize: 20, fontWeight: 'bold' }}>
               Wakatime Stats
             </Text>
-            {currentUserData?.display_name && (
+            {currentUserData?.data?.display_name && (
               <Text variant="bodySmall" style={{ opacity: 0.7, marginTop: 2 }}>
-                Welcome, {currentUserData.display_name}
+                Welcome, {currentUserData.data?.display_name}
               </Text>
             )}
           </View>

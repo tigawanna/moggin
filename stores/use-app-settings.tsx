@@ -1,9 +1,11 @@
+import { wakatimeCurrentUserQueryOptions } from "@/lib/api/wakatime/current-user-hooks";
 import { updateWakatimeWidgetKey } from "@/lib/datastore/store";
 import { observable, syncState } from "@legendapp/state";
 import { observablePersistAsyncStorage } from "@legendapp/state/persist-plugins/async-storage";
 import { use$ } from "@legendapp/state/react";
 import { configureSynced, syncObservable } from "@legendapp/state/sync";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQueryClient } from "@tanstack/react-query";
 import { useColorScheme } from "react-native";
 
 type SettingsStoreType = {
@@ -69,10 +71,16 @@ export function useThemeStore() {
 
 export function useApiKeysStore() {
   const wakatimeApiKey = use$(() => settings$.wakatimeApiKey.get());
+  const queryClient = useQueryClient();
 
   const setWakatimeApiKey = (value: string | null) => {
     settings$.wakatimeApiKey.set(value);
     updateWakatimeWidgetKey(value);
+    
+    // Invalidate current user query when API key changes
+    queryClient.invalidateQueries({
+      queryKey: wakatimeCurrentUserQueryOptions(value).queryKey,
+    });
   };
 
   return {

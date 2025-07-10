@@ -7,9 +7,11 @@ interface GetWakatimeCurrentUserProps {
 export function getWakatimeCurrrentUser({ token }: GetWakatimeCurrentUserProps) {
   const endpoint = new URL("/api/v1/users/current", wakatimeUrlr);
   endpoint.searchParams.append("api_key", token);
-  console.log("Wakatime endpoint:", endpoint.toString());
+  console.log("== getWakatimeCurrrentUser == :", endpoint.toString());
   const res = fetch(endpoint).then(async(response) => {
+    console.log("== getWakatimeCurrrentUser response == :",response.ok);
     if (!response.ok) {
+      console.log("== getWakatimeCurrrentUser Error response == :",response.text());
       return { data: null, status: response.status, error: await response.text() } as unknown as WakatimeUserResponse;
     }
     const { data } = await response.json() as { data: WakatimeUser };

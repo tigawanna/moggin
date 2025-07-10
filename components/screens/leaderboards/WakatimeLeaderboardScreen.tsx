@@ -1,6 +1,6 @@
+import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
 import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/leaderboard-hooks";
 import { LeaderboardEntry } from "@/lib/api/wakatime/types/leaderboard-types";
-import { WakatimeSDK } from "@/lib/api/wakatime/wakatime-sdk";
 import { useApiKeysStore } from "@/stores/use-app-settings";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -19,33 +19,27 @@ export function WakatimeLeaderboardScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('week');
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  // Get current user data
-  const { data: currentUserData } = useQuery({
-    queryKey: ["wakatime-current-user", wakatimeApiKey],
-    queryFn: async () => {
-      if (!wakatimeApiKey) return null;
-      const sdk = new WakatimeSDK(wakatimeApiKey);
-      const result = await sdk.getCurrentUser();
-      return result.data;
-    },
-    enabled: !!wakatimeApiKey,
-  });
+  // Use the new current user hook
+  const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser();
+
+  // Set default country based on current user location
+  useEffect(() => {
+    if (currentUserData?.data?.location && !selectedCountry) {
+      // Extract country code from location if possible
+      const userCountry = extractCountryCode(currentUserData.data.location);
+      setSelectedCountry(userCountry);
+    }
+  }, [currentUserData, selectedCountry]);
 
   // Get leaderboard data
   const { data: leaderboardData, refetch } = useQuery(
     wakatimeLeaderboardQueryOptions({
       wakatimeApiKey,
-      country: currentUserData?.data?.location || undefined,
+      country: selectedCountry || undefined,
     })
   );
-
-  useEffect(() => {
-    if (currentUserData?.data) {
-      setCurrentUser(currentUserData.data);
-    }
-  }, [currentUserData]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -58,24 +52,50 @@ export function WakatimeLeaderboardScreen() {
       <LeaderboardItem
         entry={entry}
         index={index}
-        currentUser={currentUser}
+        currentUser={currentUserData?.data}
         getRankIcon={getRankIcon}
         getRankColor={(rank) => getRankColor(rank, colors.primary)}
       />
     );
-  }, [currentUser, colors.primary]);
+  }, [currentUserData?.data, colors.primary]);
 
   const renderHeader = useCallback(() => (
     <LeaderboardHeader
       selectedPeriod={selectedPeriod}
       setSelectedPeriod={setSelectedPeriod}
-      currentUser={currentUser}
+      selectedCountry={selectedCountry}
+      setSelectedCountry={setSelectedCountry}
+      currentUser={currentUserData?.data}
     />
-  ), [selectedPeriod, currentUser]);
+  ), [selectedPeriod, selectedCountry, currentUserData?.data]);
 
   const keyExtractor = useCallback((item: LeaderboardEntry, index: number) => {
     return `${item.user.username}-${item.rank}-${index}`;
   }, []);
+
+  // Helper function to extract country code from location string
+  const extractCountryCode = (location: string): string | null => {
+    // Simple mapping for common countries - you can expand this
+    const countryMap: Record<string, string> = {
+      'United States': 'US',
+      'Canada': 'CA',
+      'United Kingdom': 'GB',
+      'Germany': 'DE',
+      'France': 'FR',
+      'Japan': 'JP',
+      'Australia': 'AU',
+      'Brazil': 'BR',
+      'India': 'IN',
+      'China': 'CN',
+    };
+    
+    for (const [country, code] of Object.entries(countryMap)) {
+      if (location.includes(country)) {
+        return code;
+      }
+    }
+    return null;
+  };
 
 
   if (!leaderboardData || !leaderboardData.data || leaderboardData.data.length === 0) {

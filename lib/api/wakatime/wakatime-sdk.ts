@@ -17,7 +17,7 @@ export class WakatimeSDK {
     const url = new URL(`${this.baseUrl}${endpoint}`);
     params.api_key = this.apiKey;
     Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
-    console.log("WakatimeSDK fetchData url: ===> ", url.toString());
+    // console.log("WakatimeSDK fetchData url: ===> ", url.toString());
     const response = await fetch(url.toString());
     if (!response.ok) {
       return {

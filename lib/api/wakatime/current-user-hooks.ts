@@ -1,13 +1,7 @@
-the main focus of this app is to test out the expo-galce-widgets
+import { useApiKeysStore } from "@/stores/use-app-settings";
+import { getWakatimeCurrrentUser } from "@/utils/api/wakatime";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
-its main parts are in  modules/expo-glance-widget
-- /plugins
-
-inside / plugins ignore any .js files those are auto generated from the .ts files
-
-when usin react query remember to first create custome query options that will be used in the queries and invalidation of queries
-example
-```ts
 export const wakatimeCurrentUserQueryOptions = (wakatimeApiKey: string | null) =>
   queryOptions({
     queryKey: ["wakatime-current-user", wakatimeApiKey],
@@ -21,4 +15,10 @@ export const wakatimeCurrentUserQueryOptions = (wakatimeApiKey: string | null) =
     staleTime: 1000 * 60 * 30, // 30 minutes
     gcTime: 1000 * 60 * 60, // 1 hour
   });
-```
+
+export function useCurrentUser() {
+  const { wakatimeApiKey } = useApiKeysStore();
+  
+  return useQuery(wakatimeCurrentUserQueryOptions(wakatimeApiKey));
+}
+

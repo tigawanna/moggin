@@ -7,7 +7,7 @@ import "react-native-reanimated";
 
 import { useThemeSetup } from "@/hooks/useThemeSetup";
 import { useAppState, useOnlineManager } from "@/lib/tanstack/hooks";
-import {useSettingsStore } from "@/stores/use-app-settings";
+import { useApiKeysStore, useSettingsStore } from "@/stores/use-app-settings";
 import { focusManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { AppStateStatus, Platform } from "react-native";
@@ -38,6 +38,7 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+  const { wakatimeApiKey } = useApiKeysStore();
 
   useEffect(() => {
     getWakatimeCurrrentUser({
@@ -57,12 +58,10 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-
-
   if (!loaded) {
-    return null
+    return null;
   }
-
+  const isLoggedIn = !!wakatimeApiKey;
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -71,8 +70,13 @@ export default function RootLayout() {
             <ThemeProvider value={paperTheme as any}>
               <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
               <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
+                <Stack.Protected guard={isLoggedIn}>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                </Stack.Protected>
+                <Stack.Protected guard={false}>
+                  <Stack.Screen name="/api-keys" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+                </Stack.Protected>
               </Stack>
               <GlobalSnackbar />
             </ThemeProvider>

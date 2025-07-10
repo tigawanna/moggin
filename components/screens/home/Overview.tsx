@@ -11,14 +11,14 @@ export function Overview() {
   const qc = useQueryClient();
 
   const { wakatimeApiKey } = useApiKeysStore();
-  const router = useRouter();
+  // const router = useRouter();
 
   //Redirect to API keys if no Wakatime key is present
-  useFocusEffect(() => {
-    if (!wakatimeApiKey) {
-      router.replace("/api-keys");
-    }
-  });
+  // useFocusEffect(() => {
+  //   if (!wakatimeApiKey) {
+  //     router.replace("/api-keys");
+  //   }
+  // });
 
   // Simple refresh function - refreshes Wakatime data
   const onRefresh = async () => {

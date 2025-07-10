@@ -7,7 +7,7 @@ import "react-native-reanimated";
 
 import { useThemeSetup } from "@/hooks/useThemeSetup";
 import { useAppState, useOnlineManager } from "@/lib/tanstack/hooks";
-import { useSettingsStore } from "@/stores/use-app-settings";
+import {useSettingsStore } from "@/stores/use-app-settings";
 import { focusManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { AppStateStatus, Platform } from "react-native";
@@ -39,26 +39,28 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  useEffect(() => {  
+  useEffect(() => {
     getWakatimeCurrrentUser({
-      token: wakatimeToken  as string,
-    }).then((res) => {
-      console.log("Wakatime user data:", res.data?.bio);
-    }
-    ).catch((error) => {
-      console.error("Error fetching Wakatime user:", error);
-    }
-    );
-  },[wakatimeToken])
+      token: wakatimeToken as string,
+    })
+      .then((res) => {
+        console.log("Wakatime user data:", res.data?.bio);
+      })
+      .catch((error) => {
+        console.error("Error fetching Wakatime user:", error);
+      });
+  }, [wakatimeToken]);
 
-  // useEffect(() => {
-  //   if (loaded) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [loaded]);
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+
 
   if (!loaded) {
-    return null;
+    return null
   }
 
   return (
@@ -72,7 +74,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="+not-found" />
               </Stack>
-              <GlobalSnackbar/>
+              <GlobalSnackbar />
             </ThemeProvider>
           </PaperProvider>
         </GestureHandlerRootView>

@@ -1,6 +1,6 @@
 import { useApiKeysStore } from '@/stores/use-app-settings';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
@@ -9,15 +9,16 @@ import { CurrentUserLeaderboardPosition } from './CurrentUserLeaderboardPosition
 
 export function Overview() {
   const qc = useQueryClient();
+
   const { wakatimeApiKey } = useApiKeysStore();
   const router = useRouter();
 
-  // Redirect to API keys if no Wakatime key is present
-  useEffect(() => {
+  //Redirect to API keys if no Wakatime key is present
+  useFocusEffect(() => {
     if (!wakatimeApiKey) {
-      router.push('/api-keys');
+      router.replace("/api-keys");
     }
-  }, [wakatimeApiKey, router]);
+  });
 
   // Simple refresh function - refreshes Wakatime data
   const onRefresh = async () => {

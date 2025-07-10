@@ -25,7 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: "moggin",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/splash-icon.png",
     scheme: "moggin",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,

@@ -1,12 +1,12 @@
+import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
 import { useSettingsStore } from "@/stores/use-app-settings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text, useTheme } from "react-native-paper";
-import { useWakatimeDailyDuration } from "./use-wakatime-mini";
+import { useWakatimeDailyDuration } from "../../../lib/api/wakatime/wakatime-durations";
 import { WakatimeWeeklyChart } from "./WakatimeWeeklyChart";
-import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
 
 // const { width: screenWidth } = Dimensions.get('window');
 

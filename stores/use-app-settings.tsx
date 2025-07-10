@@ -77,9 +77,12 @@ export function useApiKeysStore() {
     settings$.wakatimeApiKey.set(value);
     updateWakatimeWidgetKey(value);
     
-    // Invalidate all current user queries when API key changes
+    // Invalidate all wakatime queries when API key changes
     queryClient.invalidateQueries({
       queryKey: ["wakatime-current-user"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["wakatime-stats"],
     });
   };
 

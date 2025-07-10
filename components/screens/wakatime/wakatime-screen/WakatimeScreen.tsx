@@ -1,10 +1,10 @@
 
 import { useApiKeysStore } from '@/stores/use-app-settings';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
 
-import { getUserStats } from '@/lib/api/wakatime/wakatime-sdk';
+import { formatDuration, useWakatimeStats } from '@/lib/api/wakatime/wakatime-stats-hooks';
 import { EditorsAndOSCards } from './EditorsAndOSCards';
 import { LanguagesCard } from './LanguagesCard';
 import { NoApiKeyCard } from './NoApiKeyCard';
@@ -12,73 +12,31 @@ import { ProjectsCard } from './ProjectsCard';
 import { TodayActivityCard } from './TodayActivityCard';
 import { WeekSummaryCard } from './WeekSummaryCard';
 
-type WakatimeDetailStats = {
-  todayStats: {
-    total_seconds: number;
-    human_readable_total: string;
-    projects: { name: string; total_seconds: number; percent: number }[];
-    languages: { name: string; total_seconds: number; percent: number }[];
-    editors: { name: string; total_seconds: number; percent: number }[];
-    operating_systems: { name: string; total_seconds: number; percent: number }[];
-  } | null;
-  weekStats: {
-    human_readable_total: string;
-    daily_average: string;
-  } | null;
-};
-
 export function WakatimeScreen() {
   const { wakatimeApiKey } = useApiKeysStore();
-  
-  const [stats, setStats] = useState<WakatimeDetailStats>({ todayStats: null, weekStats: null });
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  
+  const { 
+    data: stats, 
+    isLoading: loading, 
+    refetch,
+    isError,
+    error 
+  } = useWakatimeStats();
 
-  const fetchWakatimeDetails = useCallback(async () => {
-    if (!wakatimeApiKey) return;
-    
-    try {
-
-      const today = new Date().toISOString().split('T')[0];
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-      
-      const [todayResponse, weekResponse] = await Promise.all([
-        getUserStats({ start: today, end: today, api_key: wakatimeApiKey }),
-        getUserStats({ start: weekAgo, end: today, api_key: wakatimeApiKey })
-      ]);
-      
-      setStats({
-        todayStats: todayResponse.data,
-        weekStats: weekResponse.data
-      });
-    } catch (error) {
-      console.error('Failed to fetch Wakatime details:', error);
-    }
-  }, [wakatimeApiKey]);
-
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await fetchWakatimeDetails();
+    await refetch();
     setRefreshing(false);
-  };
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      await fetchWakatimeDetails();
-      setLoading(false);
-    };
-    loadData();
-  }, [fetchWakatimeDetails]);
-
-  const formatDuration = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
-  };
+  }, [refetch]);
 
   if (!wakatimeApiKey) {
     return <NoApiKeyCard />;
+  }
+
+  // Handle error state
+  if (isError) {
+    console.error('Failed to fetch Wakatime stats:', error);
   }
 
   return (
@@ -95,27 +53,27 @@ export function WakatimeScreen() {
 
         {/* Week Summary */}
         <WeekSummaryCard 
-          stats={stats.weekStats}
+          stats={stats?.weekStats || null}
           loading={loading}
         />
 
         {/* Projects Breakdown */}
         <ProjectsCard
-          projects={stats.todayStats?.projects || null}
+          projects={stats?.todayStats?.projects || null}
           loading={loading}
           formatDuration={formatDuration}
         />
 
         {/* Languages Breakdown */}
         <LanguagesCard
-          languages={stats.todayStats?.languages || null}
+          languages={stats?.todayStats?.languages || null}
           loading={loading}
         />
 
         {/* Editors & OS */}
         <EditorsAndOSCards
-          editors={stats.todayStats?.editors || null}
-          operatingSystems={stats.todayStats?.operating_systems || null}
+          editors={stats?.todayStats?.editors || null}
+          operatingSystems={stats?.todayStats?.operating_systems || null}
           loading={loading}
         />
 

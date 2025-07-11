@@ -8,18 +8,32 @@ export async function fetchData<T = any>(
   params: Record<string, any> & { api_key: string | null } = { api_key: null }
 ) {
   const url = new URL(`${baseUrl}${endpoint}`);
+  // if (params) {
+  //   Object.keys(params).forEach((key) => {
+  //     if (params[key] !== null && params[key] !== undefined) {
+  //       url.searchParams.append(key, params[key]);
+  //     }
+  //   });
+  // }
 
   const response = await fetch(url.toString());
   if (!response.ok) {
+      const errorMessage = await response
+        .json()
+        .then((data) => (data.error) as string || `Error: ${response.status} ${response.statusText}`)
+        .catch(() => "Failed to parse error message");
+    console.log("❌ Wakatime fetchData error:", response.status, errorMessage);
     return {
       data: null,
       type: "error",
-      error: `Error: ${response.status} ${response.statusText}`,
+      status: response.status,
+      error: errorMessage,
     };
   }
   const dataRes = (await response.json()) as T;
   return {
     data: dataRes,
+    status: response.status,
     type: "success",
     error: null,
   };
@@ -32,10 +46,14 @@ export async function fetchCurrentUser(api_key: string) {
 
   const response = await fetch(url.toString());
   if (!response.ok) {
+    const errorMessage = await response
+      .json()
+      .then((data) => (data.error as string) || `Error: ${response.status} ${response.statusText}`)
+      .catch(() => "Failed to parse error message");
     return {
       data: null,
       type: "error",
-      error: `Error: ${response.status} ${response.statusText}`,
+      error: errorMessage,
     };
   }
 

@@ -23,13 +23,37 @@ export function wakatimeUserTimeQueryoptions({
     queryFn: async () => {
       if (!wakatimeApiKey) {
         console.warn("No Wakatime API key provided");
-        return null;
+        return {
+          type: "unauthorized",
+          message: "Unauthorized access. Please check your API key.",
+        } as const;
       }
       // "https://wakatime.com/api/v1/users/current/durations?date=2025-07-03"
       const result = await getUserDurations({ date: selectedDate, api_key: wakatimeApiKey });
-      if (!result) return null;
+      if (!result || !result.data || result.type === "error") {
+        return {
+          type: "no_data",
+          date: selectedDate,
+          todayHours: "0h 0m",
+          totalDurations: 0,
+          currentProject: "No project",
+      } as const;
+      }
+      if (result.status === 401) {
+        return {
+          type: "unauthorized",
+          message: "Unauthorized access. Please check your API key.",
+      } as const;
+      }
+      if (result.status === 429) {
+        return {
+          type: "rate_limit_exceeded",
+          message: "Rate limit exceeded. Please try again later.",
+      } as const;
+      }
+    
 
-      if (result.data) {
+
         // Calculate total duration from durations array
         const totalSeconds = result.data.data.reduce((total: number, duration: any) => {
           return total + (duration.duration || 0);
@@ -39,13 +63,15 @@ export function wakatimeUserTimeQueryoptions({
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         // console.log("Wakatime daily duration result:", result.data);
         return {
+          type:"success",
           date: selectedDate,
           todayHours: `${hours}h ${minutes}m`,
           totalDurations: result.data.data.length,
           currentProject: result.data.data[0]?.project || "No project",
-        };
-      }
-      return null;
+          allProjects: result.data.data
+        } as const
+      
+
     },
     enabled: !!wakatimeApiKey,
   });

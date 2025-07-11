@@ -1,13 +1,12 @@
 
-import { Overview } from "@/components/screens/home/Overview";
+import { HomeScreenComponent } from "@/components/screens/home/HomeScreenComponent";
 import { StyleSheet } from "react-native";
 import { Surface } from "react-native-paper";
 
 export default function HomeScreen() {
   return (
     <Surface style={styles.container}>
-      <Overview />
-      {/* <Text>Home Screen</Text> */}
+      <HomeScreenComponent />
     </Surface>
   );
 }

@@ -1,0 +1,23 @@
+import { StyleSheet } from 'react-native'
+import { Text,Surface } from 'react-native-paper';
+import { Chill } from './svg/Chill';
+
+export function TooManyRequests(){
+return (
+<Surface style={{ ...styles.container }}>
+<Text variant="titleLarge" style={{ textAlign: 'center' }}>
+  Too Many Requests  let's take a breath
+</Text>
+<Chill/>
+</Surface>
+);
+}
+const styles = StyleSheet.create({
+container:{
+  flex:1,
+  height:'100%',
+   width: '100%',
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+})

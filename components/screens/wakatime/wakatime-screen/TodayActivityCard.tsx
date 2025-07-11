@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text, useTheme } from "react-native-paper";
-import { useWakatimeDailyDuration } from "../wakatime-durations";
+import { useWakatimeDailyDuration } from "../../../../lib/api/wakatime/use-wakatime-durations";
 
 interface TodayActivityCardProps {
   date?: string;

@@ -1,5 +1,5 @@
 import { LoadingFallback } from "@/components/shared/LoadingFallback";
-import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
+import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
 
 import { useSettingsStore } from "@/stores/use-app-settings";
 import { Stack } from "expo-router";

@@ -1,4 +1,4 @@
-import { wakatimeLeaderboardQueryOptions } from '@/lib/api/wakatime/leaderboard-hooks';
+import { wakatimeLeaderboardQueryOptions } from '@/lib/api/wakatime/use-leaderboard';
 import { fetchCurrentUser } from '@/lib/api/wakatime/wakatime-sdk';
 
 import { useApiKeysStore } from '@/stores/use-app-settings';

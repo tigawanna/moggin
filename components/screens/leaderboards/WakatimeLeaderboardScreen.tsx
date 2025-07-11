@@ -1,7 +1,7 @@
 
-import { useCurrentUser } from "@/lib/api/wakatime/current-user-hooks";
-import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/leaderboard-hooks";
 import { LeaderboardEntry } from "@/lib/api/wakatime/types/leaderboard-types";
+import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
+import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/use-leaderboard";
 import { useApiKeysStore } from "@/stores/use-app-settings";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";

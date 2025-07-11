@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
 
-import { formatDuration, useWakatimeStats } from '@/lib/api/wakatime/wakatime-stats-hooks';
+import { formatDuration, useWakatimeStats } from '@/lib/api/wakatime/use-wakatime-stats';
 import { EditorsAndOSCards } from './EditorsAndOSCards';
 import { LanguagesCard } from './LanguagesCard';
 import { NoApiKeyCard } from './NoApiKeyCard';

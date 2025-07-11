@@ -1,5 +1,5 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
-// import {withExpoGlanceWidgets} from "./modules/expo-glance-widget/plugins";
+import {withExpoGlanceWidgets} from "./.1-old-widgets/expo-glance-widget/plugins";
 
 const defaultWidgetSources = {
   widgetFilesPath:
@@ -67,7 +67,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
-      // Expo Glance Widgets plugin for Android widget support
+      //Expo Glance Widgets plugin for Android widget support
       // [
       //   withExpoGlanceWidgets as any,
       //   {

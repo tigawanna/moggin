@@ -1288,15 +1288,15 @@ var require_route = __commonJS({
       };
     }
     function wrapConversion(toModel, graph) {
-      const path11 = [graph[toModel].parent, toModel];
+      const path10 = [graph[toModel].parent, toModel];
       let fn = conversions[graph[toModel].parent][toModel];
       let cur = graph[toModel].parent;
       while (graph[cur].parent) {
-        path11.unshift(graph[cur].parent);
+        path10.unshift(graph[cur].parent);
         fn = link(conversions[graph[cur].parent][cur], fn);
         cur = graph[cur].parent;
       }
-      fn.conversion = path11;
+      fn.conversion = path10;
       return fn;
     }
     module2.exports = function(fromModel) {
@@ -3487,11 +3487,11 @@ var require_commonjs = __commonJS({
       return (f) => f.length === len && f !== "." && f !== "..";
     };
     var defaultPlatform = typeof process === "object" && process ? typeof process.env === "object" && process.env && process.env.__MINIMATCH_TESTING_PLATFORM__ || process.platform : "posix";
-    var path11 = {
+    var path10 = {
       win32: { sep: "\\" },
       posix: { sep: "/" }
     };
-    exports2.sep = defaultPlatform === "win32" ? path11.win32.sep : path11.posix.sep;
+    exports2.sep = defaultPlatform === "win32" ? path10.win32.sep : path10.posix.sep;
     exports2.minimatch.sep = exports2.sep;
     exports2.GLOBSTAR = Symbol("globstar **");
     exports2.minimatch.GLOBSTAR = exports2.GLOBSTAR;
@@ -6739,12 +6739,12 @@ var require_commonjs4 = __commonJS({
       /**
        * Get the Path object referenced by the string path, resolved from this Path
        */
-      resolve(path11) {
-        if (!path11) {
+      resolve(path10) {
+        if (!path10) {
           return this;
         }
-        const rootPath = this.getRootString(path11);
-        const dir = path11.substring(rootPath.length);
+        const rootPath = this.getRootString(path10);
+        const dir = path10.substring(rootPath.length);
         const dirParts = dir.split(this.splitSep);
         const result = rootPath ? this.getRoot(rootPath).#resolveParts(dirParts) : this.#resolveParts(dirParts);
         return result;
@@ -7497,8 +7497,8 @@ var require_commonjs4 = __commonJS({
       /**
        * @internal
        */
-      getRootString(path11) {
-        return node_path_1.win32.parse(path11).root;
+      getRootString(path10) {
+        return node_path_1.win32.parse(path10).root;
       }
       /**
        * @internal
@@ -7545,8 +7545,8 @@ var require_commonjs4 = __commonJS({
       /**
        * @internal
        */
-      getRootString(path11) {
-        return path11.startsWith("/") ? "/" : "";
+      getRootString(path10) {
+        return path10.startsWith("/") ? "/" : "";
       }
       /**
        * @internal
@@ -7596,8 +7596,8 @@ var require_commonjs4 = __commonJS({
        *
        * @internal
        */
-      constructor(cwd = process.cwd(), pathImpl, sep, { nocase, childrenCacheSize = 16 * 1024, fs: fs7 = defaultFS } = {}) {
-        this.#fs = fsFromOption(fs7);
+      constructor(cwd = process.cwd(), pathImpl, sep, { nocase, childrenCacheSize = 16 * 1024, fs: fs6 = defaultFS } = {}) {
+        this.#fs = fsFromOption(fs6);
         if (cwd instanceof URL || cwd.startsWith("file://")) {
           cwd = (0, node_url_1.fileURLToPath)(cwd);
         }
@@ -7636,11 +7636,11 @@ var require_commonjs4 = __commonJS({
       /**
        * Get the depth of a provided path, string, or the cwd
        */
-      depth(path11 = this.cwd) {
-        if (typeof path11 === "string") {
-          path11 = this.cwd.resolve(path11);
+      depth(path10 = this.cwd) {
+        if (typeof path10 === "string") {
+          path10 = this.cwd.resolve(path10);
         }
-        return path11.depth();
+        return path10.depth();
       }
       /**
        * Return the cache of child entries.  Exposed so subclasses can create
@@ -8127,9 +8127,9 @@ var require_commonjs4 = __commonJS({
         process2();
         return results;
       }
-      chdir(path11 = this.cwd) {
+      chdir(path10 = this.cwd) {
         const oldCwd = this.cwd;
-        this.cwd = typeof path11 === "string" ? this.cwd.resolve(path11) : path11;
+        this.cwd = typeof path10 === "string" ? this.cwd.resolve(path10) : path10;
         this.cwd[setAsCwd](oldCwd);
       }
     };
@@ -8156,8 +8156,8 @@ var require_commonjs4 = __commonJS({
       /**
        * @internal
        */
-      newRoot(fs7) {
-        return new PathWin32(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs7 });
+      newRoot(fs6) {
+        return new PathWin32(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs6 });
       }
       /**
        * Return true if the provided path string is an absolute path
@@ -8186,8 +8186,8 @@ var require_commonjs4 = __commonJS({
       /**
        * @internal
        */
-      newRoot(fs7) {
-        return new PathPosix(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs7 });
+      newRoot(fs6) {
+        return new PathPosix(this.rootPath, IFDIR, void 0, this.roots, this.nocase, this.childrenCache(), { fs: fs6 });
       }
       /**
        * Return true if the provided path string is an absolute path
@@ -8517,8 +8517,8 @@ var require_processor = __commonJS({
       }
       // match, absolute, ifdir
       entries() {
-        return [...this.store.entries()].map(([path11, n]) => [
-          path11,
+        return [...this.store.entries()].map(([path10, n]) => [
+          path10,
           !!(n & 2),
           !!(n & 1)
         ]);
@@ -8736,9 +8736,9 @@ var require_walker = __commonJS({
       signal;
       maxDepth;
       includeChildMatches;
-      constructor(patterns, path11, opts) {
+      constructor(patterns, path10, opts) {
         this.patterns = patterns;
-        this.path = path11;
+        this.path = path10;
         this.opts = opts;
         this.#sep = !opts.posix && opts.platform === "win32" ? "\\" : "/";
         this.includeChildMatches = opts.includeChildMatches !== false;
@@ -8757,11 +8757,11 @@ var require_walker = __commonJS({
           });
         }
       }
-      #ignored(path11) {
-        return this.seen.has(path11) || !!this.#ignore?.ignored?.(path11);
+      #ignored(path10) {
+        return this.seen.has(path10) || !!this.#ignore?.ignored?.(path10);
       }
-      #childrenIgnored(path11) {
-        return !!this.#ignore?.childrenIgnored?.(path11);
+      #childrenIgnored(path10) {
+        return !!this.#ignore?.childrenIgnored?.(path10);
       }
       // backpressure mechanism
       pause() {
@@ -8977,8 +8977,8 @@ var require_walker = __commonJS({
     exports2.GlobUtil = GlobUtil;
     var GlobWalker = class extends GlobUtil {
       matches = /* @__PURE__ */ new Set();
-      constructor(patterns, path11, opts) {
-        super(patterns, path11, opts);
+      constructor(patterns, path10, opts) {
+        super(patterns, path10, opts);
       }
       matchEmit(e) {
         this.matches.add(e);
@@ -9016,8 +9016,8 @@ var require_walker = __commonJS({
     exports2.GlobWalker = GlobWalker;
     var GlobStream = class extends GlobUtil {
       results;
-      constructor(patterns, path11, opts) {
-        super(patterns, path11, opts);
+      constructor(patterns, path10, opts) {
+        super(patterns, path10, opts);
         this.results = new minipass_1.Minipass({
           signal: this.signal,
           objectMode: true
@@ -9455,9 +9455,9 @@ var require_Paths = __commonJS({
       };
       return data;
     }
-    function path11() {
+    function path10() {
       const data = _interopRequireWildcard(require("path"));
-      path11 = function() {
+      path10 = function() {
         return data;
       };
       return data;
@@ -9507,7 +9507,7 @@ var require_Paths = __commonJS({
       return filePath;
     }
     function getLanguage(filePath) {
-      const extension = path11().extname(filePath);
+      const extension = path10().extname(filePath);
       switch (extension) {
         case ".java":
           return "java";
@@ -9523,7 +9523,7 @@ var require_Paths = __commonJS({
     }
     function getFileInfo(filePath) {
       return {
-        path: path11().normalize(filePath),
+        path: path10().normalize(filePath),
         contents: _fs().default.readFileSync(filePath, "utf8"),
         language: getLanguage(filePath)
       };
@@ -9537,8 +9537,8 @@ var require_Paths = __commonJS({
       return getFileInfo(filePath);
     }
     function getGradleFilePath(projectRoot, gradleName) {
-      const groovyPath = path11().resolve(projectRoot, `${gradleName}.gradle`);
-      const ktPath = path11().resolve(projectRoot, `${gradleName}.gradle.kts`);
+      const groovyPath = path10().resolve(projectRoot, `${gradleName}.gradle`);
+      const ktPath = path10().resolve(projectRoot, `${gradleName}.gradle.kts`);
       const isGroovy = _fs().default.existsSync(groovyPath);
       const isKotlin = !isGroovy && _fs().default.existsSync(ktPath);
       if (!isGroovy && !isKotlin) {
@@ -9548,25 +9548,25 @@ var require_Paths = __commonJS({
       return filePath;
     }
     function getProjectBuildGradleFilePath(projectRoot) {
-      return getGradleFilePath(path11().join(projectRoot, "android"), "build");
+      return getGradleFilePath(path10().join(projectRoot, "android"), "build");
     }
     async function getProjectBuildGradleAsync(projectRoot) {
       return getFileInfo(getProjectBuildGradleFilePath(projectRoot));
     }
     function getSettingsGradleFilePath(projectRoot) {
-      return getGradleFilePath(path11().join(projectRoot, "android"), "settings");
+      return getGradleFilePath(path10().join(projectRoot, "android"), "settings");
     }
     async function getSettingsGradleAsync(projectRoot) {
       return getFileInfo(getSettingsGradleFilePath(projectRoot));
     }
     function getAppBuildGradleFilePath(projectRoot) {
-      return getGradleFilePath(path11().join(projectRoot, "android", "app"), "build");
+      return getGradleFilePath(path10().join(projectRoot, "android", "app"), "build");
     }
     async function getAppBuildGradleAsync(projectRoot) {
       return getFileInfo(getAppBuildGradleFilePath(projectRoot));
     }
     async function getProjectPathOrThrowAsync(projectRoot) {
-      const projectPath = path11().join(projectRoot, "android");
+      const projectPath = path10().join(projectRoot, "android");
       if (await (0, _modules().directoryExistsAsync)(projectPath)) {
         return projectPath;
       }
@@ -9574,19 +9574,19 @@ var require_Paths = __commonJS({
     }
     async function getAndroidManifestAsync(projectRoot) {
       const projectPath = await getProjectPathOrThrowAsync(projectRoot);
-      const filePath = path11().join(projectPath, "app/src/main/AndroidManifest.xml");
+      const filePath = path10().join(projectPath, "app/src/main/AndroidManifest.xml");
       return filePath;
     }
     async function getResourceFolderAsync(projectRoot) {
       const projectPath = await getProjectPathOrThrowAsync(projectRoot);
-      return path11().join(projectPath, `app/src/main/res`);
+      return path10().join(projectPath, `app/src/main/res`);
     }
     async function getResourceXMLPathAsync(projectRoot, {
       kind = "values",
       name
     }) {
       const resourcePath = await getResourceFolderAsync(projectRoot);
-      const filePath = path11().join(resourcePath, `${kind}/${name}.xml`);
+      const filePath = path10().join(resourcePath, `${kind}/${name}.xml`);
       return filePath;
     }
   }
@@ -9616,11 +9616,11 @@ var require_Resources = __commonJS({
     }
     var fallbackResourceString = `<?xml version="1.0" encoding="utf-8"?><resources></resources>`;
     async function readResourcesXMLAsync({
-      path: path11,
+      path: path10,
       fallback = fallbackResourceString
     }) {
       const xml = await (0, _XML().readXMLAsync)({
-        path: path11,
+        path: path10,
         fallback
       });
       if (!xml.resources) {
@@ -10033,14 +10033,14 @@ var require_withDangerousMod = __commonJS({
       };
       return data;
     }
-    var withDangerousMod5 = (config, [platform, action]) => {
+    var withDangerousMod4 = (config, [platform, action]) => {
       return (0, _withMod().withMod)(config, {
         platform,
         mod: "dangerous",
         action
       });
     };
-    exports2.withDangerousMod = withDangerousMod5;
+    exports2.withDangerousMod = withDangerousMod4;
   }
 });
 
@@ -11529,15 +11529,15 @@ var require_route2 = __commonJS({
       };
     }
     function wrapConversion(toModel, graph) {
-      var path11 = [graph[toModel].parent, toModel];
+      var path10 = [graph[toModel].parent, toModel];
       var fn = conversions[graph[toModel].parent][toModel];
       var cur = graph[toModel].parent;
       while (graph[cur].parent) {
-        path11.unshift(graph[cur].parent);
+        path10.unshift(graph[cur].parent);
         fn = link(conversions[graph[cur].parent][cur], fn);
         cur = graph[cur].parent;
       }
-      fn.conversion = path11;
+      fn.conversion = path10;
       return fn;
     }
     module2.exports = function(fromModel) {
@@ -13634,20 +13634,20 @@ var require_writeAtomic = __commonJS({
     exports2.writeFileAtomicSync = writeFileAtomicSync;
     exports2.writeFileAtomic = writeFileAtomic;
     var node_crypto_1 = require("crypto");
-    var fs7 = __importStar(require("fs"));
+    var fs6 = __importStar(require("fs"));
     function getTarget(filename, data) {
       const hash = (0, node_crypto_1.createHash)("sha256").update(data).digest("base64url");
       return `${filename}.${hash}`;
     }
     function writeFileAtomicSync(filename, data) {
       const tmpfile = getTarget(filename, data);
-      fs7.writeFileSync(tmpfile, data);
-      fs7.renameSync(tmpfile, filename);
+      fs6.writeFileSync(tmpfile, data);
+      fs6.renameSync(tmpfile, filename);
     }
     async function writeFileAtomic(filename, data) {
       const tmpfile = getTarget(filename, data);
-      await fs7.promises.writeFile(tmpfile, data);
-      await fs7.promises.rename(tmpfile, filename);
+      await fs6.promises.writeFile(tmpfile, data);
+      await fs6.promises.rename(tmpfile, filename);
     }
   }
 });
@@ -15518,11 +15518,11 @@ var require_Styles = __commonJS({
     }
     var fallbackResourceString = `<?xml version="1.0" encoding="utf-8"?><resources xmlns:tools="http://schemas.android.com/tools"></resources>`;
     async function readStylesXMLAsync({
-      path: path11,
+      path: path10,
       fallback = fallbackResourceString
     }) {
       return (0, _Resources().readResourcesXMLAsync)({
-        path: path11,
+        path: path10,
         fallback
       });
     }
@@ -16095,9 +16095,9 @@ var require_StatusBar = __commonJS({
 var require_resolve_from = __commonJS({
   "node_modules/resolve-from/index.js"(exports2, module2) {
     "use strict";
-    var path11 = require("path");
+    var path10 = require("path");
     var Module = require("module");
-    var fs7 = require("fs");
+    var fs6 = require("fs");
     var resolveFrom = (fromDirectory, moduleId, silent) => {
       if (typeof fromDirectory !== "string") {
         throw new TypeError(`Expected \`fromDir\` to be of type \`string\`, got \`${typeof fromDirectory}\``);
@@ -16106,17 +16106,17 @@ var require_resolve_from = __commonJS({
         throw new TypeError(`Expected \`moduleId\` to be of type \`string\`, got \`${typeof moduleId}\``);
       }
       try {
-        fromDirectory = fs7.realpathSync(fromDirectory);
+        fromDirectory = fs6.realpathSync(fromDirectory);
       } catch (error) {
         if (error.code === "ENOENT") {
-          fromDirectory = path11.resolve(fromDirectory);
+          fromDirectory = path10.resolve(fromDirectory);
         } else if (silent) {
           return;
         } else {
           throw error;
         }
       }
-      const fromFile = path11.join(fromDirectory, "noop.js");
+      const fromFile = path10.join(fromDirectory, "noop.js");
       const resolveFileName = () => Module._resolveFilename(moduleId, {
         id: fromFile,
         filename: fromFile,
@@ -16159,9 +16159,9 @@ var require_plugin_resolver = __commonJS({
       };
       return data;
     }
-    function path11() {
+    function path10() {
       const data = _interopRequireWildcard(require("path"));
-      path11 = function() {
+      path10 = function() {
         return data;
       };
       return data;
@@ -16216,7 +16216,7 @@ var require_plugin_resolver = __commonJS({
         if (pluginScriptFile) {
           return {
             // NOTE(cedric): `path.sep` is required here, we are resolving the absolute path, not the plugin reference
-            isPluginFile: pluginScriptFile.endsWith(path11().sep + pluginFileName),
+            isPluginFile: pluginScriptFile.endsWith(path10().sep + pluginFileName),
             filePath: pluginScriptFile
           };
         }
@@ -20087,7 +20087,7 @@ var require_pbxWriter = __commonJS({
 var require_pbxFile = __commonJS({
   "node_modules/xcode/lib/pbxFile.js"(exports2, module2) {
     "use strict";
-    var path11 = require("path");
+    var path10 = require("path");
     var util2 = require("util");
     var DEFAULT_SOURCETREE = '"<group>"';
     var DEFAULT_PRODUCT_SOURCETREE = "BUILT_PRODUCTS_DIR";
@@ -20153,7 +20153,7 @@ var require_pbxFile = __commonJS({
       return text == null ? "" : text.replace(/(^")|("$)/g, "");
     }
     function detectType(filePath) {
-      var extension = path11.extname(filePath).substring(1), filetype = FILETYPE_BY_EXTENSION[unquoted(extension)];
+      var extension = path10.extname(filePath).substring(1), filetype = FILETYPE_BY_EXTENSION[unquoted(extension)];
       if (!filetype) {
         return DEFAULT_FILETYPE;
       }
@@ -20175,7 +20175,7 @@ var require_pbxFile = __commonJS({
       }
     }
     function detectGroup(fileRef, opt) {
-      var extension = path11.extname(fileRef.basename).substring(1), filetype = fileRef.lastKnownFileType || fileRef.explicitFileType, groupName = GROUP_BY_FILETYPE[unquoted(filetype)];
+      var extension = path10.extname(fileRef.basename).substring(1), filetype = fileRef.lastKnownFileType || fileRef.explicitFileType, groupName = GROUP_BY_FILETYPE[unquoted(filetype)];
       if (extension === "xcdatamodeld") {
         return "Sources";
       }
@@ -20206,18 +20206,18 @@ var require_pbxFile = __commonJS({
         return filePath;
       }
       if (defaultPath2) {
-        return path11.join(defaultPath2, path11.basename(filePath));
+        return path10.join(defaultPath2, path10.basename(filePath));
       }
       return filePath;
     }
     function pbxFile(filepath, opt) {
       var opt = opt || {};
-      this.basename = path11.basename(filepath);
+      this.basename = path10.basename(filepath);
       this.lastKnownFileType = opt.lastKnownFileType || detectType(filepath);
       this.group = detectGroup(this, opt);
       if (opt.customFramework == true) {
         this.customFramework = true;
-        this.dirname = path11.dirname(filepath).replace(/\\/g, "/");
+        this.dirname = path10.dirname(filepath).replace(/\\/g, "/");
       }
       this.path = defaultPath(this, filepath).replace(/\\/g, "/");
       this.fileEncoding = this.defaultEncoding = opt.defaultEncoding || defaultEncoding(this);
@@ -21986,19 +21986,19 @@ var require_pbxProject = __commonJS({
     var util2 = require("util");
     var f = util2.format;
     var EventEmitter = require("events").EventEmitter;
-    var path11 = require("path");
+    var path10 = require("path");
     var uuid = (init_esm_node(), __toCommonJS(esm_node_exports));
     var fork = require("child_process").fork;
     var pbxWriter = require_pbxWriter();
     var pbxFile = require_pbxFile();
-    var fs7 = require("fs");
+    var fs6 = require("fs");
     var parser = require_pbxproj();
     var plist = require_dist();
     var COMMENT_KEY = /_comment$/;
     function pbxProject(filename) {
       if (!(this instanceof pbxProject))
         return new pbxProject(filename);
-      this.filepath = path11.resolve(filename);
+      this.filepath = path10.resolve(filename);
     }
     util2.inherits(pbxProject, EventEmitter);
     pbxProject.prototype.parse = function(cb) {
@@ -22018,7 +22018,7 @@ var require_pbxProject = __commonJS({
       return this;
     };
     pbxProject.prototype.parseSync = function() {
-      var file_contents = fs7.readFileSync(this.filepath, "utf-8");
+      var file_contents = fs6.readFileSync(this.filepath, "utf-8");
       this.hash = parser.parse(file_contents);
       return this;
     };
@@ -22045,8 +22045,8 @@ var require_pbxProject = __commonJS({
         return id;
       }
     };
-    pbxProject.prototype.addPluginFile = function(path12, opt) {
-      var file = new pbxFile(path12, opt);
+    pbxProject.prototype.addPluginFile = function(path11, opt) {
+      var file = new pbxFile(path11, opt);
       file.plugin = true;
       correctForPluginsPath(file, this);
       if (this.hasFile(file.path)) return null;
@@ -22055,8 +22055,8 @@ var require_pbxProject = __commonJS({
       this.addToPluginsPbxGroup(file);
       return file;
     };
-    pbxProject.prototype.removePluginFile = function(path12, opt) {
-      var file = new pbxFile(path12, opt);
+    pbxProject.prototype.removePluginFile = function(path11, opt) {
+      var file = new pbxFile(path11, opt);
       correctForPluginsPath(file, this);
       this.removeFromPbxFileReferenceSection(file);
       this.removeFromPluginsPbxGroup(file);
@@ -22074,17 +22074,17 @@ var require_pbxProject = __commonJS({
       this.addToProductsPbxGroup(file);
       return file;
     };
-    pbxProject.prototype.removeProductFile = function(path12, opt) {
-      var file = new pbxFile(path12, opt);
+    pbxProject.prototype.removeProductFile = function(path11, opt) {
+      var file = new pbxFile(path11, opt);
       this.removeFromProductsPbxGroup(file);
       return file;
     };
-    pbxProject.prototype.addSourceFile = function(path12, opt, group) {
+    pbxProject.prototype.addSourceFile = function(path11, opt, group) {
       var file;
       if (group) {
-        file = this.addFile(path12, group, opt);
+        file = this.addFile(path11, group, opt);
       } else {
-        file = this.addPluginFile(path12, opt);
+        file = this.addPluginFile(path11, opt);
       }
       if (!file) return false;
       file.target = opt ? opt.target : void 0;
@@ -22093,40 +22093,40 @@ var require_pbxProject = __commonJS({
       this.addToPbxSourcesBuildPhase(file);
       return file;
     };
-    pbxProject.prototype.removeSourceFile = function(path12, opt, group) {
+    pbxProject.prototype.removeSourceFile = function(path11, opt, group) {
       var file;
       if (group) {
-        file = this.removeFile(path12, group, opt);
+        file = this.removeFile(path11, group, opt);
       } else {
-        file = this.removePluginFile(path12, opt);
+        file = this.removePluginFile(path11, opt);
       }
       file.target = opt ? opt.target : void 0;
       this.removeFromPbxBuildFileSection(file);
       this.removeFromPbxSourcesBuildPhase(file);
       return file;
     };
-    pbxProject.prototype.addHeaderFile = function(path12, opt, group) {
+    pbxProject.prototype.addHeaderFile = function(path11, opt, group) {
       if (group) {
-        return this.addFile(path12, group, opt);
+        return this.addFile(path11, group, opt);
       } else {
-        return this.addPluginFile(path12, opt);
+        return this.addPluginFile(path11, opt);
       }
     };
-    pbxProject.prototype.removeHeaderFile = function(path12, opt, group) {
+    pbxProject.prototype.removeHeaderFile = function(path11, opt, group) {
       if (group) {
-        return this.removeFile(path12, group, opt);
+        return this.removeFile(path11, group, opt);
       } else {
-        return this.removePluginFile(path12, opt);
+        return this.removePluginFile(path11, opt);
       }
     };
-    pbxProject.prototype.addResourceFile = function(path12, opt, group) {
+    pbxProject.prototype.addResourceFile = function(path11, opt, group) {
       opt = opt || {};
       var file;
       if (opt.plugin) {
-        file = this.addPluginFile(path12, opt);
+        file = this.addPluginFile(path11, opt);
         if (!file) return false;
       } else {
-        file = new pbxFile(path12, opt);
+        file = new pbxFile(path11, opt);
         if (this.hasFile(file.path)) return false;
       }
       file.uuid = this.generateUuid();
@@ -22153,8 +22153,8 @@ var require_pbxProject = __commonJS({
       }
       return file;
     };
-    pbxProject.prototype.removeResourceFile = function(path12, opt, group) {
-      var file = new pbxFile(path12, opt);
+    pbxProject.prototype.removeResourceFile = function(path11, opt, group) {
+      var file = new pbxFile(path11, opt);
       file.target = opt ? opt.target : void 0;
       correctForResourcesPath(file, this);
       this.removeFromPbxBuildFileSection(file);
@@ -22261,14 +22261,14 @@ var require_pbxProject = __commonJS({
         }
       }
     };
-    pbxProject.prototype.addStaticLibrary = function(path12, opt) {
+    pbxProject.prototype.addStaticLibrary = function(path11, opt) {
       opt = opt || {};
       var file;
       if (opt.plugin) {
-        file = this.addPluginFile(path12, opt);
+        file = this.addPluginFile(path11, opt);
         if (!file) return false;
       } else {
-        file = new pbxFile(path12, opt);
+        file = new pbxFile(path11, opt);
         if (this.hasFile(file.path)) return false;
       }
       file.uuid = this.generateUuid();
@@ -22298,12 +22298,12 @@ var require_pbxProject = __commonJS({
         }
       }
     };
-    pbxProject.prototype.addPbxGroup = function(filePathsArray, name, path12, sourceTree) {
+    pbxProject.prototype.addPbxGroup = function(filePathsArray, name, path11, sourceTree) {
       var groups = this.hash.project.objects["PBXGroup"], pbxGroupUuid = this.generateUuid(), commentKey = f("%s_comment", pbxGroupUuid), pbxGroup = {
         isa: "PBXGroup",
         children: [],
         name,
-        path: path12,
+        path: path11,
         sourceTree: sourceTree ? sourceTree : '"<group>"'
       }, fileReferenceSection = this.pbxFileReferenceSection(), filePathToReference = {};
       for (var key3 in fileReferenceSection) {
@@ -22388,12 +22388,12 @@ var require_pbxProject = __commonJS({
             return el.fileRef;
           }),
           currentVersion: file.currentModel.fileRef,
-          name: path11.basename(file.path),
+          name: path10.basename(file.path),
           path: file.path,
           sourceTree: '"<group>"',
           versionGroupType: "wrapper.xcdatamodel"
         };
-        this.xcVersionGroupSection()[commentKey] = path11.basename(file.path);
+        this.xcVersionGroupSection()[commentKey] = path10.basename(file.path);
       }
     };
     pbxProject.prototype.addToPluginsPbxGroup = function(file) {
@@ -22973,7 +22973,7 @@ var require_pbxProject = __commonJS({
           isa: "XCBuildConfiguration",
           buildSettings: {
             GCC_PREPROCESSOR_DEFINITIONS: ['"DEBUG=1"', '"$(inherited)"'],
-            INFOPLIST_FILE: '"' + path11.join(targetSubfolder, targetSubfolder + '-Info.plist"'),
+            INFOPLIST_FILE: '"' + path10.join(targetSubfolder, targetSubfolder + '-Info.plist"'),
             LD_RUNPATH_SEARCH_PATHS: '"$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"',
             PRODUCT_NAME: '"' + targetName + '"',
             SKIP_INSTALL: "YES"
@@ -22983,7 +22983,7 @@ var require_pbxProject = __commonJS({
           name: "Release",
           isa: "XCBuildConfiguration",
           buildSettings: {
-            INFOPLIST_FILE: '"' + path11.join(targetSubfolder, targetSubfolder + '-Info.plist"'),
+            INFOPLIST_FILE: '"' + path10.join(targetSubfolder, targetSubfolder + '-Info.plist"'),
             LD_RUNPATH_SEARCH_PATHS: '"$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"',
             PRODUCT_NAME: '"' + targetName + '"',
             SKIP_INSTALL: "YES"
@@ -23128,7 +23128,7 @@ var require_pbxProject = __commonJS({
       return longComment(file);
     }
     function pbxFileReferenceComment(file) {
-      return file.basename || path11.basename(file.path);
+      return file.basename || path10.basename(file.path);
     }
     function pbxNativeTargetComment(target) {
       return target.name;
@@ -23149,7 +23149,7 @@ var require_pbxProject = __commonJS({
       return file;
     }
     function searchPathForFile(file, proj) {
-      var plugins = proj.pbxGroupByName("Plugins"), pluginsPath = plugins ? plugins.path : null, fileDir = path11.dirname(file.path);
+      var plugins = proj.pbxGroupByName("Plugins"), pluginsPath = plugins ? plugins.path : null, fileDir = path10.dirname(file.path);
       if (fileDir == ".") {
         fileDir = "";
       } else {
@@ -23395,8 +23395,8 @@ var require_pbxProject = __commonJS({
     pbxProject.prototype.getPBXObject = function(name) {
       return this.hash.project.objects[name];
     };
-    pbxProject.prototype.addFile = function(path12, group, opt) {
-      var file = new pbxFile(path12, opt);
+    pbxProject.prototype.addFile = function(path11, group, opt) {
+      var file = new pbxFile(path11, opt);
       if (this.hasFile(file.path)) return null;
       file.fileRef = this.generateUuid();
       this.addToPbxFileReferenceSection(file);
@@ -23407,8 +23407,8 @@ var require_pbxProject = __commonJS({
       }
       return file;
     };
-    pbxProject.prototype.removeFile = function(path12, group, opt) {
-      var file = new pbxFile(path12, opt);
+    pbxProject.prototype.removeFile = function(path11, group, opt) {
+      var file = new pbxFile(path11, opt);
       this.removeFromPbxFileReferenceSection(file);
       if (this.getPBXGroupByKey(group)) {
         this.removeFromPbxGroup(file, group);
@@ -23479,10 +23479,10 @@ var require_pbxProject = __commonJS({
       this.addToPbxSourcesBuildPhase(file);
       file.models = [];
       var currentVersionName;
-      var modelFiles = fs7.readdirSync(file.path);
+      var modelFiles = fs6.readdirSync(file.path);
       for (var index in modelFiles) {
         var modelFileName = modelFiles[index];
-        var modelFilePath = path11.join(filePath, modelFileName);
+        var modelFilePath = path10.join(filePath, modelFileName);
         if (modelFileName == ".xccurrentversion") {
           currentVersionName = plist.readFileSync(modelFilePath)._XCCurrentVersionName;
           continue;
@@ -23549,13 +23549,13 @@ var require_string = __commonJS({
 var require_slash = __commonJS({
   "node_modules/slash/index.js"(exports2, module2) {
     "use strict";
-    module2.exports = (path11) => {
-      const isExtendedLengthPath = /^\\\\\?\\/.test(path11);
-      const hasNonAscii = /[^\u0000-\u0080]+/.test(path11);
+    module2.exports = (path10) => {
+      const isExtendedLengthPath = /^\\\\\?\\/.test(path10);
+      const hasNonAscii = /[^\u0000-\u0080]+/.test(path10);
       if (isExtendedLengthPath || hasNonAscii) {
-        return path11;
+        return path10;
       }
-      return path11.replace(/\\/g, "/");
+      return path10.replace(/\\/g, "/");
     };
   }
 });
@@ -24006,9 +24006,9 @@ var require_Paths2 = __commonJS({
       };
       return data;
     }
-    function path11() {
+    function path10() {
       const data = _interopRequireWildcard(require("path"));
-      path11 = function() {
+      path10 = function() {
         return data;
       };
       return data;
@@ -24142,8 +24142,8 @@ var require_Paths2 = __commonJS({
       return using;
     }
     function getLanguage(filePath) {
-      const extension = path11().extname(filePath);
-      if (!extension && path11().basename(filePath) === "Podfile") {
+      const extension = path10().extname(filePath);
+      if (!extension && path10().basename(filePath) === "Podfile") {
         return "rb";
       }
       switch (extension) {
@@ -24160,7 +24160,7 @@ var require_Paths2 = __commonJS({
     }
     function getFileInfo(filePath) {
       return {
-        path: path11().normalize(filePath),
+        path: path10().normalize(filePath),
         contents: (0, _fs().readFileSync)(filePath, "utf8"),
         language: getLanguage(filePath)
       };
@@ -24171,7 +24171,7 @@ var require_Paths2 = __commonJS({
     }
     function getSourceRoot(projectRoot) {
       const appDelegate = getAppDelegate(projectRoot);
-      return path11().dirname(appDelegate.path);
+      return path10().dirname(appDelegate.path);
     }
     function findSchemePaths(projectRoot) {
       return (0, _glob2().withSortedGlobResult)((0, _glob().globSync)("ios/*.xcodeproj/xcshareddata/xcschemes/*.xcscheme", {
@@ -24182,16 +24182,16 @@ var require_Paths2 = __commonJS({
     }
     function findSchemeNames(projectRoot) {
       const schemePaths = findSchemePaths(projectRoot);
-      return schemePaths.map((schemePath) => path11().parse(schemePath).name);
+      return schemePaths.map((schemePath) => path10().parse(schemePath).name);
     }
     function getAllXcodeProjectPaths(projectRoot) {
       const iosFolder = "ios";
       const pbxprojPaths = (0, _glob2().withSortedGlobResult)((0, _glob().globSync)("ios/**/*.xcodeproj", {
         cwd: projectRoot,
         ignore: ignoredPaths
-      }).map((filePath) => filePath.replace(/^\//, "")).filter((project) => !/test|example|sample/i.test(project) || path11().dirname(project) === iosFolder)).sort((a, b) => {
-        const isAInIos = path11().dirname(a) === iosFolder;
-        const isBInIos = path11().dirname(b) === iosFolder;
+      }).map((filePath) => filePath.replace(/^\//, "")).filter((project) => !/test|example|sample/i.test(project) || path10().dirname(project) === iosFolder)).sort((a, b) => {
+        const isAInIos = path10().dirname(a) === iosFolder;
+        const isBInIos = path10().dirname(b) === iosFolder;
         if (isAInIos && isBInIos || !isAInIos && !isBInIos) {
           return 0;
         }
@@ -24200,7 +24200,7 @@ var require_Paths2 = __commonJS({
       if (!pbxprojPaths.length) {
         throw new (_errors()).UnexpectedError(`Failed to locate the ios/*.xcodeproj files relative to path "${projectRoot}".`);
       }
-      return pbxprojPaths.map((value) => path11().join(projectRoot, value));
+      return pbxprojPaths.map((value) => path10().join(projectRoot, value));
     }
     function getXcodeProjectPath(projectRoot) {
       const [using, ...extra] = getAllXcodeProjectPaths(projectRoot);
@@ -24217,7 +24217,7 @@ var require_Paths2 = __commonJS({
     }
     function getAllPBXProjectPaths(projectRoot) {
       const projectPaths = getAllXcodeProjectPaths(projectRoot);
-      const paths = projectPaths.map((value) => path11().join(value, "project.pbxproj")).filter((value) => (0, _fs().existsSync)(value));
+      const paths = projectPaths.map((value) => path10().join(value, "project.pbxproj")).filter((value) => (0, _fs().existsSync)(value));
       if (!paths.length) {
         throw new (_errors()).UnexpectedError(`Failed to locate the ios/*.xcodeproj/project.pbxproj files relative to path "${projectRoot}".`);
       }
@@ -24275,11 +24275,11 @@ var require_Paths2 = __commonJS({
       return Entitlements().getEntitlementsPath(projectRoot);
     }
     function getSupportingPath(projectRoot) {
-      return path11().resolve(projectRoot, "ios", path11().basename(getSourceRoot(projectRoot)), "Supporting");
+      return path10().resolve(projectRoot, "ios", path10().basename(getSourceRoot(projectRoot)), "Supporting");
     }
     function getExpoPlistPath(projectRoot) {
       const supportingPath = getSupportingPath(projectRoot);
-      return path11().join(supportingPath, "Expo.plist");
+      return path10().join(supportingPath, "Expo.plist");
     }
     function warnMultipleFiles({
       tag,
@@ -24288,8 +24288,8 @@ var require_Paths2 = __commonJS({
       using,
       extra
     }) {
-      const usingPath = projectRoot ? path11().relative(projectRoot, using) : using;
-      const extraPaths = projectRoot ? extra.map((v) => path11().relative(projectRoot, v)) : extra;
+      const usingPath = projectRoot ? path10().relative(projectRoot, using) : using;
+      const extraPaths = projectRoot ? extra.map((v) => path10().relative(projectRoot, v)) : extra;
       (0, _warnings().addWarningIOS)(`paths-${tag}`, `Found multiple ${fileName} file paths, using "${usingPath}". Ignored paths: ${JSON.stringify(extraPaths)}`);
     }
   }
@@ -24550,8 +24550,8 @@ var require_Xcodeproj = __commonJS({
         target: target.uuid
       });
     }
-    function splitPath(path11) {
-      return path11.split("/");
+    function splitPath(path10) {
+      return path10.split("/");
     }
     var findGroup = (group, name) => {
       if (!group) {
@@ -24566,12 +24566,12 @@ var require_Xcodeproj = __commonJS({
       }
       return null;
     }
-    function pbxGroupByPathOrAssert(project, path11) {
+    function pbxGroupByPathOrAssert(project, path10) {
       const {
         firstProject
       } = project.getFirstProject();
       let group = project.getPBXGroupByKey(firstProject.mainGroup);
-      const components = splitPath(path11);
+      const components = splitPath(path10);
       for (const name of components) {
         const nextGroup = findGroupInsideGroup(project, group, name);
         if (nextGroup) {
@@ -24581,7 +24581,7 @@ var require_Xcodeproj = __commonJS({
         }
       }
       if (!group) {
-        throw Error(`Xcode PBXGroup with name "${path11}" could not be found in the Xcode project.`);
+        throw Error(`Xcode PBXGroup with name "${path10}" could not be found in the Xcode project.`);
       }
       return group;
     }
@@ -38016,17 +38016,7 @@ var require_build4 = __commonJS({
 var index_exports = {};
 __export(index_exports, {
   DEFAULT_OPTIONS: () => DEFAULT_OPTIONS,
-  DEFAULT_WIDGET_MERGE_CONFIG: () => DEFAULT_WIDGET_MERGE_CONFIG,
-  FileUtils: () => FileUtils,
-  Logger: () => Logger,
-  SyncWidget: () => SyncWidget,
-  withComposeProjectLevelDependancyPlugin: () => withComposeProjectLevelDependancyPlugin_default,
-  withExpoGlanceWidgets: () => withPlugins_default,
-  withGlanceAppLevelGradleConfig: () => withGlanceAppLevelGradleConfig,
-  withGlanceWidgetFiles: () => withGlanceWidgetFiles,
-  withMainApplicationWorkManager: () => withMainApplicationWorkManager,
-  withWakatimeWorkManager: () => withWakatimeWorkManager,
-  withWakatimeWorkerErrorHandling: () => withWakatimeWorkerErrorHandling
+  withExpoGlanceWidgets: () => withPlugins_default
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -39986,139 +39976,8 @@ var withExpoGlanceWidgets = (config, userOptions = {}) => {
   return config;
 };
 var withPlugins_default = withExpoGlanceWidgets;
-
-// modules/expo-glance-widget/plugins/withMainApplicationWorkManager.ts
-var import_config_plugins6 = __toESM(require_build4());
-var fs6 = __toESM(require("fs"));
-var path10 = __toESM(require("path"));
-var logger3 = new Logger("WithMainApplicationWorkManager");
-var withMainApplicationWorkManager = (config, options = {}) => {
-  return (0, import_config_plugins6.withDangerousMod)(config, [
-    "android",
-    async (config2) => {
-      const { platformProjectRoot } = config2.modRequest;
-      const mainApplicationPath = findMainApplicationFile(platformProjectRoot);
-      if (!mainApplicationPath) {
-        logger3.warn("MainApplication.kt not found, skipping WorkManager injection");
-        return config2;
-      }
-      let mainApplicationContent = fs6.readFileSync(mainApplicationPath, "utf8");
-      const packageName = options.packageName || extractPackageName3(mainApplicationContent);
-      if (!packageName) {
-        logger3.warn("Could not determine package name, skipping WorkManager injection");
-        return config2;
-      }
-      mainApplicationContent = injectWorkManagerIntoMainApplication(mainApplicationContent, packageName);
-      fs6.writeFileSync(mainApplicationPath, mainApplicationContent);
-      logger3.info("Successfully injected WorkManager initialization into MainApplication");
-      return config2;
-    }
-  ]);
-};
-function findMainApplicationFile(platformProjectRoot) {
-  function searchDirectory(dir) {
-    if (!fs6.existsSync(dir)) return null;
-    const files = fs6.readdirSync(dir);
-    for (const file of files) {
-      const filePath = path10.join(dir, file);
-      const stat = fs6.statSync(filePath);
-      if (stat.isDirectory()) {
-        const result = searchDirectory(filePath);
-        if (result) return result;
-      } else if (file === "MainApplication.kt") {
-        return filePath;
-      }
-    }
-    return null;
-  }
-  const mainSrcPath = path10.join(platformProjectRoot, "app", "src", "main");
-  if (fs6.existsSync(mainSrcPath)) {
-    const javaPath = path10.join(mainSrcPath, "java");
-    const kotlinPath = path10.join(mainSrcPath, "kotlin");
-    let result = searchDirectory(javaPath);
-    if (!result) {
-      result = searchDirectory(kotlinPath);
-    }
-    return result;
-  }
-  return null;
-}
-function extractPackageName3(content) {
-  const packageMatch = content.match(/^package\s+([a-zA-Z0-9_.]+)/m);
-  return packageMatch ? packageMatch[1] : null;
-}
-function injectWorkManagerIntoMainApplication(content, packageName) {
-  const requiredImports = [
-    "import android.content.res.Configuration",
-    "import androidx.work.Configuration",
-    "import androidx.work.WorkManager"
-  ];
-  requiredImports.forEach((importStatement) => {
-    if (!content.includes(importStatement)) {
-      const lastImportMatch = content.match(/^import\s+.+$/gm);
-      if (lastImportMatch) {
-        const lastImport = lastImportMatch[lastImportMatch.length - 1];
-        const lastImportIndex = content.lastIndexOf(lastImport);
-        const insertIndex = lastImportIndex + lastImport.length;
-        content = content.slice(0, insertIndex) + "\n" + importStatement + content.slice(insertIndex);
-        logger3.info(`Added import: ${importStatement}`);
-      }
-    }
-  });
-  if (!content.includes("Configuration.Provider")) {
-    const classDeclarationRegex = /class\s+MainApplication\s*:\s*Application\(\)\s*,\s*ReactApplication/;
-    const classMatch = content.match(classDeclarationRegex);
-    if (classMatch) {
-      const classDeclaration = classMatch[0];
-      const newClassDeclaration = classDeclaration + ", Configuration.Provider";
-      content = content.replace(classDeclaration, newClassDeclaration);
-      logger3.info("Added Configuration.Provider interface to MainApplication");
-    }
-  }
-  if (!content.includes("getWorkManagerConfiguration")) {
-    const workManagerConfigMethod = `
-  // WorkManager configuration
-  override fun getWorkManagerConfiguration(): Configuration =
-      Configuration.Builder()
-          .setMinimumLoggingLevel(android.util.Log.DEBUG)
-          .build()`;
-    const onCreateRegex = /override\s+fun\s+onCreate\(\)/;
-    const onCreateMatch = content.match(onCreateRegex);
-    if (onCreateMatch) {
-      const onCreateIndex = content.indexOf(onCreateMatch[0]);
-      content = content.slice(0, onCreateIndex) + workManagerConfigMethod + "\n\n  " + content.slice(onCreateIndex);
-      logger3.info("Added getWorkManagerConfiguration method");
-    }
-  }
-  if (!content.includes("WorkManager.initialize")) {
-    const superOnCreateRegex = /super\.onCreate\(\)/;
-    const superOnCreateMatch = content.match(superOnCreateRegex);
-    if (superOnCreateMatch) {
-      const superOnCreateCall = superOnCreateMatch[0];
-      const superOnCreateIndex = content.indexOf(superOnCreateCall);
-      const insertIndex = superOnCreateIndex + superOnCreateCall.length;
-      const workManagerInit = `
-        
-        // Initialize WorkManager first
-        WorkManager.initialize(this, workManagerConfiguration)`;
-      content = content.slice(0, insertIndex) + workManagerInit + content.slice(insertIndex);
-      logger3.info("Added WorkManager.initialize call to onCreate");
-    }
-  }
-  return content;
-}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   DEFAULT_OPTIONS,
-  DEFAULT_WIDGET_MERGE_CONFIG,
-  FileUtils,
-  Logger,
-  SyncWidget,
-  withComposeProjectLevelDependancyPlugin,
-  withExpoGlanceWidgets,
-  withGlanceAppLevelGradleConfig,
-  withGlanceWidgetFiles,
-  withMainApplicationWorkManager,
-  withWakatimeWorkManager,
-  withWakatimeWorkerErrorHandling
+  withExpoGlanceWidgets
 });

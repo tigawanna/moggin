@@ -1,6 +1,6 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
 import {withExpoGlanceWidgets} from "./.1-old-widgets/expo-glance-widget/plugins";
-
+import {withExpoWakatimeGlanceWidgets} from "./modules/expo-wakatime-glance-widgets/plugins/index"
 const defaultWidgetSources = {
   widgetFilesPath:
     "widgets/android",
@@ -67,6 +67,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
+      [withExpoWakatimeGlanceWidgets as any],
       //Expo Glance Widgets plugin for Android widget support
       // [
       //   withExpoGlanceWidgets as any,

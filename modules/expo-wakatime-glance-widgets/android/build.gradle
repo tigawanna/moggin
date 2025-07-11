@@ -45,21 +45,28 @@ android {
 dependencies {
   // Required for WorkManager
 //  implementation("androidx.work:work-runtime-ktx:2.9.0")
-  // jetpack glance dependancies
+  
+  // jetpack glance dependencies - Updated to latest stable versions
   // For AppWidgets support
-  implementation("androidx.glance:glance-appwidget:1.1.1")
+  implementation("androidx.glance:glance-appwidget:1.1.0")
   // For interop APIs with Material 3
-  implementation("androidx.glance:glance-material3:1.1.1")
+  implementation("androidx.glance:glance-material3:1.1.0")
   // For interop APIs with Material 2
-  implementation("androidx.glance:glance-material:1.1.1")
+  implementation("androidx.glance:glance-material:1.1.0")
+
+  // Compose BOM to ensure compatible versions
+  implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+  
+  // Core Compose dependencies
+  implementation("androidx.compose.ui:ui")
+  implementation("androidx.compose.ui:ui-unit")
+  implementation("androidx.compose.runtime:runtime")
 
   // Ktor for networking
 //  implementation("io.ktor:ktor-client-android:2.3.8")
 //  implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
 //  implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8")
 //  implementation("io.ktor:ktor-client-logging:2.3.8")
-
-
 
   // Kotlinx Serialization for JSON parsing
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")

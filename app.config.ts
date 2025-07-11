@@ -1,5 +1,5 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
-import {withExpoGlanceWidgets} from "./modules/expo-glance-widget/plugins";
+// import {withExpoGlanceWidgets} from "./modules/expo-glance-widget/plugins";
 
 const defaultWidgetSources = {
   widgetFilesPath:
@@ -68,15 +68,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
       ],
       // Expo Glance Widgets plugin for Android widget support
-      [
-        withExpoGlanceWidgets as any,
-        {
-          ...widgetSources,
-          // Only copy from these specific directories
-          includeDirectories: ["wakatime"],
-          enableWorkManager: true, // Enable WorkManager for background updates
-        },
-      ],
+      // [
+      //   withExpoGlanceWidgets as any,
+      //   {
+      //     ...widgetSources,
+      //     // Only copy from these specific directories
+      //     includeDirectories: ["wakatime"],
+      //     enableWorkManager: true, // Enable WorkManager for background updates
+      //   },
+      // ],
     ],
     experiments: {
       typedRoutes: true,

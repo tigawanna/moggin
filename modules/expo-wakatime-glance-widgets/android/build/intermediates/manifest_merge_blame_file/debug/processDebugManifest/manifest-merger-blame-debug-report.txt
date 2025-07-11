@@ -1,0 +1,31 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="expo.modules.wakatimeglancewidgets" >
+4
+5    <uses-sdk android:minSdkVersion="24" />
+6
+7    <application>
+7-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:2:1-13:15
+8        <receiver
+8-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:3:5-12:16
+9            android:name="expo.modules.wakatimeglancewidgets.WakatimeHoursWidgetReceiver"
+9-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:4:9-52
+10            android:exported="true" >
+10-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:5:9-32
+11            <intent-filter>
+11-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:6:9-8:25
+12                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+12-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:7:13-80
+12-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:7:21-77
+13            </intent-filter>
+14
+15            <meta-data
+15-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:9:9-11:58
+16                android:name="android.appwidget.provider"
+16-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:10:13-54
+17                android:resource="@xml/bidii_hours_widget" />
+17-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:11:13-55
+18        </receiver>
+19    </application>
+20
+21</manifest>

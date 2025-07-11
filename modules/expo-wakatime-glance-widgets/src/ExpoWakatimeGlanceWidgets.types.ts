@@ -3,6 +3,8 @@ export type ExpoWakatimeGlanceWidgetsModuleEvents = {
 };
 
 export type UpdateWidgetPayload = {
-  value: string;
+  totalTime: string;
+  currentProject: string;
+  lastSync: string;
 };
 

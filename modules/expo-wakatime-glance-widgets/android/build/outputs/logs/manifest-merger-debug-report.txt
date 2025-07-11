@@ -1,0 +1,36 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:1:1-15:12
+INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:1:1-15:12
+	package
+		INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:1:11-69
+application
+ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:2:1-13:15
+receiver#expo.modules.wakatimeglancewidgets.WakatimeHoursWidgetReceiver
+ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:3:5-12:16
+	android:exported
+		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:5:9-32
+	android:name
+		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:4:9-52
+intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:6:9-8:25
+action#android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:7:13-80
+	android:name
+		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:7:21-77
+meta-data#android.appwidget.provider
+ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:9:9-11:58
+	android:resource
+		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:11:13-55
+	android:name
+		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:10:13-54
+uses-sdk
+INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml
+INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml

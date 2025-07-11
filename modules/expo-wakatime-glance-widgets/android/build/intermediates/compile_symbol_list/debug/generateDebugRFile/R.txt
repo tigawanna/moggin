@@ -1,0 +1,5 @@
+int drawable wakatime_hours_widget 0x0
+int drawable widget_icon 0x0
+int string app_name 0x0
+int string bidii_hours_widget_description 0x0
+int xml bidii_hours_widget 0x0

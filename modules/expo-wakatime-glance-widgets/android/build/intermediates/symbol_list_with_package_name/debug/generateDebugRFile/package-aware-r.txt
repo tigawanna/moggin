@@ -1,0 +1,6 @@
+expo.modules.wakatimeglancewidgets
+drawable wakatime_hours_widget
+drawable widget_icon
+string app_name
+string bidii_hours_widget_description
+xml bidii_hours_widget

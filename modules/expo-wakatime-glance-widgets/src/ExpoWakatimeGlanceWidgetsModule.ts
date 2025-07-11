@@ -1,9 +1,9 @@
 import { NativeModule, requireNativeModule } from 'expo';
 
-import { ExpoWakatimeGlanceWidgetsModuleEvents,UpdateWidgetPayload } from './ExpoWakatimeGlanceWidgets.types';
+import { ExpoWakatimeGlanceWidgetsModuleEvents, UpdateWidgetPayload } from './ExpoWakatimeGlanceWidgets.types';
 
 declare class ExpoWakatimeGlanceWidgetsModule extends NativeModule<ExpoWakatimeGlanceWidgetsModuleEvents> {
- updateWakatimeHoursWidget: (params: UpdateWidgetPayload) => void;
+  updateWakatimeWidget: (payload: UpdateWidgetPayload) => Promise<void>;
 }
 
 // This call loads the native module object from the JSI.

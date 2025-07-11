@@ -44,7 +44,7 @@ android {
 
 dependencies {
   // Required for WorkManager
-  implementation("androidx.work:work-runtime-ktx:2.9.0")
+//  implementation("androidx.work:work-runtime-ktx:2.9.0")
   // jetpack glance dependancies
   // For AppWidgets support
   implementation("androidx.glance:glance-appwidget:1.1.1")
@@ -54,10 +54,10 @@ dependencies {
   implementation("androidx.glance:glance-material:1.1.1")
 
   // Ktor for networking
-  implementation("io.ktor:ktor-client-android:2.3.8")
-  implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
-  implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8")
-  implementation("io.ktor:ktor-client-logging:2.3.8")
+//  implementation("io.ktor:ktor-client-android:2.3.8")
+//  implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
+//  implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8")
+//  implementation("io.ktor:ktor-client-logging:2.3.8")
 
 
 

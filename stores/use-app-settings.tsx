@@ -73,7 +73,7 @@ export function useApiKeysStore() {
   const queryClient = useQueryClient();
 
   const setWakatimeApiKey = (value: string | null) => {
-    const oldKey = wakatimeApiKey;
+    // const oldKey = wakatimeApiKey;
     settings$.wakatimeApiKey.set(value);
     updateWakatimeWidgetKey(value);
     

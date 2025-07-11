@@ -327,36 +327,36 @@ export class SyncWidget {
    * Helper method to add WorkManager fix to manifest
    * @param config - Expo config object
    */
-  static addWorkManagerFix(config: any): void {
-    Logger.info('Adding WorkManager initialization fix...');
+  // static addWorkManagerFix(config: any): void {
+  //   Logger.info('Adding WorkManager initialization fix...');
     
-    const mainApplication = config?.modResults?.manifest?.application?.[0];
+  //   const mainApplication = config?.modResults?.manifest?.application?.[0];
     
-    if (!mainApplication) {
-      Logger.warn('Application section not found in manifest');
-      return;
-    }
+  //   if (!mainApplication) {
+  //     Logger.warn('Application section not found in manifest');
+  //     return;
+  //   }
 
-    if (!mainApplication.provider) {
-      mainApplication.provider = [];
-    }
+  //   if (!mainApplication.provider) {
+  //     mainApplication.provider = [];
+  //   }
 
-    // Add provider to disable WorkManager auto-initialization
-    const workManagerFix = {
-      $: {
-        'android:name': 'androidx.startup.InitializationProvider',
-        'android:authorities': '${applicationId}.androidx-startup',
-        'tools:node': 'remove'
-      }
-    };
-    // TODO FIXING THIS
-    // mainApplication.provider.push(workManagerFix);
+  //   // Add provider to disable WorkManager auto-initialization
+  //   const workManagerFix = {
+  //     $: {
+  //       'android:name': 'androidx.startup.InitializationProvider',
+  //       'android:authorities': '${applicationId}.androidx-startup',
+  //       'tools:node': 'remove'
+  //     }
+  //   };
+  //   // TODO FIXING THIS
+  //   // mainApplication.provider.push(workManagerFix);
     
-    // Ensure tools namespace is added to manifest
-    if (!config.modResults.manifest.$['xmlns:tools']) {
-      config.modResults.manifest.$['xmlns:tools'] = 'http://schemas.android.com/tools';
-    }
+  //   // Ensure tools namespace is added to manifest
+  //   if (!config.modResults.manifest.$['xmlns:tools']) {
+  //     config.modResults.manifest.$['xmlns:tools'] = 'http://schemas.android.com/tools';
+  //   }
 
-    Logger.success('Added WorkManager initialization fix');
-  }
+  //   Logger.success('Added WorkManager initialization fix');
+  // }
 }

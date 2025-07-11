@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -61,6 +62,7 @@ class ExpoGlanceWidgetModule : Module() {
                     context.dataStore.edit { settings ->
                         settings[stringPreferencesKey(key)] = value
                     }
+                    Log.d("ExpoGlanceWidgetModule", "widgets datastore Value updated successfully")
                     promise.resolve(null)
                 } catch (e: Exception) {
                     promise.reject("DATASTORE_ERROR", "Failed to update value: ${e.message}", e)

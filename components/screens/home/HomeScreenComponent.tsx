@@ -1,13 +1,17 @@
-import { useApiKeysStore } from '@/stores/use-app-settings';
 import { useQueryClient } from '@tanstack/react-query';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { WakatimeMiniScreen } from '../wakatime/WakatimeMiniScreen';
 import { CurrentUserLeaderboardPosition } from './components/CurrentUserLeaderboardPosition';
 import { TooManyRequests } from '@/components/shared/TooManyRequests';
+import { useWakatimeDailyDuration } from '@/lib/api/wakatime/use-wakatime-durations';
+import { useApiKeysStore, useSettingsStore } from '@/stores/use-app-settings';
+import { useState } from 'react';
 
 export function HomeScreenComponent() {
   const qc = useQueryClient();
+  const { wakatimeApiKey } = useApiKeysStore();
+  const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
 
  // Simple refresh function - refreshes Wakatime data
   const onRefresh = async () => {
@@ -21,6 +25,15 @@ export function HomeScreenComponent() {
       queryKey: ['wakatime-current-user'],
     });
   };
+
+  const { data: wakatimeData } = useWakatimeDailyDuration({
+    selectedDate,
+    wakatimeApiKey,
+  });
+
+  // if( !wakatimeApiKey) {
+
+  // }
 
   return (
     <Surface style={styles.container}>

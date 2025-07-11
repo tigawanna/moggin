@@ -141,6 +141,6 @@ export class WidgetSync {
     await SyncWidget.mergeXmlManifest(config, projectRoot, manifestPath);
     
     // Also add WorkManager fix to prevent initialization issues
-    SyncWidget.addWorkManagerFix(config);
+    // SyncWidget.addWorkManagerFix(config);
   }
 }

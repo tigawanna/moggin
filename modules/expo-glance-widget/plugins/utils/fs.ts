@@ -122,8 +122,53 @@ export class FileUtils {
 
 /**
  * Logger utility with emoji prefixes for better visual feedback
+ * Supports both static methods and instance methods with tags
  */
 export class Logger {
+  private tag?: string;
+
+  constructor(tag?: string) {
+    this.tag = tag;
+  }
+
+  private formatMessage(message: string): string {
+    return this.tag ? `[${this.tag}] ${message}` : message;
+  }
+
+  // Instance methods with tag support
+  info(message: string): void {
+    console.log(`ℹ️  ${this.formatMessage(message)}`);
+  }
+
+  success(message: string): void {
+    console.log(`✅ ${this.formatMessage(message)}`);
+  }
+
+  warn(message: string): void {
+    console.warn(`⚠️  ${this.formatMessage(message)}`);
+  }
+
+  error(message: string): void {
+    console.error(`❌ ${this.formatMessage(message)}`);
+  }
+
+  debug(message: string): void {
+    console.log(`🔍 ${this.formatMessage(message)}`);
+  }
+
+  file(message: string): void {
+    console.log(`📁 ${this.formatMessage(message)}`);
+  }
+
+  mobile(message: string): void {
+    console.log(`📱 ${this.formatMessage(message)}`);
+  }
+
+  manifest(message: string): void {
+    console.log(`📄 ${this.formatMessage(message)}`);
+  }
+
+  // Static methods (backward compatibility)
   static info(message: string): void {
     console.log(`ℹ️  ${message}`);
   }

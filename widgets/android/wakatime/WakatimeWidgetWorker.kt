@@ -2,10 +2,11 @@ package com.tigawanna.moggin.wakatime
 
 import android.content.Context
 import android.util.Log
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
+import androidx.work.*
+import com.tigawanna.moggin.BidiiWidgetConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 class WakatimeWidgetWorker(
     context: Context,
@@ -30,5 +31,23 @@ class WakatimeWidgetWorker(
             Log.e("WakatimeWidgetWorker", "Unhandled error in WakatimeWidgetWorker", e)
             Result.retry()
         }
-}
+    }
+    
+    companion object {
+        fun setupPeriodicWork(context: Context) {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val workRequest = PeriodicWorkRequestBuilder<WakatimeWidgetWorker>(15, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                BidiiWidgetConstants.WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            )
+        }
+    }
 }

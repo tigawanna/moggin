@@ -1,10 +1,13 @@
 import { ConfigPlugin } from "expo/config-plugins";
+import fs from "fs";
 import path from "path";
 import { FileUtils, Logger } from "./utils/fs";
 import withComposeProjectLevelDependancyPlugin from "./withComposeProjectLevelDependancyPlugin";
 import { withGlanceAppLevelGradleConfig } from "./withGlanceAppLevelGradleConfig";
 import { withGlanceWidgetFiles } from "./withGlanceWidgetFiles";
-import fs from "fs"
+import { withMainApplicationWorkManager } from "./withMainApplicationWorkManager";
+import { withWakatimeWorkerErrorHandling } from "./withWakatimeWorkerErrorHandling";
+import { withWakatimeWorkManager } from "./withWakatimeWorkManager";
 
 /**
  * Configuration options for the Expo Glance Widgets plugin
@@ -26,6 +29,8 @@ export interface WithExpoGlanceWidgetsProps {
   destinationPackageName?: string;
   /** Base path for the original widget sources (if different from destination) */
   sourcePackageName?: string;
+  /** Enable WorkManager integration for background widget updates */
+  enableWorkManager?: boolean;
 }
 
 /**
@@ -37,6 +42,7 @@ export const DEFAULT_OPTIONS: WithExpoGlanceWidgetsProps = {
   resPath: "widgets/android/res",
   fileMatchPattern: "Widget", // Default: match files containing "Widget" in the name
   syncDirectory: "widgets/android", // Default sync directory for external sources
+  enableWorkManager: true, // Enable WorkManager by default
 };
 
 /**
@@ -172,6 +178,24 @@ const withExpoGlanceWidgets: ConfigPlugin<Partial<WithExpoGlanceWidgetsProps>> =
 
   // Apply widget files copying and manifest modifications
   config = withGlanceWidgetFiles(config, options);
+
+  // Apply WorkManager initialization (if enabled)
+  if (options.enableWorkManager) {
+    // First: Initialize WorkManager in MainApplication
+    config = withMainApplicationWorkManager(config, {
+      packageName: options.destinationPackageName
+    });
+    
+    // Second: Add WorkManager setup call in MainActivity
+    config = withWakatimeWorkManager(config, {
+      packageName: options.destinationPackageName
+    });
+  }
+
+  // Apply Wakatime worker error handling configuration
+  config = withWakatimeWorkerErrorHandling(config, {
+    packageName: options.destinationPackageName
+  });
 
   return config;
 };

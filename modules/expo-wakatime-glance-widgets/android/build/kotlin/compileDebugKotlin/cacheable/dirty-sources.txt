@@ -1,3 +1,0 @@
-/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/java/expo/modules/wakatimeglancewidgets/WidgetData.kt
-/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/java/expo/modules/wakatimeglancewidgets/ExpoWakatimeGlanceWidgetsModule.kt
-/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/java/expo/modules/wakatimeglancewidgets/WakatimeHoursWidget.kt

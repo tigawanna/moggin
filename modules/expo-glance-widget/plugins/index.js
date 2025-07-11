@@ -38031,7 +38031,7 @@ __export(index_exports, {
 module.exports = __toCommonJS(index_exports);
 
 // modules/expo-glance-widget/plugins/withPlugins.ts
-var import_fs11 = __toESM(require("fs"));
+var import_fs10 = __toESM(require("fs"));
 var import_path7 = __toESM(require("path"));
 
 // modules/expo-glance-widget/plugins/utils/fs.ts
@@ -39694,41 +39694,39 @@ var withGlanceWidgetFiles = (config, options = {}) => {
   return config;
 };
 
-// modules/expo-glance-widget/plugins/withWakatimeWorkManager.ts
+// modules/expo-glance-widget/plugins/withWakatimeWorkerErrorHandling.ts
 var import_config_plugins4 = __toESM(require_build4());
 var fs3 = __toESM(require("fs"));
 var path7 = __toESM(require("path"));
-var logger = new Logger("WithWakatimeWorkManager");
-var withWakatimeWorkManager = (config, options = {}) => {
+var logger = new Logger("WithWakatimeWorkerErrorHandling");
+var withWakatimeWorkerErrorHandling = (config, options = {}) => {
   return (0, import_config_plugins4.withDangerousMod)(config, [
     "android",
     async (config2) => {
       const { platformProjectRoot } = config2.modRequest;
-      const mainActivityPath = findMainActivityFile(platformProjectRoot);
-      if (!mainActivityPath) {
-        logger.warn("MainActivity.kt not found, skipping WorkManager injection");
+      const wakatimeWorkerPath = findWakatimeWorkerFile(platformProjectRoot);
+      if (!wakatimeWorkerPath) {
+        logger.warn("WakatimeWidgetWorker.kt not found, skipping error handling injection");
         return config2;
       }
-      let mainActivityContent = fs3.readFileSync(mainActivityPath, "utf8");
-      logger.debug(`MainActivity content length: ${mainActivityContent.length}`);
-      logger.debug(`MainActivity content preview: ${mainActivityContent.substring(0, 200)}...`);
-      const packageName = options.packageName || extractPackageName(mainActivityContent);
+      let workerContent = fs3.readFileSync(wakatimeWorkerPath, "utf8");
+      const packageName = options.packageName || extractPackageName(workerContent);
       if (!packageName) {
-        logger.warn("Could not determine package name, skipping WorkManager injection");
+        logger.warn("Could not determine package name, skipping error handling injection");
         return config2;
       }
-      mainActivityContent = injectWakatimeWorkManager(mainActivityContent, packageName);
-      fs3.writeFileSync(mainActivityPath, mainActivityContent);
-      logger.info("Successfully injected WakatimeWidgetWorker initialization into MainActivity");
+      workerContent = addErrorHandlingToSetupPeriodicWork(workerContent);
+      fs3.writeFileSync(wakatimeWorkerPath, workerContent);
+      logger.info("Successfully added error handling to WakatimeWidgetWorker.setupPeriodicWork");
       return config2;
     }
   ]);
 };
-function findMainActivityFile(platformProjectRoot) {
-  const possiblePaths = [
-    path7.join(platformProjectRoot, "app", "src", "main", "java", "**", "MainActivity.kt"),
-    path7.join(platformProjectRoot, "app", "src", "main", "kotlin", "**", "MainActivity.kt")
-  ];
+function findWakatimeWorkerFile(platformProjectRoot) {
+  const widgetsPath = path7.join(platformProjectRoot, "..", "widgets", "android", "wakatime", "WakatimeWidgetWorker.kt");
+  if (fs3.existsSync(widgetsPath)) {
+    return widgetsPath;
+  }
   function searchDirectory(dir) {
     if (!fs3.existsSync(dir)) return null;
     const files = fs3.readdirSync(dir);
@@ -39738,7 +39736,7 @@ function findMainActivityFile(platformProjectRoot) {
       if (stat.isDirectory()) {
         const result = searchDirectory(filePath);
         if (result) return result;
-      } else if (file === "MainActivity.kt") {
+      } else if (file === "WakatimeWidgetWorker.kt") {
         return filePath;
       }
     }
@@ -39746,13 +39744,7 @@ function findMainActivityFile(platformProjectRoot) {
   }
   const mainSrcPath = path7.join(platformProjectRoot, "app", "src", "main");
   if (fs3.existsSync(mainSrcPath)) {
-    const javaPath = path7.join(mainSrcPath, "java");
-    const kotlinPath = path7.join(mainSrcPath, "kotlin");
-    let result = searchDirectory(javaPath);
-    if (!result) {
-      result = searchDirectory(kotlinPath);
-    }
-    return result;
+    return searchDirectory(mainSrcPath);
   }
   return null;
 }
@@ -39760,235 +39752,15 @@ function extractPackageName(content) {
   const packageMatch = content.match(/^package\s+([a-zA-Z0-9_.]+)/m);
   return packageMatch ? packageMatch[1] : null;
 }
-function injectWakatimeWorkManager(content, packageName) {
-  const importStatement = `import ${packageName}.wakatime.WakatimeWidgetWorker`;
-  const initializationCode = `
-        
-        // Initialize wakatime work manager (using application context for thread safety)
-        WakatimeWidgetWorker.setupPeriodicWork(this.applicationContext)`;
-  if (content.includes(importStatement)) {
-    logger.info("WakatimeWidgetWorker import already exists");
-  } else {
-    const lastImportMatch = content.match(/^import\s+.+$/gm);
-    if (lastImportMatch) {
-      const lastImport = lastImportMatch[lastImportMatch.length - 1];
-      const lastImportIndex = content.lastIndexOf(lastImport);
-      const insertIndex = lastImportIndex + lastImport.length;
-      content = content.slice(0, insertIndex) + "\n" + importStatement + content.slice(insertIndex);
-      logger.info("Added WakatimeWidgetWorker import");
-    }
-  }
-  if (content.includes("WakatimeWidgetWorker.setupPeriodicWork(this)") || content.includes("WakatimeWidgetWorker.setupPeriodicWork(this.applicationContext)")) {
-    logger.info("WakatimeWidgetWorker initialization already exists");
-    return content;
-  } else {
-    logger.debug("WakatimeWidgetWorker initialization not found, proceeding with injection");
-  }
-  logger.debug("Looking for onCreate method...");
-  const superOnCreateRegex = /super\.onCreate\([^)]*\)/;
-  const superOnCreateMatch = content.match(superOnCreateRegex);
-  if (superOnCreateMatch) {
-    logger.debug("Found super.onCreate call, injecting WorkManager initialization");
-    const superOnCreateCall = superOnCreateMatch[0];
-    const superOnCreateIndex = content.indexOf(superOnCreateCall);
-    const insertIndex = superOnCreateIndex + superOnCreateCall.length;
-    content = content.slice(0, insertIndex) + initializationCode + content.slice(insertIndex);
-    logger.info("Added WakatimeWidgetWorker initialization after super.onCreate");
-  } else {
-    logger.error("Could not find super.onCreate call to inject WorkManager initialization");
-    logger.debug(`Available content preview: ${content.substring(0, 500)}`);
-  }
-  return content;
-}
-
-// modules/expo-glance-widget/plugins/withMainApplicationWorkManager.ts
-var import_config_plugins5 = __toESM(require_build4());
-var fs4 = __toESM(require("fs"));
-var path8 = __toESM(require("path"));
-var logger2 = new Logger("WithMainApplicationWorkManager");
-var withMainApplicationWorkManager = (config, options = {}) => {
-  return (0, import_config_plugins5.withDangerousMod)(config, [
-    "android",
-    async (config2) => {
-      const { platformProjectRoot } = config2.modRequest;
-      const mainApplicationPath = findMainApplicationFile(platformProjectRoot);
-      if (!mainApplicationPath) {
-        logger2.warn("MainApplication.kt not found, skipping WorkManager injection");
-        return config2;
-      }
-      let mainApplicationContent = fs4.readFileSync(mainApplicationPath, "utf8");
-      const packageName = options.packageName || extractPackageName2(mainApplicationContent);
-      if (!packageName) {
-        logger2.warn("Could not determine package name, skipping WorkManager injection");
-        return config2;
-      }
-      mainApplicationContent = injectWorkManagerIntoMainApplication(mainApplicationContent, packageName);
-      fs4.writeFileSync(mainApplicationPath, mainApplicationContent);
-      logger2.info("Successfully injected WorkManager initialization into MainApplication");
-      return config2;
-    }
-  ]);
-};
-function findMainApplicationFile(platformProjectRoot) {
-  function searchDirectory(dir) {
-    if (!fs4.existsSync(dir)) return null;
-    const files = fs4.readdirSync(dir);
-    for (const file of files) {
-      const filePath = path8.join(dir, file);
-      const stat = fs4.statSync(filePath);
-      if (stat.isDirectory()) {
-        const result = searchDirectory(filePath);
-        if (result) return result;
-      } else if (file === "MainApplication.kt") {
-        return filePath;
-      }
-    }
-    return null;
-  }
-  const mainSrcPath = path8.join(platformProjectRoot, "app", "src", "main");
-  if (fs4.existsSync(mainSrcPath)) {
-    const javaPath = path8.join(mainSrcPath, "java");
-    const kotlinPath = path8.join(mainSrcPath, "kotlin");
-    let result = searchDirectory(javaPath);
-    if (!result) {
-      result = searchDirectory(kotlinPath);
-    }
-    return result;
-  }
-  return null;
-}
-function extractPackageName2(content) {
-  const packageMatch = content.match(/^package\s+([a-zA-Z0-9_.]+)/m);
-  return packageMatch ? packageMatch[1] : null;
-}
-function injectWorkManagerIntoMainApplication(content, packageName) {
-  const requiredImports = [
-    "import android.content.res.Configuration",
-    "import androidx.work.Configuration",
-    "import androidx.work.WorkManager"
-  ];
-  requiredImports.forEach((importStatement) => {
-    if (!content.includes(importStatement)) {
-      const lastImportMatch = content.match(/^import\s+.+$/gm);
-      if (lastImportMatch) {
-        const lastImport = lastImportMatch[lastImportMatch.length - 1];
-        const lastImportIndex = content.lastIndexOf(lastImport);
-        const insertIndex = lastImportIndex + lastImport.length;
-        content = content.slice(0, insertIndex) + "\n" + importStatement + content.slice(insertIndex);
-        logger2.info(`Added import: ${importStatement}`);
-      }
-    }
-  });
-  if (!content.includes("Configuration.Provider")) {
-    const classDeclarationRegex = /class\s+MainApplication\s*:\s*Application\(\)\s*,\s*ReactApplication/;
-    const classMatch = content.match(classDeclarationRegex);
-    if (classMatch) {
-      const classDeclaration = classMatch[0];
-      const newClassDeclaration = classDeclaration + ", Configuration.Provider";
-      content = content.replace(classDeclaration, newClassDeclaration);
-      logger2.info("Added Configuration.Provider interface to MainApplication");
-    }
-  }
-  if (!content.includes("getWorkManagerConfiguration")) {
-    const workManagerConfigMethod = `
-  // WorkManager configuration
-  override fun getWorkManagerConfiguration(): Configuration =
-      Configuration.Builder()
-          .setMinimumLoggingLevel(android.util.Log.DEBUG)
-          .build()`;
-    const onCreateRegex = /override\s+fun\s+onCreate\(\)/;
-    const onCreateMatch = content.match(onCreateRegex);
-    if (onCreateMatch) {
-      const onCreateIndex = content.indexOf(onCreateMatch[0]);
-      content = content.slice(0, onCreateIndex) + workManagerConfigMethod + "\n\n  " + content.slice(onCreateIndex);
-      logger2.info("Added getWorkManagerConfiguration method");
-    }
-  }
-  if (!content.includes("WorkManager.initialize")) {
-    const superOnCreateRegex = /super\.onCreate\(\)/;
-    const superOnCreateMatch = content.match(superOnCreateRegex);
-    if (superOnCreateMatch) {
-      const superOnCreateCall = superOnCreateMatch[0];
-      const superOnCreateIndex = content.indexOf(superOnCreateCall);
-      const insertIndex = superOnCreateIndex + superOnCreateCall.length;
-      const workManagerInit = `
-        
-        // Initialize WorkManager first
-        WorkManager.initialize(this, workManagerConfiguration)`;
-      content = content.slice(0, insertIndex) + workManagerInit + content.slice(insertIndex);
-      logger2.info("Added WorkManager.initialize call to onCreate");
-    }
-  }
-  return content;
-}
-
-// modules/expo-glance-widget/plugins/withWakatimeWorkerErrorHandling.ts
-var import_config_plugins6 = __toESM(require_build4());
-var fs5 = __toESM(require("fs"));
-var path9 = __toESM(require("path"));
-var logger3 = new Logger("WithWakatimeWorkerErrorHandling");
-var withWakatimeWorkerErrorHandling = (config, options = {}) => {
-  return (0, import_config_plugins6.withDangerousMod)(config, [
-    "android",
-    async (config2) => {
-      const { platformProjectRoot } = config2.modRequest;
-      const wakatimeWorkerPath = findWakatimeWorkerFile(platformProjectRoot);
-      if (!wakatimeWorkerPath) {
-        logger3.warn("WakatimeWidgetWorker.kt not found, skipping error handling injection");
-        return config2;
-      }
-      let workerContent = fs5.readFileSync(wakatimeWorkerPath, "utf8");
-      const packageName = options.packageName || extractPackageName3(workerContent);
-      if (!packageName) {
-        logger3.warn("Could not determine package name, skipping error handling injection");
-        return config2;
-      }
-      workerContent = addErrorHandlingToSetupPeriodicWork(workerContent);
-      fs5.writeFileSync(wakatimeWorkerPath, workerContent);
-      logger3.info("Successfully added error handling to WakatimeWidgetWorker.setupPeriodicWork");
-      return config2;
-    }
-  ]);
-};
-function findWakatimeWorkerFile(platformProjectRoot) {
-  const widgetsPath = path9.join(platformProjectRoot, "..", "widgets", "android", "wakatime", "WakatimeWidgetWorker.kt");
-  if (fs5.existsSync(widgetsPath)) {
-    return widgetsPath;
-  }
-  function searchDirectory(dir) {
-    if (!fs5.existsSync(dir)) return null;
-    const files = fs5.readdirSync(dir);
-    for (const file of files) {
-      const filePath = path9.join(dir, file);
-      const stat = fs5.statSync(filePath);
-      if (stat.isDirectory()) {
-        const result = searchDirectory(filePath);
-        if (result) return result;
-      } else if (file === "WakatimeWidgetWorker.kt") {
-        return filePath;
-      }
-    }
-    return null;
-  }
-  const mainSrcPath = path9.join(platformProjectRoot, "app", "src", "main");
-  if (fs5.existsSync(mainSrcPath)) {
-    return searchDirectory(mainSrcPath);
-  }
-  return null;
-}
-function extractPackageName3(content) {
-  const packageMatch = content.match(/^package\s+([a-zA-Z0-9_.]+)/m);
-  return packageMatch ? packageMatch[1] : null;
-}
 function addErrorHandlingToSetupPeriodicWork(content) {
   if (content.includes("try {") && content.includes("catch (e: Exception)")) {
-    logger3.info("Error handling already present in setupPeriodicWork");
+    logger.info("Error handling already present in setupPeriodicWork");
     return content;
   }
   const setupMethodRegex = /fun\s+setupPeriodicWork\(context:\s*Context\)\s*\{/;
   const setupMethodMatch = content.match(setupMethodRegex);
   if (!setupMethodMatch) {
-    logger3.warn("Could not find setupPeriodicWork method");
+    logger.warn("Could not find setupPeriodicWork method");
     return content;
   }
   const methodStartIndex = content.indexOf(setupMethodMatch[0]);
@@ -40012,8 +39784,115 @@ function addErrorHandlingToSetupPeriodicWork(content) {
             }
         `;
   const newContent = content.substring(0, methodBodyStart) + newMethodBody + content.substring(methodBodyEnd);
-  logger3.info("Added error handling to setupPeriodicWork method");
+  logger.info("Added error handling to setupPeriodicWork method");
   return newContent;
+}
+
+// modules/expo-glance-widget/plugins/withWakatimeWorkManager.ts
+var import_config_plugins5 = __toESM(require_build4());
+var fs4 = __toESM(require("fs"));
+var path8 = __toESM(require("path"));
+var logger2 = new Logger("WithWakatimeWorkManager");
+var withWakatimeWorkManager = (config, options = {}) => {
+  return (0, import_config_plugins5.withDangerousMod)(config, [
+    "android",
+    async (config2) => {
+      const { platformProjectRoot } = config2.modRequest;
+      const mainActivityPath = findMainActivityFile(platformProjectRoot);
+      if (!mainActivityPath) {
+        logger2.warn("MainActivity.kt not found, skipping WorkManager injection");
+        return config2;
+      }
+      let mainActivityContent = fs4.readFileSync(mainActivityPath, "utf8");
+      logger2.debug(`MainActivity content length: ${mainActivityContent.length}`);
+      logger2.debug(`MainActivity content preview: ${mainActivityContent.substring(0, 200)}...`);
+      const packageName = options.packageName || extractPackageName2(mainActivityContent);
+      if (!packageName) {
+        logger2.warn("Could not determine package name, skipping WorkManager injection");
+        return config2;
+      }
+      mainActivityContent = injectWakatimeWorkManager(mainActivityContent, packageName);
+      fs4.writeFileSync(mainActivityPath, mainActivityContent);
+      logger2.info("Successfully injected WakatimeWidgetWorker initialization into MainActivity");
+      return config2;
+    }
+  ]);
+};
+function findMainActivityFile(platformProjectRoot) {
+  const possiblePaths = [
+    path8.join(platformProjectRoot, "app", "src", "main", "java", "**", "MainActivity.kt"),
+    path8.join(platformProjectRoot, "app", "src", "main", "kotlin", "**", "MainActivity.kt")
+  ];
+  function searchDirectory(dir) {
+    if (!fs4.existsSync(dir)) return null;
+    const files = fs4.readdirSync(dir);
+    for (const file of files) {
+      const filePath = path8.join(dir, file);
+      const stat = fs4.statSync(filePath);
+      if (stat.isDirectory()) {
+        const result = searchDirectory(filePath);
+        if (result) return result;
+      } else if (file === "MainActivity.kt") {
+        return filePath;
+      }
+    }
+    return null;
+  }
+  const mainSrcPath = path8.join(platformProjectRoot, "app", "src", "main");
+  if (fs4.existsSync(mainSrcPath)) {
+    const javaPath = path8.join(mainSrcPath, "java");
+    const kotlinPath = path8.join(mainSrcPath, "kotlin");
+    let result = searchDirectory(javaPath);
+    if (!result) {
+      result = searchDirectory(kotlinPath);
+    }
+    return result;
+  }
+  return null;
+}
+function extractPackageName2(content) {
+  const packageMatch = content.match(/^package\s+([a-zA-Z0-9_.]+)/m);
+  return packageMatch ? packageMatch[1] : null;
+}
+function injectWakatimeWorkManager(content, packageName) {
+  const importStatement = `import ${packageName}.wakatime.WakatimeWidgetWorker`;
+  const initializationCode = `
+        
+        // Initialize wakatime work manager (using application context for thread safety)
+        WakatimeWidgetWorker.setupPeriodicWork(this.applicationContext)`;
+  if (content.includes(importStatement)) {
+    logger2.info("WakatimeWidgetWorker import already exists");
+  } else {
+    const lastImportMatch = content.match(/^import\s+.+$/gm);
+    if (lastImportMatch) {
+      const lastImport = lastImportMatch[lastImportMatch.length - 1];
+      const lastImportIndex = content.lastIndexOf(lastImport);
+      const insertIndex = lastImportIndex + lastImport.length;
+      content = content.slice(0, insertIndex) + "\n" + importStatement + content.slice(insertIndex);
+      logger2.info("Added WakatimeWidgetWorker import");
+    }
+  }
+  if (content.includes("WakatimeWidgetWorker.setupPeriodicWork(this)") || content.includes("WakatimeWidgetWorker.setupPeriodicWork(this.applicationContext)")) {
+    logger2.info("WakatimeWidgetWorker initialization already exists");
+    return content;
+  } else {
+    logger2.debug("WakatimeWidgetWorker initialization not found, proceeding with injection");
+  }
+  logger2.debug("Looking for onCreate method...");
+  const superOnCreateRegex = /super\.onCreate\([^)]*\)/;
+  const superOnCreateMatch = content.match(superOnCreateRegex);
+  if (superOnCreateMatch) {
+    logger2.debug("Found super.onCreate call, injecting WorkManager initialization");
+    const superOnCreateCall = superOnCreateMatch[0];
+    const superOnCreateIndex = content.indexOf(superOnCreateCall);
+    const insertIndex = superOnCreateIndex + superOnCreateCall.length;
+    content = content.slice(0, insertIndex) + initializationCode + content.slice(insertIndex);
+    logger2.info("Added WakatimeWidgetWorker initialization after super.onCreate");
+  } else {
+    logger2.error("Could not find super.onCreate call to inject WorkManager initialization");
+    logger2.debug(`Available content preview: ${content.substring(0, 500)}`);
+  }
+  return content;
 }
 
 // modules/expo-glance-widget/plugins/withPlugins.ts
@@ -40046,7 +39925,7 @@ function getDefaultedOptions(options) {
     );
     const defaultWidgetPath = import_path7.default.resolve(DEFAULT_OPTIONS.widgetFilesPath);
     if (!FileUtils.exists(defaultWidgetPath)) {
-      import_fs11.default.writeFileSync(defaultWidgetPath, `
+      import_fs10.default.writeFileSync(defaultWidgetPath, `
         <manifest></manifest>
         `);
     }
@@ -40095,9 +39974,6 @@ var withExpoGlanceWidgets = (config, userOptions = {}) => {
   config = withGlanceAppLevelGradleConfig(config);
   config = withGlanceWidgetFiles(config, options);
   if (options.enableWorkManager) {
-    config = withMainApplicationWorkManager(config, {
-      packageName: options.destinationPackageName
-    });
     config = withWakatimeWorkManager(config, {
       packageName: options.destinationPackageName
     });
@@ -40108,6 +39984,127 @@ var withExpoGlanceWidgets = (config, userOptions = {}) => {
   return config;
 };
 var withPlugins_default = withExpoGlanceWidgets;
+
+// modules/expo-glance-widget/plugins/withMainApplicationWorkManager.ts
+var import_config_plugins6 = __toESM(require_build4());
+var fs6 = __toESM(require("fs"));
+var path10 = __toESM(require("path"));
+var logger3 = new Logger("WithMainApplicationWorkManager");
+var withMainApplicationWorkManager = (config, options = {}) => {
+  return (0, import_config_plugins6.withDangerousMod)(config, [
+    "android",
+    async (config2) => {
+      const { platformProjectRoot } = config2.modRequest;
+      const mainApplicationPath = findMainApplicationFile(platformProjectRoot);
+      if (!mainApplicationPath) {
+        logger3.warn("MainApplication.kt not found, skipping WorkManager injection");
+        return config2;
+      }
+      let mainApplicationContent = fs6.readFileSync(mainApplicationPath, "utf8");
+      const packageName = options.packageName || extractPackageName3(mainApplicationContent);
+      if (!packageName) {
+        logger3.warn("Could not determine package name, skipping WorkManager injection");
+        return config2;
+      }
+      mainApplicationContent = injectWorkManagerIntoMainApplication(mainApplicationContent, packageName);
+      fs6.writeFileSync(mainApplicationPath, mainApplicationContent);
+      logger3.info("Successfully injected WorkManager initialization into MainApplication");
+      return config2;
+    }
+  ]);
+};
+function findMainApplicationFile(platformProjectRoot) {
+  function searchDirectory(dir) {
+    if (!fs6.existsSync(dir)) return null;
+    const files = fs6.readdirSync(dir);
+    for (const file of files) {
+      const filePath = path10.join(dir, file);
+      const stat = fs6.statSync(filePath);
+      if (stat.isDirectory()) {
+        const result = searchDirectory(filePath);
+        if (result) return result;
+      } else if (file === "MainApplication.kt") {
+        return filePath;
+      }
+    }
+    return null;
+  }
+  const mainSrcPath = path10.join(platformProjectRoot, "app", "src", "main");
+  if (fs6.existsSync(mainSrcPath)) {
+    const javaPath = path10.join(mainSrcPath, "java");
+    const kotlinPath = path10.join(mainSrcPath, "kotlin");
+    let result = searchDirectory(javaPath);
+    if (!result) {
+      result = searchDirectory(kotlinPath);
+    }
+    return result;
+  }
+  return null;
+}
+function extractPackageName3(content) {
+  const packageMatch = content.match(/^package\s+([a-zA-Z0-9_.]+)/m);
+  return packageMatch ? packageMatch[1] : null;
+}
+function injectWorkManagerIntoMainApplication(content, packageName) {
+  const requiredImports = [
+    "import android.content.res.Configuration",
+    "import androidx.work.Configuration",
+    "import androidx.work.WorkManager"
+  ];
+  requiredImports.forEach((importStatement) => {
+    if (!content.includes(importStatement)) {
+      const lastImportMatch = content.match(/^import\s+.+$/gm);
+      if (lastImportMatch) {
+        const lastImport = lastImportMatch[lastImportMatch.length - 1];
+        const lastImportIndex = content.lastIndexOf(lastImport);
+        const insertIndex = lastImportIndex + lastImport.length;
+        content = content.slice(0, insertIndex) + "\n" + importStatement + content.slice(insertIndex);
+        logger3.info(`Added import: ${importStatement}`);
+      }
+    }
+  });
+  if (!content.includes("Configuration.Provider")) {
+    const classDeclarationRegex = /class\s+MainApplication\s*:\s*Application\(\)\s*,\s*ReactApplication/;
+    const classMatch = content.match(classDeclarationRegex);
+    if (classMatch) {
+      const classDeclaration = classMatch[0];
+      const newClassDeclaration = classDeclaration + ", Configuration.Provider";
+      content = content.replace(classDeclaration, newClassDeclaration);
+      logger3.info("Added Configuration.Provider interface to MainApplication");
+    }
+  }
+  if (!content.includes("getWorkManagerConfiguration")) {
+    const workManagerConfigMethod = `
+  // WorkManager configuration
+  override fun getWorkManagerConfiguration(): Configuration =
+      Configuration.Builder()
+          .setMinimumLoggingLevel(android.util.Log.DEBUG)
+          .build()`;
+    const onCreateRegex = /override\s+fun\s+onCreate\(\)/;
+    const onCreateMatch = content.match(onCreateRegex);
+    if (onCreateMatch) {
+      const onCreateIndex = content.indexOf(onCreateMatch[0]);
+      content = content.slice(0, onCreateIndex) + workManagerConfigMethod + "\n\n  " + content.slice(onCreateIndex);
+      logger3.info("Added getWorkManagerConfiguration method");
+    }
+  }
+  if (!content.includes("WorkManager.initialize")) {
+    const superOnCreateRegex = /super\.onCreate\(\)/;
+    const superOnCreateMatch = content.match(superOnCreateRegex);
+    if (superOnCreateMatch) {
+      const superOnCreateCall = superOnCreateMatch[0];
+      const superOnCreateIndex = content.indexOf(superOnCreateCall);
+      const insertIndex = superOnCreateIndex + superOnCreateCall.length;
+      const workManagerInit = `
+        
+        // Initialize WorkManager first
+        WorkManager.initialize(this, workManagerConfiguration)`;
+      content = content.slice(0, insertIndex) + workManagerInit + content.slice(insertIndex);
+      logger3.info("Added WorkManager.initialize call to onCreate");
+    }
+  }
+  return content;
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   DEFAULT_OPTIONS,

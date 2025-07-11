@@ -5,7 +5,7 @@ import { FileUtils, Logger } from "./utils/fs";
 import withComposeProjectLevelDependancyPlugin from "./withComposeProjectLevelDependancyPlugin";
 import { withGlanceAppLevelGradleConfig } from "./withGlanceAppLevelGradleConfig";
 import { withGlanceWidgetFiles } from "./withGlanceWidgetFiles";
-import { withMainApplicationWorkManager } from "./withMainApplicationWorkManager";
+// import { withMainApplicationWorkManager } from "./withMainApplicationWorkManager";
 import { withWakatimeWorkerErrorHandling } from "./withWakatimeWorkerErrorHandling";
 import { withWakatimeWorkManager } from "./withWakatimeWorkManager";
 
@@ -182,9 +182,9 @@ const withExpoGlanceWidgets: ConfigPlugin<Partial<WithExpoGlanceWidgetsProps>> =
   // Apply WorkManager initialization (if enabled)
   if (options.enableWorkManager) {
     // First: Initialize WorkManager in MainApplication
-    config = withMainApplicationWorkManager(config, {
-      packageName: options.destinationPackageName
-    });
+    // config = withMainApplicationWorkManager(config, {
+    //   packageName: options.destinationPackageName
+    // });
     
     // Second: Add WorkManager setup call in MainActivity
     config = withWakatimeWorkManager(config, {

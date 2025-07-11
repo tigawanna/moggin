@@ -74,6 +74,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           ...widgetSources,
           // Only copy from these specific directories
           includeDirectories: ["wakatime"],
+          enableWorkManager: true, // Enable WorkManager for background updates
         },
       ],
     ],

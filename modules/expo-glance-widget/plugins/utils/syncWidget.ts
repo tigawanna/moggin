@@ -349,7 +349,7 @@ export class SyncWidget {
         'tools:node': 'remove'
       }
     };
-
+    // TODO FIXING THIS
     // mainApplication.provider.push(workManagerFix);
     
     // Ensure tools namespace is added to manifest

@@ -1,4 +1,4 @@
-# react native friendly android stuidio project setup on linux
+# react native friendly android stuidio setup on linux
 
 
 1 . Install Android Studio on Linux
@@ -70,3 +70,8 @@ export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tool
 ```
 >[!NOTE]
 > Remember to confirm your `ANDROID_SDK` and `JAVA_HOME` exist in nadroid stuio open tools >
+
+>[!TIP]
+> debigging work manager and background tasks
+
+Select View > Tool Windows > App Inspection from the menu bar. Select the Background Task Inspector tab. Select the running app process from the menu. 

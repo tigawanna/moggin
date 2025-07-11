@@ -350,7 +350,7 @@ export class SyncWidget {
       }
     };
 
-    mainApplication.provider.push(workManagerFix);
+    // mainApplication.provider.push(workManagerFix);
     
     // Ensure tools namespace is added to manifest
     if (!config.modResults.manifest.$['xmlns:tools']) {

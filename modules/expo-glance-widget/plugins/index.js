@@ -39050,7 +39050,6 @@ var SyncWidget = class {
         "tools:node": "remove"
       }
     };
-    mainApplication.provider.push(workManagerFix);
     if (!config.modResults.manifest.$["xmlns:tools"]) {
       config.modResults.manifest.$["xmlns:tools"] = "http://schemas.android.com/tools";
     }

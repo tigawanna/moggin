@@ -1,24 +1,23 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
-import { Surface } from "react-native-paper";
+import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallback";
 import { NoDataScreen } from "@/components/shared/state-screens/NoDataScreen";
 import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooManyRequestsScreen";
 import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
+import { useCurrentWakatimeDate } from "@/hooks/use-current-date";
+import { useRefresh } from "@/hooks/use-refresh";
 import { useWakatimeDailyDuration } from "@/lib/api/wakatime/use-wakatime-durations";
 import { useApiKeysStore } from "@/stores/use-app-settings";
 import { Redirect, useLocalSearchParams } from "expo-router";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { Surface } from "react-native-paper";
 import { DailyProjects } from "./components/DailyProjects";
-import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallback";
-import { useRefresh } from "@/hooks/use-refresh";
-import { useCurrentWakatimeDate } from "@/hooks/use-current-date";
+import { TodayDuration } from "./components/TodayDuration";
 import { WakatimeDayPicker } from "./components/WakatimeDayPicker";
-
 
 export function HomeScreenComponent() {
   const { wakatimeApiKey } = useApiKeysStore();
   const { grouped } = useLocalSearchParams<{ grouped: "true" | "false" }>();
   const isGrouped = grouped === "true";
-  const {selectedDate} = useCurrentWakatimeDate();
+  const { selectedDate } = useCurrentWakatimeDate();
 
   const {
     data: wakatimeData,
@@ -90,14 +89,23 @@ export function HomeScreenComponent() {
 
   // Use the projects based on the grouped state
   const projectsToDisplay = isGrouped ? wakatimeData.groupedProjects : wakatimeData.allProjects;
+
   return (
     <Surface style={styles.container}>
-      <WakatimeDayPicker/>
-      <DailyProjects
-        projects={projectsToDisplay}
-        grouped={isGrouped}
-        RefreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}
-      />
+      {/* Sticky Date Picker */}
+      <Surface style={styles.stickyHeader} elevation={2}>
+        <WakatimeDayPicker />
+      </Surface>
+
+      {/* Scrollable Content */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
+        <TodayDuration todayHours={wakatimeData} />
+        <DailyProjects projects={projectsToDisplay} grouped={isGrouped} />
+        <View style={styles.bottomPadding} />
+      </ScrollView>
     </Surface>
   );
 }
@@ -105,20 +113,24 @@ export function HomeScreenComponent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: "100%",
-    width: "100%",
-    justifyContent: "center",
-    gap: 4,
+  },
+  stickyHeader: {
+    position: "absolute",
+    maxWidth: "97%",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    backgroundColor: "transparent",
   },
   scrollView: {
     flex: 1,
-    height: "100%",
-    width: "100%",
+    paddingBottom: 20,
+    paddingTop: 80, // Add padding to account for sticky header
   },
   scrollContent: {
-    flex: 1,
-    height: "100%",
-    width: "100%",
+    flexGrow: 1,
+    paddingBottom: 20,
   },
   bottomPadding: {
     height: 4,

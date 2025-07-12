@@ -1,22 +1,18 @@
-import { RefreshControlType } from "@/hooks/use-refresh";
 import { UserDailyDurationsData } from "@/lib/api/wakatime/types/current-user-types";
 import { formatWakatimeDuration, formatWakatimeMsToHumanReadable } from "@/utils/date";
 import { router } from "expo-router";
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Card, Surface, Switch, Text } from "react-native-paper";
 
 interface DailyProjectsProps {
-  grouped?:boolean;
+  grouped?: boolean;
   projects: UserDailyDurationsData[];
-  RefreshControl?: RefreshControlType;
 }
 
-export function DailyProjects({ grouped,projects, RefreshControl }: DailyProjectsProps) {
-
-  // const { grouped } = useLocalSearchParams<{ grouped: "true" | "false" }>();
-  const renderProjectItem = ({ item }: { item: UserDailyDurationsData }) => (
-    <Card style={styles.projectCard} elevation={2}>
+export function DailyProjects({ grouped, projects }: DailyProjectsProps) {
+  const renderProjectItem = (item: UserDailyDurationsData, index: number) => (
+    <Card key={`${item.project}-${index}`} style={styles.projectCard} elevation={2}>
       <Card.Title title={item.project} />
       <Card.Content style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text variant="bodyMedium" style={styles.duration}>
@@ -36,38 +32,38 @@ export function DailyProjects({ grouped,projects, RefreshControl }: DailyProject
         <Text variant="titleLarge" style={styles.title}>
           Projects
         </Text>
-        <Switch
-          value={grouped}
-          onValueChange={() => {
-            router.setParams({ grouped: grouped ? "false" : "true" });
-          }}
-        />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text variant="bodyMedium" style={{ marginRight: 8 }}>
+            {grouped ? "Grouped" : "Ungrouped"}
+          </Text>
+          <Switch
+            value={grouped}
+            onValueChange={() => {
+              router.setParams({ grouped: grouped ? "false" : "true" });
+            }}
+          />
+        </View>
       </View>
 
-      <FlatList
-        data={projects}
-        renderItem={renderProjectItem}
-        keyExtractor={(item, index) => `${item.project}-${index}`}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-        refreshControl={RefreshControl}
-      />
+      <View style={styles.projectsList}>
+        {projects.map((item, index) => renderProjectItem(item, index))}
+      </View>
     </Surface>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: "100%",
     width: "100%",
     padding: 16,
+    marginBottom: 50,
   },
   title: {
     marginBottom: 16,
     textAlign: "center",
   },
-  listContainer: {
-    flexGrow: 1,
+  projectsList: {
+    gap: 8,
   },
   projectCard: {
     marginBottom: 8,

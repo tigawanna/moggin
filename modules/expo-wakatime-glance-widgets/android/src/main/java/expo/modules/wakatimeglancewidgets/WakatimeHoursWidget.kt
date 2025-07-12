@@ -72,6 +72,16 @@ class LaunchMainActivityAction : ActionCallback {
     }
 }
 
+class RefreshWidgetAction : ActionCallback {
+    override suspend fun onAction(
+        context: Context,
+        glanceId: GlanceId,
+        parameters: ActionParameters
+    ) {
+        // Force refresh the widget by updating it
+        WakatimeHoursWidget().update(context, glanceId)
+    }
+}
 
 class WakatimeHoursWidget : GlanceAppWidget() {
     override var stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
@@ -147,35 +157,84 @@ class WakatimeHoursWidget : GlanceAppWidget() {
                 "--:--"
             }
 
+            val wakatimeToken = try {
+                preferences[WidgetConstants.WAKATIME_API_KEY] ?: ""
+            } catch (e: Exception) {
+                ""
+            }
+
             val launchAppAction = actionRunCallback<LaunchMainActivityAction>()
 
             // Calculate responsive sizes based on predefined sizes
             val timeTextSize = getTimeTextSize(size)
             val descriptorTextSize = getDescriptorTextSize(size)
+            val isWideWidget = size.width >= BIG_SQUARE.width
+            val responsiveModifiers = getResponsiveModifiers(size)
 
-
-            // Simple content without Scaffold to avoid potential issues
-            Column(
-                modifier = GlanceModifier
-                    .fillMaxSize()
-                    .clickable(launchAppAction)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
-                verticalAlignment = Alignment.Vertical.CenterVertically
-            ) {
-                // Title
-                Text(
-                    text = "Wakatime",
-                    style = TextStyle(
-                        fontSize = descriptorTextSize,
-                        fontWeight = FontWeight.Bold,
-                        color = GlanceTheme.colors.onSurface
+            GlanceTheme {
+                Scaffold(
+                    titleBar = {
+                        TitleBar(
+                            startIcon = ImageProvider(R.drawable.widget_icon),
+                            title = "Wakatime",
+                            actions = {
+                                // Refresh button in top right corner
+                                Text(
+                                    text = "↻",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        color = GlanceTheme.colors.onSurface
+                                    ),
+                                    modifier = GlanceModifier
+                                        .clickable(actionRunCallback<RefreshWidgetAction>())
+                                        .padding(end = 16.dp) // Adds 16dp margin to the right (end)
+                                )
+                            }
+                        )
+                    },
+                    backgroundColor = GlanceTheme.colors.widgetBackground
+                ) {
+                    WidgetContent(
+                        size = size,
+                        totalTime = totalTime,
+                        currentProject = currentProject,
+                        lastSync = lastSync,
+                        wakatimeToken = wakatimeToken,
+                        timeTextSize = timeTextSize,
+                        descriptorTextSize = descriptorTextSize,
+                        isWideWidget = isWideWidget,
+                        responsiveModifiers = responsiveModifiers,
+                        launchAppAction = launchAppAction
                     )
-                )
+                }
+            }
+        }
+    }
 
-                Spacer(modifier = GlanceModifier.height(8.dp))
-
-                // Main hours display
+    @Composable
+    private fun WidgetContent(
+        size: DpSize,
+        totalTime: String,
+        currentProject: String,
+        lastSync: String,
+        wakatimeToken: String,
+        timeTextSize: androidx.compose.ui.unit.TextUnit,
+        descriptorTextSize: androidx.compose.ui.unit.TextUnit,
+        isWideWidget: Boolean,
+        responsiveModifiers: GlanceModifier,
+        launchAppAction: androidx.glance.action.Action
+    ) {
+        Column(
+            modifier = GlanceModifier
+                .fillMaxSize()
+                .clickable(launchAppAction)
+                .padding(8.dp)
+                .then(responsiveModifiers),
+            horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+            verticalAlignment = Alignment.Vertical.Top
+        ) {
+            // Main hours display with responsive size
+            if (isWideWidget) {
                 Text(
                     text = totalTime,
                     style = TextStyle(
@@ -184,23 +243,63 @@ class WakatimeHoursWidget : GlanceAppWidget() {
                         fontWeight = FontWeight.Bold
                     )
                 )
+            } else {
+                // Split hours and minutes for narrow widgets
+                val timeParts = totalTime.split(" : ")
+                if (timeParts.size >= 2) {
+                    Column(
+                        modifier = GlanceModifier.padding(horizontal = 4.dp),
+                        horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+                        verticalAlignment = Alignment.Vertical.CenterVertically
+                    ) {
+                        Text(
+                            text = timeParts[0], // hours
+                            style = TextStyle(
+                                fontSize = timeTextSize,
+                                color = GlanceTheme.colors.onSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text(
+                            text = timeParts[1], // minutes
+                            style = TextStyle(
+                                fontSize = timeTextSize,
+                                color = GlanceTheme.colors.onSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+                } else {
+                    Text(
+                        text = totalTime,
+                        style = TextStyle(
+                            fontSize = timeTextSize,
+                            color = GlanceTheme.colors.onSurface,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+            }
 
-                Spacer(modifier = GlanceModifier.height(8.dp))
-
-                // Project info
+            Spacer(modifier = GlanceModifier.height(4.dp))
+            
+            Column(
+                horizontalAlignment = Alignment.Horizontal.CenterHorizontally
+            ) {
+                // Last project
                 Text(
-                    text = "Project: $currentProject",
+                    text = "Last project: $currentProject",
                     style = TextStyle(
                         fontSize = descriptorTextSize,
                         color = GlanceTheme.colors.onSurfaceVariant
                     )
                 )
 
-                Spacer(modifier = GlanceModifier.height(4.dp))
+                Spacer(modifier = GlanceModifier.height(2.dp))
 
-                // Last sync
+                // Last refreshed
                 Text(
-                    text = "Updated: $lastSync",
+                    text = "Last refreshed: $lastSync",
                     style = TextStyle(
                         fontSize = descriptorTextSize,
                         color = GlanceTheme.colors.onSurfaceVariant

@@ -14,9 +14,7 @@ interface WakatimeUserTimeQueryOptions {
   wakatimeApiKey: string | null;
 }
 
-const dummyResults ={
 
-}
 
 export function wakatimeUserTimeQueryoptions({
   selectedDate,
@@ -113,10 +111,14 @@ export function useWakatimeDailyDuration({ selectedDate, wakatimeApiKey }: UseWa
   };
 }
 
+
+
+
 interface UseWakatimeWeeklyStatsProps {
   wakatimeApiKey: string | null;
   selectedDate: string; 
 }
+
 export function useWakatimeWeeklyStats({ wakatimeApiKey, selectedDate }: UseWakatimeWeeklyStatsProps) {
   const lastFiveDates = getLastFiveDates(new Date(selectedDate));
 
@@ -127,23 +129,66 @@ export function useWakatimeWeeklyStats({ wakatimeApiKey, selectedDate }: UseWaka
         wakatimeApiKey,
       })
     ),
-    combine(result) {
-      return result.toReversed().reduce((acc, curr) => {
-        if (curr) {
-          acc.push(curr);
-        }
-        return acc;
-      }, [] as typeof result[0][]);
-    },
-
   });
-  // // console.log("Wakatime weekly queries:", queries);
-  // const data = queries.map((query) => {
-  //   console.log("✅ Wakatime weekly query data:", query.data);
-  //   return query.data;
-  // }).filter(Boolean);
-  // console.log("Wakatime weekly queries:", queries);
+
+  // Check for error states across all queries
+  const hasUnauthorized = queries.some(query => 
+    query.data?.type === "unauthorized"
+  );
+  
+  const hasRateLimit = queries.some(query => 
+    query.data?.type === "rate_limit_exceeded"
+  );
+
+  const isLoading = queries.some(query => query.isLoading);
+
+  // If any query has authorization issues, return that error state
+  if (hasUnauthorized) {
+    return {
+      data: null,
+      type: "unauthorized" as const,
+      isLoading: false,
+      message: "Unauthorized access. Please check your API key.",
+    };
+  }
+
+  if (hasRateLimit) {
+    return {
+      data: null,
+      type: "rate_limit_exceeded" as const,
+      isLoading: false,
+      message: "Rate limit exceeded. Please try again later.",
+    };
+  }
+
+  // Filter out error/loading states and return successful data
+  const successfulData = queries
+    .map(query => query.data)
+    .filter(data => data && data.type === "success")
+    .reverse(); // Reverse to get chronological order
+
+  // If no successful data but not loading, return no_data
+  if (!isLoading && successfulData.length === 0) {
+    return {
+      data: null,
+      type: "no_data" as const,
+      isLoading: false,
+      message: "No data available for the selected period.",
+    };
+  }
+
+  type TrueReturnType = Extract<NonNullable<typeof successfulData>[number], { type: "success" }>;
+
   return {
-    data: queries,
+    data: successfulData as TrueReturnType[],
+    type: "success" as const,
+    isLoading,
+    message: null,
   };
 }
+
+
+export type UseWakatimeWeeklyStatsReturnType = ReturnType<typeof useWakatimeWeeklyStats>;
+type WakatimeWeeklyStatsData = UseWakatimeWeeklyStatsReturnType["data"];
+type WakatimeWeeklyStatsSuccess = NonNullable<WakatimeWeeklyStatsData>[number];
+export type WakatimeWeeklyStats = Extract<WakatimeWeeklyStatsSuccess, { type: "success" }>;

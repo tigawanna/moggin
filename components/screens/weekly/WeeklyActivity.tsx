@@ -1,49 +1,53 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
-import { Text, Surface, Card, useTheme } from "react-native-paper";
-import { WakatimeWeeklyChart } from "./components/WakatimeWeeklyChart";
-import { useSettingsStore } from "@/stores/use-app-settings";
-import { useState } from "react";
 import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallback";
 import { NoDataScreen } from "@/components/shared/state-screens/NoDataScreen";
 import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooManyRequestsScreen";
 import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
 import { useRefresh } from "@/hooks/use-refresh";
-import { isLoading } from "expo-font";
-import { Redirect } from "expo-router";
 import { useWakatimeWeeklyStats } from "@/lib/api/wakatime/use-wakatime-durations";
+import { useSettingsStore } from "@/stores/use-app-settings";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Redirect } from "expo-router";
+import { useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { Card, Text, useTheme } from "react-native-paper";
+import { WakatimeWeeklyChart } from "./components/WakatimeWeeklyChart";
 
 export function WeeklyActivity() {
   const { colors } = useTheme();
   const { settings } = useSettingsStore();
   const { wakatimeApiKey } = settings;
   const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
-  const [refreshing, setRefreshing] = useState(false);
 
-  const { data: wakatimeData } = useWakatimeWeeklyStats({
+  const {
+    data: wakatimeData,
+    type,
+    isLoading,
+    message,
+  } = useWakatimeWeeklyStats({
     selectedDate,
     wakatimeApiKey,
   });
-  const { isRefreshing, refresh } = useRefresh(()=>{
 
+  const { isRefreshing, refresh } = useRefresh(() => {
+    // Add refetch logic here if needed
   });
-
 
   if (!wakatimeApiKey) {
     return <Redirect href="/api-keys" />;
   }
 
-  if (!wakatimeData) {
+  if (isLoading) {
     return (
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
-        <NoDataScreen />
+        <LoadingFallback />
       </ScrollView>
     );
   }
-  if (wakatimeData.type === "unauthorized") {
+
+  if (type === "unauthorized") {
     return (
       <ScrollView
         style={styles.scrollView}
@@ -53,7 +57,8 @@ export function WeeklyActivity() {
       </ScrollView>
     );
   }
-  if (wakatimeData.type === "rate_limit_exceeded") {
+
+  if (type === "rate_limit_exceeded") {
     return (
       <ScrollView
         style={styles.scrollView}
@@ -63,10 +68,23 @@ export function WeeklyActivity() {
       </ScrollView>
     );
   }
+
+  if (!wakatimeData || wakatimeData.length === 0) {
+    return (
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
+        <NoDataScreen />
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView
       style={styles.container}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}>
+      contentContainerStyle={styles.scrollContent}
+      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
       <Card style={styles.card} mode="elevated">
         <Card.Content>
           <View style={styles.header}>
@@ -79,10 +97,7 @@ export function WeeklyActivity() {
           <Text variant="bodyMedium" style={styles.subtitle}>
             Your coding hours for the past 5 days
           </Text>
-
-          <View style={styles.chartContainer}>
-            <WakatimeWeeklyChart selectedDate={selectedDate} wakatimeApiKey={wakatimeApiKey} />
-          </View>
+          <WakatimeWeeklyChart wakatimeData={wakatimeData} />
         </Card.Content>
       </Card>
     </ScrollView>
@@ -118,8 +133,7 @@ const styles = StyleSheet.create({
     paddingTop: 80, // Add padding to account for sticky header
   },
   scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
+    flex: 1,
   },
   bottomPadding: {
     height: 4,

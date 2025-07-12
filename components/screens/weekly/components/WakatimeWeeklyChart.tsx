@@ -1,54 +1,39 @@
+import { WakatimeWeeklyStats } from "@/lib/api/wakatime/use-wakatime-durations";
 import { useFont } from "@shopify/react-native-skia";
 import { StyleSheet, View } from "react-native";
-import { Surface, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { CartesianChart, Line } from "victory-native";
-import { useWakatimeWeeklyStats } from "@/lib/api/wakatime/use-wakatime-durations";
 
 interface WakatimeWeeklyChartProps {
-  selectedDate: string;
-  wakatimeApiKey: string | null;
+  wakatimeData: WakatimeWeeklyStats[];
 }
 
-export function WakatimeWeeklyChart({ selectedDate, wakatimeApiKey }: WakatimeWeeklyChartProps) {
-  const { data } = useWakatimeWeeklyStats({
-    selectedDate,
-    wakatimeApiKey,
-  });
+export function WakatimeWeeklyChart({ wakatimeData }: WakatimeWeeklyChartProps) {
   const { colors } = useTheme();
-  
   // You can replace this with your own font file if you have one
   // For now, we'll use a default font size
   const font = useFont(require("@/assets/fonts/SpaceMono-Regular.ttf"), 12);
 
   // Transform the data for Victory charts
-  const chartData = data?.map((item, index) => {
-    // Parse hours from "4h 25m" format
-    const timeMatch = item?.data?.todayHours?.match(/(\d+)h\s*(\d+)m/);
-    const hours = timeMatch ? parseInt(timeMatch[1]) : 0;
-    const minutes = timeMatch ? parseInt(timeMatch[2]) : 0;
-    const totalHours = hours + minutes / 60;
-    
-    // Get day abbreviation from date
-    const date = new Date(item?.data?.date ?? new Date());
-    const dayAbbr = date.toLocaleDateString('en-US', { weekday: 'short' });
-    
-    return {
-      day: dayAbbr,
-      hours: totalHours,
-      date: item?.data?.date,
-      project: item?.data?.currentProject,
-    };
-  }) || [];
+  const chartData =
+    wakatimeData?.map((item, index) => {
+      // Parse hours from "4h 25m" format
+      const timeMatch = item?.todayHours?.match(/(\d+)h\s*(\d+)m/);
+      const hours = timeMatch ? parseInt(timeMatch[1]) : 0;
+      const minutes = timeMatch ? parseInt(timeMatch[2]) : 0;
+      const totalHours = hours + minutes / 60;
 
-  if (!data || data.length === 0) {
-    return (
-      <Surface style={styles.container}>
-        <Text variant="bodyMedium" style={{ opacity: 0.7 }}>
-          No weekly data available
-        </Text>
-      </Surface>
-    );
-  }
+      // Get day abbreviation from date
+      const date = new Date(item?.date ?? new Date());
+      const dayAbbr = date.toLocaleDateString("en-US", { weekday: "short" });
+
+      return {
+        day: dayAbbr,
+        hours: totalHours,
+        date: item?.date,
+        project: item?.currentProject,
+      };
+    }) || [];
 
   return (
     <View style={styles.container}>
@@ -108,6 +93,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     minHeight: 300,
+
   },
 
   chartTitle: {
@@ -120,12 +106,11 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     height: 300,
-    marginBottom: 16,
+    marginBottom: 16
   },
   summaryContainer: {
     // alignItems: "center",
     paddingTop: 8,
-
   },
   summaryText: {
     fontWeight: "500",

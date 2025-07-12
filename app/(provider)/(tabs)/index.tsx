@@ -1,11 +1,13 @@
 
 import { HomeScreenComponent } from "@/components/screens/home/HomeScreenComponent";
+import { TestAllBackgroundTasks } from "@/lib/expo-background/TestAllBackgroundTasks";
 import { StyleSheet } from "react-native";
 import { Surface } from "react-native-paper";
 
 export default function HomeScreen() {
   return (
     <Surface style={styles.container}>
+      {/* <TestAllBackgroundTasks/> */}
       <HomeScreenComponent />
     </Surface>
   );

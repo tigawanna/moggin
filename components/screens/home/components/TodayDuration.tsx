@@ -1,4 +1,5 @@
 import { updateWakatimeHoursWidget } from "@/lib/datastore/wakatime-widget";
+import { dateToDayHoursMinutesSeconds } from "@/utils/date";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Card, Divider, Surface, Text } from "react-native-paper";
@@ -21,14 +22,16 @@ export function TodayDuration({ todayHours }: TodayDurationProps) {
       day: "numeric",
     });
   };
-  useEffect(() => {
-    // Call the update function whenever todayHours changes
-    updateWakatimeHoursWidget({
-      currentProject: todayHours.currentProject,
-      lastSync: todayHours.date,
-      totalTime: todayHours.todayHours,
-    });
-  }, [todayHours]);
+  // console.log(" dates == ", dateToDayHoursMinutesSeconds(new Date()));
+  // useEffect(() => {
+  //   // Call the update function whenever todayHours changes
+  //   updateWakatimeHoursWidget({
+  //     currentProject: todayHours.currentProject,
+  //     lastSync: todayHours.date,
+  //     totalTime: todayHours.todayHours,
+  //   });
+  // }, [todayHours]);
+
 
   return (
     <Surface style={styles.container}>

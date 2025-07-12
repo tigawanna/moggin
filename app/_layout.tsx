@@ -14,7 +14,7 @@ import React, { useEffect } from "react";
 import { AppStateStatus, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
-
+import { initializeBackgroundTask } from "@/lib/expo-background";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -26,8 +26,25 @@ function onAppStateChange(status: AppStateStatus) {
     focusManager.setFocused(status === "active");
   }
 }
+let resolver: (() => void) | null = null;
+
+const promiseResolveWhenAppMounted = new Promise<void>((resolve) => {
+  // Resolve the promise when the app is fully mounted
+  resolver = resolve;
+});
+
+initializeBackgroundTask(promiseResolveWhenAppMounted);
 
 export default function RootLayout() {
+  
+  useEffect(() => {
+    if (resolver) {
+      resolver();
+      console.log("App mounted, resolver called");
+    }
+  }, []);
+
+
   useOnlineManager();
   useAppState(onAppStateChange);
 
@@ -40,8 +57,6 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
-
 
   const { settings } = useSettingsStore();
   const { colorScheme, paperTheme } = useThemeSetup(settings.dynamicColors);

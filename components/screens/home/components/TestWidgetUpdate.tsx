@@ -8,11 +8,11 @@ import { Text, Surface, Button } from "react-native-paper";
 export function TestWidgetUpdate() {
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      await updateWakatimeHoursWidget({
-        currentProject: "Test Project",
-        lastSync: "2023-10-01T12:00:00Z",
-        totalTime: "12h : 30min",
-      });
+      // await updateWakatimeHoursWidget({
+      //   currentProject: "Test Project",
+      //   lastSync: "2023-10-01T12:00:00Z",
+      //   totalTime: "12h : 30min",
+      // });
     },
   });
   return (

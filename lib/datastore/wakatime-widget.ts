@@ -22,6 +22,7 @@ export function updateWakatimeHoursWidget({
 export async function fetchHoursAndUpdateWakatimeWidget() {
   const date = new Date().toISOString().split("T")[0];
   const wakatimeKey = settings$.wakatimeApiKey.get();
+  console.log("Fetching Wakatime data for widget update  ::: ", date, wakatimeKey);
   if (!wakatimeKey) {
     console.warn("No Wakatime API key configured, cannot update widget");
     return;

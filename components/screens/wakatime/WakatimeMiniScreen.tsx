@@ -6,7 +6,7 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text, useTheme } from "react-native-paper";
 import { useWakatimeDailyDuration } from "../../../lib/api/wakatime/use-wakatime-durations";
-import { WakatimeWeeklyChart } from "./WakatimeWeeklyChart";
+import { WakatimeWeeklyChart } from "../weekly/components/WakatimeWeeklyChart";
 
 // const { width: screenWidth } = Dimensions.get('window');
 

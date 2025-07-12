@@ -2,7 +2,7 @@ import { useFont } from "@shopify/react-native-skia";
 import { StyleSheet, View } from "react-native";
 import { Surface, Text, useTheme } from "react-native-paper";
 import { CartesianChart, Line } from "victory-native";
-import { useWakatimeWeeklyStats } from "../../../lib/api/wakatime/use-wakatime-durations";
+import { useWakatimeWeeklyStats } from "@/lib/api/wakatime/use-wakatime-durations";
 
 interface WakatimeWeeklyChartProps {
   selectedDate: string;
@@ -18,7 +18,7 @@ export function WakatimeWeeklyChart({ selectedDate, wakatimeApiKey }: WakatimeWe
   
   // You can replace this with your own font file if you have one
   // For now, we'll use a default font size
-  const font = useFont(require("../../../assets/fonts/SpaceMono-Regular.ttf"), 12);
+  const font = useFont(require("@/assets/fonts/SpaceMono-Regular.ttf"), 12);
 
   // Transform the data for Victory charts
   const chartData = data?.map((item, index) => {
@@ -92,7 +92,7 @@ export function WakatimeWeeklyChart({ selectedDate, wakatimeApiKey }: WakatimeWe
       </View>
 
       <View style={styles.summaryContainer}>
-        <Text variant="bodyMedium" style={styles.summaryText}>
+        <Text variant="bodyLarge" style={styles.summaryText}>
           Total: {chartData.reduce((sum, item) => sum + item.hours, 0).toFixed(1)}h this week
         </Text>
         <Text variant="bodySmall" style={styles.summarySubtext}>
@@ -107,8 +107,6 @@ export function WakatimeWeeklyChart({ selectedDate, wakatimeApiKey }: WakatimeWe
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 16,
-    paddingBottom: 26,  
     minHeight: 300,
   },
 
@@ -121,14 +119,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   chartContainer: {
-    height: 200,
+    height: 300,
     marginBottom: 16,
   },
   summaryContainer: {
     // alignItems: "center",
     paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0,0,0,0.1)",
+
   },
   summaryText: {
     fontWeight: "500",

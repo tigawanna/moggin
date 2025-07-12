@@ -7,6 +7,7 @@ import { TooManyRequests } from '@/components/shared/TooManyRequests';
 import { useWakatimeDailyDuration } from '@/lib/api/wakatime/use-wakatime-durations';
 import { useApiKeysStore, useSettingsStore } from '@/stores/use-app-settings';
 import { useState } from 'react';
+import { TestWidgetUpdate } from './components/TestWidgetUpdate';
 
 export function HomeScreenComponent() {
   const qc = useQueryClient();
@@ -44,6 +45,7 @@ export function HomeScreenComponent() {
           <RefreshControl refreshing={false} onRefresh={onRefresh} />
         }
       >
+        <TestWidgetUpdate/>
         <WakatimeMiniScreen />
         <CurrentUserLeaderboardPosition />
         

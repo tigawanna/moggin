@@ -7,16 +7,17 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
-import expo.modules.kotlin.types.Enumerable
+import expo.modules.kotlin.records.Record
+import expo.modules.kotlin.records.Field
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 data class UpdateWidgetPayload(
-    val totalTime: String,
-    val currentProject: String,
-    val lastSync: String
-) : Enumerable
+    @Field val totalTime: String,
+    @Field val currentProject: String,
+    @Field val lastSync: String
+) : Record
 
 class ExpoWakatimeGlanceWidgetsModule : Module() {
   private val context: Context

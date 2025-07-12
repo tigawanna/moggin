@@ -37,11 +37,12 @@ export async function fetchHoursAndUpdateWakatimeWidget() {
     updateWakatimeHoursWidget({
       currentProject,
       lastSync,
-      totalTime: todayHours,
+      // The ⚡ prefix is used to indicate the that the update was triggerd by the background task
+      totalTime: `⚡${todayHours}`,
     });
     return {
       currentProject,
       lastSync,
-      totalTime: todayHours,
+      totalTime: `⚡${todayHours}`,
     };  }
 }

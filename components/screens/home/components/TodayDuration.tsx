@@ -1,8 +1,8 @@
 import { updateWakatimeHoursWidget } from "@/lib/datastore/wakatime-widget";
-import { dateToDayHoursMinutesSeconds } from "@/utils/date";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Card, Divider, Surface, Text } from "react-native-paper";
+
 interface TodayDurationProps {
   todayHours: {
     readonly date: string;
@@ -15,6 +15,7 @@ interface TodayDurationProps {
 export function TodayDuration({ todayHours }: TodayDurationProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
+    const today = new Date();
     return date.toLocaleDateString("en-US", {
       weekday: "long",
       year: "numeric",
@@ -23,14 +24,24 @@ export function TodayDuration({ todayHours }: TodayDurationProps) {
     });
   };
   // console.log(" dates == ", dateToDayHoursMinutesSeconds(new Date()));
-  // useEffect(() => {
-  //   // Call the update function whenever todayHours changes
-  //   updateWakatimeHoursWidget({
-  //     currentProject: todayHours.currentProject,
-  //     lastSync: todayHours.date,
-  //     totalTime: todayHours.todayHours,
-  //   });
-  // }, [todayHours]);
+  useEffect(() => {
+    // Call the update function whenever todayHours changes
+    const isToday = (dateString: string) => {
+      const date = new Date(dateString);
+      const today = new Date();
+      return date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear();
+    };
+
+    if (isToday(todayHours.date)) {
+      updateWakatimeHoursWidget({
+        currentProject: todayHours.currentProject,
+        lastSync: todayHours.date,
+        totalTime: todayHours.todayHours,
+      });
+    }
+  }, [todayHours]);
 
 
   return (

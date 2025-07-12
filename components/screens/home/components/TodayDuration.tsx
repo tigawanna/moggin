@@ -1,3 +1,5 @@
+import { updateWakatimeHoursWidget } from "@/lib/datastore/wakatime-widget";
+import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Card, Divider, Surface, Text } from "react-native-paper";
 interface TodayDurationProps {
@@ -12,13 +14,21 @@ interface TodayDurationProps {
 export function TodayDuration({ todayHours }: TodayDurationProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
+  useEffect(() => {
+    // Call the update function whenever todayHours changes
+    updateWakatimeHoursWidget({
+      currentProject: todayHours.currentProject,
+      lastSync: todayHours.date,
+      totalTime: todayHours.todayHours,
+    });
+  }, [todayHours]);
 
   return (
     <Surface style={styles.container}>

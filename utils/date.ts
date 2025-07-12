@@ -16,7 +16,7 @@ export function formatWakatimeDuration(seconds: number): string {
     return `${hours}h ${minutes}m`;
   }
   return `${minutes}m`;
-};
+}
 
 export function formatWakatimeMsToHumanReadable(ms: number): string {
   const date = new Date(ms * 1000); // Assuming ms is timestamp in seconds
@@ -31,10 +31,9 @@ export function formatWakatimeMsToHumanReadable(ms: number): string {
   };
 
   return date.toLocaleString("en-US", options);
-};
+}
 
-
-export function generateLastFiveDates(count: number = 5){
+export function generateLastFiveDates(count: number = 5) {
   const dates = [];
   const today = new Date();
 
@@ -66,4 +65,20 @@ export function generateLastFiveDates(count: number = 5){
   }
 
   return dates;
-};
+}
+
+export function dateToDayHoursMinutesSeconds(date: Date): string {
+  const day = date.getDate();
+  if (day < 10) {
+    return `0${day}d`;
+  }
+  const month = date.getMonth() + 1; // Months are zero-based
+  if (month < 10) {
+    return `0${month}m`;
+  }
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  return `${day}/${month} ${hours}:${minutes}:${seconds}`;
+}

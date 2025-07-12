@@ -1,4 +1,5 @@
-import WidgetUpdater from "@/modules/expo-wakatime-glance-widgets";
+
+import { updateWakatimeHoursWidget } from "@/lib/datastore/wakatime-widget";
 import { useMutation } from "@tanstack/react-query";
 
 import { StyleSheet } from "react-native";
@@ -7,7 +8,7 @@ import { Text, Surface, Button } from "react-native-paper";
 export function TestWidgetUpdate() {
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      await WidgetUpdater.updateWakatimeWidget({
+      await updateWakatimeHoursWidget({
         currentProject: "Test Project",
         lastSync: "2023-10-01T12:00:00Z",
         totalTime: "12h : 30min",

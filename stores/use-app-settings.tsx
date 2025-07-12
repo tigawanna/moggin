@@ -1,4 +1,4 @@
-import { updateWakatimeWidgetKey } from "@/lib/datastore/store";
+
 import { observable, syncState } from "@legendapp/state";
 import { observablePersistAsyncStorage } from "@legendapp/state/persist-plugins/async-storage";
 import { use$ } from "@legendapp/state/react";
@@ -75,7 +75,6 @@ export function useApiKeysStore() {
   const setWakatimeApiKey = (value: string | null) => {
     // const oldKey = wakatimeApiKey;
     settings$.wakatimeApiKey.set(value);
-    updateWakatimeWidgetKey(value);
     
     // Invalidate all wakatime queries when API key changes
     queryClient.invalidateQueries({

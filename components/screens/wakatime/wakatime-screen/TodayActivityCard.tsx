@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text, useTheme } from "react-native-paper";
-import { useWakatimeDailyDuration } from "../../../../lib/api/wakatime/use-wakatime-durations";
+import { useWakatimeDailyDuration } from "@/lib/api/wakatime/use-wakatime-durations";
 
 interface TodayActivityCardProps {
   date?: string;
@@ -80,11 +80,6 @@ export function TodayActivityCard({ date }: TodayActivityCardProps) {
             No data available for this date
           </Text>
         </Card.Content>
-        <Card.Actions>
-          <Button mode="text" onPress={() => router.push("/wakatime")} icon="arrow-right">
-            View Details
-          </Button>
-        </Card.Actions>
       </Card>
     );
   }

@@ -32,3 +32,38 @@ export function formatWakatimeMsToHumanReadable(ms: number): string {
 
   return date.toLocaleString("en-US", options);
 };
+
+
+export function generateLastFiveDates(count: number = 5){
+  const dates = [];
+  const today = new Date();
+
+  for (let i = 0; i < count; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+
+    const dateString = date.toISOString().split("T")[0];
+    const isToday = i === 0;
+    const isYesterday = i === 1;
+
+    let label = "";
+    if (isToday) {
+      label = "Today";
+    } else if (isYesterday) {
+      label = "Yesterday";
+    } else {
+      // Format as "Mon 8" or similar
+      label = date.toLocaleDateString("en-US", {
+        weekday: "short",
+        day: "numeric",
+      });
+    }
+
+    dates.push({
+      value: dateString,
+      label: label,
+    });
+  }
+
+  return dates;
+};

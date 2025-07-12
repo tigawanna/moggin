@@ -6,34 +6,40 @@ import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooMany
 import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
 import { useWakatimeDailyDuration } from "@/lib/api/wakatime/use-wakatime-durations";
 import { useApiKeysStore } from "@/stores/use-app-settings";
-import { Redirect } from "expo-router";
-import { useState } from "react";
+import { Redirect, useLocalSearchParams } from "expo-router";
 import { DailyProjects } from "./components/DailyProjects";
 import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallback";
 import { useRefresh } from "@/hooks/use-refresh";
+import { useCurrentWakatimeDate } from "@/hooks/use-current-date";
+import { WakatimeDayPicker } from "./components/WakatimeDayPicker";
+
 
 export function HomeScreenComponent() {
-
-  const qc = useQueryClient();
   const { wakatimeApiKey } = useApiKeysStore();
-  const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const { grouped } = useLocalSearchParams<{ grouped: "true" | "false" }>();
+  const isGrouped = grouped === "true";
+  const {selectedDate} = useCurrentWakatimeDate();
 
-  const { data: wakatimeData,refetch,isLoading } = useWakatimeDailyDuration({
+  const {
+    data: wakatimeData,
+    refetch,
+    isLoading,
+  } = useWakatimeDailyDuration({
     selectedDate,
     wakatimeApiKey,
   });
 
   const onRefresh = async () => {
     await refetch();
-    qc.invalidateQueries({
-      queryKey: ["wakatime-durations"],
-    });
-    qc.invalidateQueries({
-      queryKey: ["wakatime-leaderboard"],
-    });
-    qc.invalidateQueries({
-      queryKey: ["wakatime-current-user"],
-    });
+    // qc.invalidateQueries({
+    //   queryKey: ["wakatime-durations"],
+    // });
+    // qc.invalidateQueries({
+    //   queryKey: ["wakatime-leaderboard"],
+    // });
+    // qc.invalidateQueries({
+    //   queryKey: ["wakatime-current-user"],
+    // });
   };
   const { isRefreshing, refresh } = useRefresh(onRefresh);
 
@@ -52,12 +58,14 @@ export function HomeScreenComponent() {
   }
 
   if (!wakatimeData || wakatimeData.type === "no_data") {
-    return <ScrollView
-    style={styles.scrollView}
-    contentContainerStyle={styles.scrollContent}
-    refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
-    <NoDataScreen />
-  </ScrollView>;
+    return (
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
+        <NoDataScreen />
+      </ScrollView>
+    );
   }
   if (wakatimeData.type === "unauthorized") {
     return (
@@ -80,11 +88,14 @@ export function HomeScreenComponent() {
     );
   }
 
+  // Use the projects based on the grouped state
+  const projectsToDisplay = isGrouped ? wakatimeData.groupedProjects : wakatimeData.allProjects;
   return (
     <Surface style={styles.container}>
-      <View style={styles.bottomPadding} />
+      <WakatimeDayPicker/>
       <DailyProjects
-        projects={wakatimeData.allProjects}
+        projects={projectsToDisplay}
+        grouped={isGrouped}
         RefreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}
       />
     </Surface>

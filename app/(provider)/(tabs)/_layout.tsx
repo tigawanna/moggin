@@ -39,10 +39,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="activity"
+        name="weekly"
         options={{
           animation: "none",
-          title: "Activity",
+          title: "weekly",
           tabBarIcon: ({ color }) => <MaterialIcon size={28} name="auto-graph" color={color} />,
         }}
       />

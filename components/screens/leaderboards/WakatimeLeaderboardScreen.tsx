@@ -7,9 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, ListRenderItem, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { LeaderboardHeader } from "./LeaderboardHeader";
-import { LeaderboardItem } from "./LeaderboardItem";
-import { getRankColor, getRankIcon } from "./leaderboard-utils";
+import { LeaderboardHeader } from "./components/LeaderboardHeader";
+import { LeaderboardItem } from "./components/LeaderboardItem";
+import { getRankColor, getRankIcon } from "./components/leaderboard-utils";
 
 
 

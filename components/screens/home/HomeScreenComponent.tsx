@@ -13,6 +13,7 @@ import { CurrentUserLeaderboardStannnding } from "./components/CurrentUserLeader
 import { DailyProjectsDurations } from "./components/DailyProjectsDurations";
 import { TodayDuration } from "./components/TodayDuration";
 import { WakatimeDayPicker } from "./components/WakatimeDayPicker";
+import ApiKeysScreen from "@/app/(provider)/api-keys";
 
 export function HomeScreenComponent() {
   const { wakatimeApiKey } = useApiKeysStore();
@@ -93,6 +94,7 @@ export function HomeScreenComponent() {
 
   return (
     <Surface style={styles.container}>
+
       {/* Sticky Date Picker */}
       <Surface style={styles.stickyHeader} elevation={2}>
         <WakatimeDayPicker />

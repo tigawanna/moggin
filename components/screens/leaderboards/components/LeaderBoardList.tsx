@@ -13,11 +13,11 @@ import { Surface, useTheme } from 'react-native-paper';
 import { LeaderboardItem } from './LeaderboardItem';
 import { getRankColor, getRankIcon } from './leaderboard-utils';
 
-interface LeaderBoradListProps {
+interface LeaderBoardListProps {
   selectedCountry?: string | null;
 }
 
-export function LeaderBoradList({ selectedCountry }: LeaderBoradListProps) {
+export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
   const { colors } = useTheme();
   const { wakatimeApiKey } = useApiKeysStore();
   const [refreshing, setRefreshing] = useState(false);

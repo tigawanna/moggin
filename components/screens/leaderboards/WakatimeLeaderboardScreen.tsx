@@ -2,7 +2,7 @@ import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
 import { useApiKeysStore } from "@/stores/use-app-settings";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { LeaderBoradList } from "./components/LeaderBoradList";
+import { LeaderBoardList } from "./components/LeaderBoardList";
 
 export function WakatimeLeaderboardScreen() {
   const { wakatimeApiKey } = useApiKeysStore();
@@ -17,7 +17,7 @@ export function WakatimeLeaderboardScreen() {
   return (
     <View style={styles.container}>
       {/* <CurrentUserLeaderboardStannnding /> */}
-      <LeaderBoradList selectedCountry={selectedCountry} />
+      <LeaderBoardList selectedCountry={selectedCountry} />
     </View>
   );
 }

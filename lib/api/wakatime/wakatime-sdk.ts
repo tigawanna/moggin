@@ -8,37 +8,37 @@ export async function fetchData<T = any>(
   params: Record<string, any> & { api_key: string | null } = { api_key: null }
 ) {
   const url = new URL(`${baseUrl}${endpoint}`);
-  // if (params) {
-  //   Object.keys(params).forEach((key) => {
-  //     if (params[key] !== null && params[key] !== undefined) {
-  //       url.searchParams.append(key, params[key]);
-  //     }
-  //   });
-  // }
+  if (params) {
+    Object.keys(params).forEach((key) => {
+      if (params[key] !== null && params[key] !== undefined) {
+        url.searchParams.append(key, params[key]);
+      }
+    });
+  }
 
   const response = await fetch(url.toString());
   if (!response.ok) {
-      const errorMessage = await response
-        .json()
-        .then((data) => (data.error) as string || `Error: ${response.status} ${response.statusText}`)
-        .catch(() => "Failed to parse error message");
+    const errorMessage = await response
+      .json()
+      .then((data) => (data.error as string) || `Error: ${response.status} ${response.statusText}`)
+      .catch(() => "Failed to parse error message");
     console.log("Wakatime fetchData error:", response.status, errorMessage);
-  if (response.status === 401 || response.status === 403) {
-    return {
-      data: null,
-      type: "unauthorized",
-      status: response.status,
-      error: errorMessage,
-    } as const;
-  }
-  if (response.status === 429) {
-    return {
-      data: null,
-      type: "rate_limit_exceeded",
-      status: response.status,
-      error: errorMessage,
-    } as const;
-  }
+    if (response.status === 401 || response.status === 403) {
+      return {
+        data: null,
+        type: "unauthorized",
+        status: response.status,
+        error: errorMessage,
+      } as const;
+    }
+    if (response.status === 429) {
+      return {
+        data: null,
+        type: "rate_limit_exceeded",
+        status: response.status,
+        error: errorMessage,
+      } as const;
+    }
 
     return {
       data: null,

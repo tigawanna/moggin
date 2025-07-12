@@ -2,6 +2,7 @@
 import { getUserDurations } from "@/lib/api/wakatime/wakatime-sdk";
 import { getLastFiveDates } from "@/utils/date";
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
+import { UserDailyDurationsData } from "./types/current-user-types";
 
 interface UseWakatimeDailyDurationProps {
   selectedDate: string;
@@ -13,6 +14,10 @@ interface WakatimeUserTimeQueryOptions {
   wakatimeApiKey: string | null;
 }
 
+const dummyResults ={
+
+}
+
 export function wakatimeUserTimeQueryoptions({
   selectedDate,
   wakatimeApiKey,
@@ -22,15 +27,15 @@ export function wakatimeUserTimeQueryoptions({
     queryKey: ["wakatime-durations", selectedDate, wakatimeApiKey],
     queryFn: async () => {
       if (!wakatimeApiKey) {
-        console.warn("No Wakatime API key provided");
+        console.log("No Wakatime API key provided");
         return {
           type: "unauthorized",
           message: "Unauthorized access. Please check your API key.",
         } as const;
       }
-      // "https://wakatime.com/api/v1/users/current/durations?date=2025-07-03"
+      // "https://wakatime.com/api/v1/users/current/durations?date=2025-07-11&slice_by=language"
       const result = await getUserDurations({ date: selectedDate, api_key: wakatimeApiKey });
-      if (result.type ==="error" && !result.data) {
+      if (result.type === "error" && !result.data) {
         return {
           type: "no_data",
           date: selectedDate,
@@ -60,12 +65,32 @@ export function wakatimeUserTimeQueryoptions({
       const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       // console.log("Wakatime daily duration result:", result.data);
+      const groupedProjects = result.data.data.reduce(
+        (acc: UserDailyDurationsData[], curr: UserDailyDurationsData) => {
+          if (!acc.some((item) => item.project === curr.project)) {
+            acc.push({
+              project: curr.project,
+              duration: curr.duration,
+              color: curr.color,
+              time: curr.time,
+            });
+          } else {
+            const existingProject = acc.find((item) => item.project === curr.project);
+            if (existingProject) {
+              existingProject.duration += curr.duration;
+            }
+          }
+          return acc;
+        },
+        []
+      );
       return {
         type: "success",
         date: selectedDate,
         todayHours: `${hours}h ${minutes}m`,
         totalDurations: result.data.data.length,
         currentProject: result.data.data[0]?.project || "No project",
+        groupedProjects,
         allProjects: result.data.data,
       } as const;
     },

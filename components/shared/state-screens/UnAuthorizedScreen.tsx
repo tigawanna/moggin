@@ -2,7 +2,7 @@ import { useApiKeysStore } from '@/stores/use-app-settings';
 import { router } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { Button, Surface, Text } from 'react-native-paper';
-import { KeysIcon } from './svg/Keys';
+import { KeysIcon } from '../svg/Keys';
  
 export function UnAuthorizedScreen(){
   const {setWakatimeApiKey } = useApiKeysStore();
@@ -14,10 +14,10 @@ export function UnAuthorizedScreen(){
 
   return (
     <Surface style={{ ...styles.container }}>
-      <Text variant='headlineMedium' style={styles.title}>
+      <Text variant='headlineLarge' style={styles.title}>
         Invalid API Key
       </Text>
-      <KeysIcon/>
+      <KeysIcon height={140}/>
       <Text variant='bodyLarge' style={styles.message}>
         Your WakaTime API key is invalid or has expired. Please delete the current key and add a new one.
       </Text>
@@ -34,6 +34,7 @@ export function UnAuthorizedScreen(){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    gap: 16,
     height: '100%',
     width: '100%',
     justifyContent: 'center',

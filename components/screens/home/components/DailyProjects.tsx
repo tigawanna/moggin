@@ -1,42 +1,35 @@
+import { RefreshControlType } from '@/hooks/use-refresh';
 import { UserDailyDurationsData } from '@/lib/api/wakatime/types/current-user-types';
+import { formatWakatimeDuration, formatWakatimeMsToHumanReadable } from '@/utils/date';
+import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Card, Surface, Text } from 'react-native-paper';
 
 
 interface DailyProjectsProps {
   projects: UserDailyDurationsData[];
+  RefreshControl?: RefreshControlType;
 }
 
-export function DailyProjects({ projects }: DailyProjectsProps){
-  const formatDuration = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    }
-    return `${minutes}m`;
-  };
-
+export function DailyProjects({ projects, RefreshControl }: DailyProjectsProps) {
   const renderProjectItem = ({ item }: { item: UserDailyDurationsData }) => (
-    <Card style={styles.projectCard}>
-      <Card.Content>
-        <Text variant="titleMedium" style={styles.projectName}>
-          {item.project}
+    <Card style={styles.projectCard} elevation={2}>
+      <Card.Title title={item.project} />
+      <Card.Content style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text variant="bodyMedium" style={styles.duration}>
+          {formatWakatimeDuration(item.duration)}
         </Text>
         <Text variant="bodyMedium" style={styles.duration}>
-          {formatDuration(item.duration)}
+          {formatWakatimeMsToHumanReadable(item.time)}
         </Text>
-        {item.color && (
-          <View style={[styles.colorIndicator, { backgroundColor: item.color }]} />
-        )}
+        {item.color && <View style={[styles.colorIndicator, { backgroundColor: item.color }]} />}
       </Card.Content>
     </Card>
   );
 
   return (
     <Surface style={styles.container}>
-      <Text variant='titleLarge' style={styles.title}>
+      <Text variant="titleLarge" style={styles.title}>
         Daily Projects
       </Text>
       <FlatList
@@ -45,6 +38,7 @@ export function DailyProjects({ projects }: DailyProjectsProps){
         keyExtractor={(item, index) => `${item.project}-${index}`}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        refreshControl={RefreshControl}
       />
     </Surface>
   );
@@ -65,7 +59,6 @@ const styles = StyleSheet.create({
   },
   projectCard: {
     marginBottom: 8,
-    elevation: 2,
   },
   projectName: {
     fontWeight: 'bold',

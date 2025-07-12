@@ -1,28 +1,28 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
-
-import { TooManyRequestsScreen } from "@/components/shared/TooManyRequestsScreen";
+import { NoDataScreen } from "@/components/shared/state-screens/NoDataScreen";
+import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooManyRequestsScreen";
+import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
 import { useWakatimeDailyDuration } from "@/lib/api/wakatime/use-wakatime-durations";
-import { useApiKeysStore, useSettingsStore } from "@/stores/use-app-settings";
-import { useState } from "react";
-import { TestWidgetUpdate } from "./components/TestWidgetUpdate";
+import { useApiKeysStore } from "@/stores/use-app-settings";
 import { Redirect } from "expo-router";
-import { UnAuthorizedScreen } from "@/components/shared/UnAuthorizedScreen";
-import { NoDataScreen } from "@/components/shared/NoDataScreen";
+import { useState } from "react";
 import { DailyProjects } from "./components/DailyProjects";
+import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallback";
+import { useRefresh } from "@/hooks/use-refresh";
 
 export function HomeScreenComponent() {
+
   const qc = useQueryClient();
   const { wakatimeApiKey } = useApiKeysStore();
   const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
 
-  const { data: wakatimeData,refetch } = useWakatimeDailyDuration({
+  const { data: wakatimeData,refetch,isLoading } = useWakatimeDailyDuration({
     selectedDate,
     wakatimeApiKey,
   });
-  console.log("Wakatime Data:===>", wakatimeData);
-  // Simple refresh function - refreshes Wakatime data
+
   const onRefresh = async () => {
     await refetch();
     qc.invalidateQueries({
@@ -35,8 +35,18 @@ export function HomeScreenComponent() {
       queryKey: ["wakatime-current-user"],
     });
   };
+  const { isRefreshing, refresh } = useRefresh(onRefresh);
 
-
+  if (isLoading) {
+    return (
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
+        <LoadingFallback />
+      </ScrollView>
+    );
+  }
   if (!wakatimeApiKey) {
     return <Redirect href="/api-keys" />;
   }
@@ -45,7 +55,7 @@ export function HomeScreenComponent() {
     return <ScrollView
     style={styles.scrollView}
     contentContainerStyle={styles.scrollContent}
-    refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}>
+    refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
     <NoDataScreen />
   </ScrollView>;
   }
@@ -54,7 +64,7 @@ export function HomeScreenComponent() {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}>
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
         <UnAuthorizedScreen />
       </ScrollView>
     );
@@ -64,7 +74,7 @@ export function HomeScreenComponent() {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}>
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
         <TooManyRequestsScreen />
       </ScrollView>
     );
@@ -72,13 +82,11 @@ export function HomeScreenComponent() {
 
   return (
     <Surface style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}>
-        <DailyProjects projects={wakatimeData.allProjects} />
-        <View style={styles.bottomPadding} />
-      </ScrollView>
+      <View style={styles.bottomPadding} />
+      <DailyProjects
+        projects={wakatimeData.allProjects}
+        RefreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}
+      />
     </Surface>
   );
 }
@@ -97,7 +105,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   scrollContent: {
-    padding: 4,
+    flex: 1,
+    height: "100%",
+    width: "100%",
   },
   bottomPadding: {
     height: 4,

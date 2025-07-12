@@ -1,13 +1,13 @@
 import { StyleSheet } from "react-native";
-import { Text, Surface } from "react-native-paper";
-import { RestingIcon } from "./svg/Resting";
+import { Surface } from "react-native-paper";
+import { AppLogo } from "../svg/AppLogo";
+import { LoadingIndicatorDots } from "./LoadingIndicatorDots";
 
-export function NoDataScreen() {
+export function LoadingFallback() {
   return (
     <Surface style={{ ...styles.container }}>
-      <Text variant="titleLarge">Nothing on my end</Text>
-      <RestingIcon />
-      <Text variant="titleSmall">No Data Available</Text>
+      <AppLogo />
+      <LoadingIndicatorDots />
     </Surface>
   );
 }
@@ -15,9 +15,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: "100%",
-    gap: 16,
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    gap: 16,
   },
 });

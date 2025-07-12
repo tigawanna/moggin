@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native'
-import { Text,Surface } from 'react-native-paper';
-import { Chill } from './svg/Chill';
+import { StyleSheet } from 'react-native';
+import { Surface, Text } from 'react-native-paper';
+import { Chill } from '../svg/Chill';
 
 export function TooManyRequestsScreen() {
   return (

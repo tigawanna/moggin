@@ -39,5 +39,9 @@ export async function fetchHoursAndUpdateWakatimeWidget() {
       lastSync,
       totalTime: todayHours,
     });
-  }
+    return {
+      currentProject,
+      lastSync,
+      totalTime: todayHours,
+    };  }
 }

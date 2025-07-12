@@ -90,10 +90,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     marginBottom: 16,
+
   },
   card: {
     width: "100%",
     maxWidth: 400,
+    
   },
   cardContent: {
     padding: 24,

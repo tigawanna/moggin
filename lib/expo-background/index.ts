@@ -12,8 +12,8 @@ function registerBackgroundTask() {
     try {
       // Perform the background task logic here
       // You can call your update function here
-      await fetchHoursAndUpdateWakatimeWidget();
-      await AsyncStorage.setItem(BACKGROUND_TASK_IDENTIFIER, "successfully ran this task");
+      const result = await fetchHoursAndUpdateWakatimeWidget();
+      await AsyncStorage.setItem(BACKGROUND_TASK_IDENTIFIER, `successfully ran ${result?.totalTime} for project ${result?.currentProject} at ${result?.lastSync}`);
     } catch (error) {
       console.error("Error in background task:", error);
     }

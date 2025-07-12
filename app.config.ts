@@ -52,6 +52,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: [
       "expo-router",
+      "expo-background-task",
       [
         "expo-splash-screen",
         {

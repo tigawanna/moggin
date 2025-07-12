@@ -102,8 +102,7 @@ export function wakatimeUserTimeQueryoptions({
         wakatimeApiKey,
       }),
     enabled: !!wakatimeApiKey,
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    gcTime: 1000 * 60 * 60 * 24, // 24 hours
+    staleTime: 1000 * 60 * 15, // 15 minutes
   });
 }
 

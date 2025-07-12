@@ -9,7 +9,7 @@ import { useApiKeysStore } from "@/stores/use-app-settings";
 import { Redirect, useLocalSearchParams } from "expo-router";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
-import { DailyProjects } from "./components/DailyProjects";
+import { DailyProjectsDurations } from "./components/DailyProjectsDurations";
 import { TodayDuration } from "./components/TodayDuration";
 import { WakatimeDayPicker } from "./components/WakatimeDayPicker";
 
@@ -103,7 +103,7 @@ export function HomeScreenComponent() {
         contentContainerStyle={styles.scrollContent}
         refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
         <TodayDuration todayHours={wakatimeData} />
-        <DailyProjects projects={projectsToDisplay} grouped={isGrouped} />
+        <DailyProjectsDurations projects={projectsToDisplay} grouped={isGrouped} />
         <View style={styles.bottomPadding} />
       </ScrollView>
     </Surface>

@@ -5,12 +5,12 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Card, Surface, Switch, Text } from "react-native-paper";
 
-interface DailyProjectsProps {
+interface DailyProjectsDurationsProps {
   grouped?: boolean;
   projects: UserDailyDurationsData[];
 }
 
-export function DailyProjects({ grouped, projects }: DailyProjectsProps) {
+export function DailyProjectsDurations({ grouped, projects }: DailyProjectsDurationsProps) {
   const renderProjectItem = (item: UserDailyDurationsData, index: number) => (
     <Card key={`${item.project}-${index}`} style={styles.projectCard} elevation={2}>
       <Card.Title title={item.project} />

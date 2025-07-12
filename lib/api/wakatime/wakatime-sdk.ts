@@ -22,13 +22,30 @@ export async function fetchData<T = any>(
         .json()
         .then((data) => (data.error) as string || `Error: ${response.status} ${response.statusText}`)
         .catch(() => "Failed to parse error message");
-    console.log("❌ Wakatime fetchData error:", response.status, errorMessage);
+    console.log("Wakatime fetchData error:", response.status, errorMessage);
+  if (response.status === 401 || response.status === 403) {
+    return {
+      data: null,
+      type: "unauthorized",
+      status: response.status,
+      error: errorMessage,
+    } as const;
+  }
+  if (response.status === 429) {
+    return {
+      data: null,
+      type: "rate_limit_exceeded",
+      status: response.status,
+      error: errorMessage,
+    } as const;
+  }
+
     return {
       data: null,
       type: "error",
       status: response.status,
       error: errorMessage,
-    };
+    } as const;
   }
   const dataRes = (await response.json()) as T;
   return {
@@ -36,7 +53,7 @@ export async function fetchData<T = any>(
     status: response.status,
     type: "success",
     error: null,
-  };
+  } as const;
 }
 
 // Simple fetch function to avoid circular dependency with WakatimeSDK
@@ -50,11 +67,18 @@ export async function fetchCurrentUser(api_key: string) {
       .json()
       .then((data) => (data.error as string) || `Error: ${response.status} ${response.statusText}`)
       .catch(() => "Failed to parse error message");
+    if(response.status === 401 || response.status === 403) {
+      return {
+        data: {error:errorMessage},
+        type: "unauthorized",
+        error: errorMessage,
+      } as const
+    } 
     return {
-      data: null,
+      data: {error:errorMessage},
       type: "error",
       error: errorMessage,
-    };
+    } as const
   }
 
   const dataRes = await response.json();
@@ -62,7 +86,7 @@ export async function fetchCurrentUser(api_key: string) {
     data: dataRes,
     type: "success",
     error: null,
-  };
+  } as const;
 }
 
 export async function checkIfTokenIsValid({ token }: { token: string }) {

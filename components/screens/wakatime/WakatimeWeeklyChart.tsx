@@ -23,7 +23,7 @@ export function WakatimeWeeklyChart({ selectedDate, wakatimeApiKey }: WakatimeWe
   // Transform the data for Victory charts
   const chartData = data?.map((item, index) => {
     // Parse hours from "4h 25m" format
-    const timeMatch = item?.data?.todayHours.match(/(\d+)h\s*(\d+)m/);
+    const timeMatch = item?.data?.todayHours?.match(/(\d+)h\s*(\d+)m/);
     const hours = timeMatch ? parseInt(timeMatch[1]) : 0;
     const minutes = timeMatch ? parseInt(timeMatch[2]) : 0;
     const totalHours = hours + minutes / 60;

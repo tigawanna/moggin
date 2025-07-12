@@ -1,4 +1,4 @@
-import { useApiKeysStore, useSettingsStore } from "@/stores/use-app-settings";
+
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { fetchCurrentUser } from "./wakatime-sdk";
 

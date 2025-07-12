@@ -7,6 +7,27 @@ interface WakatimeLeaderboardQueryOptions {
   page?: number;
 }
 
+export async function fetchLeaderboard({
+  wakatimeApiKey,
+  country,
+  page = 1,
+}: WakatimeLeaderboardQueryOptions) {
+  if (!wakatimeApiKey) {
+    console.warn("No Wakatime API key provided");
+    return null;
+  }
+
+  const params: { country_code?: string; page?: number } = { };
+  if (country) {
+    params.country_code = country;
+  }
+  if (page) {
+    params.page = page;
+  }
+  const result = await getLeaderboard({ api_key: wakatimeApiKey, ...params });
+  return result?.data || null;
+}
+
 export function wakatimeLeaderboardQueryOptions({
   wakatimeApiKey,
   country,
@@ -16,18 +37,7 @@ export function wakatimeLeaderboardQueryOptions({
   return queryOptions({
     queryKey: ["wakatime-leaderboard", wakatimeApiKey, country, page],
     queryFn: async () => {
-      if (!wakatimeApiKey) {
-        console.warn("No Wakatime API key provided");
-        return null;
-      }
-    
-      const params: { country?: string; page?: number } = { page };
-      if (country) {
-        params.country = country;
-      }
-
-      const result = await getLeaderboard({ api_key: wakatimeApiKey, ...params });
-      return result?.data || null;
+      return await fetchLeaderboard({ wakatimeApiKey, country, page });
     },
     enabled: !!wakatimeApiKey,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours

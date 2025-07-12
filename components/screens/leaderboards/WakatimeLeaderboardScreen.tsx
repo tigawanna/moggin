@@ -18,22 +18,13 @@ export function WakatimeLeaderboardScreen() {
   const { wakatimeApiKey } = useApiKeysStore();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('week');
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-
+  
   // Use the new current user hook
   const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser(wakatimeApiKey);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(
+    currentUserData?.data?.data?.city.country_code??"KE"
+  );
 
-  // Set default country based on current user location
-  useEffect(() => {
-    if (currentUserData?.data?.status === "success"){
-      if (currentUserData?.data.data?.location && !selectedCountry) {
-        // Extract country code from location if possible
-        const userCountry = extractCountryCode(currentUserData.data.data.location);
-        setSelectedCountry(userCountry);
-      }
-      
-    }
-  }, [currentUserData, selectedCountry]);
 
   // Get leaderboard data
   const { data: leaderboardData, refetch } = useQuery(
@@ -75,29 +66,6 @@ export function WakatimeLeaderboardScreen() {
     return `${item.user.username}-${item.rank}-${index}`;
   }, []);
 
-  // Helper function to extract country code from location string
-  const extractCountryCode = (location: string): string | null => {
-    // Simple mapping for common countries - you can expand this
-    const countryMap: Record<string, string> = {
-      'United States': 'US',
-      'Canada': 'CA',
-      'United Kingdom': 'GB',
-      'Germany': 'DE',
-      'France': 'FR',
-      'Japan': 'JP',
-      'Australia': 'AU',
-      'Brazil': 'BR',
-      'India': 'IN',
-      'China': 'CN',
-    };
-    
-    for (const [country, code] of Object.entries(countryMap)) {
-      if (location.includes(country)) {
-        return code;
-      }
-    }
-    return null;
-  };
 
 
   if (!leaderboardData || !leaderboardData.data || leaderboardData.data.length === 0) {

@@ -15,7 +15,19 @@ export interface UserDailyDurationsData {
 export type WakatimeUser = {
   bio: any;
   categories_used_public: boolean;
-  city: any;
+  city: {
+    ascii_name: string;
+    ascii_state: string;
+    country: string;
+    country_code: string;
+    id: string;
+    name: string;
+    population: number;
+    short_title: string;
+    state: string;
+    timezone: string;
+    title: string;
+  };
   color_scheme: string;
   created_at: string;
   date_format: string;

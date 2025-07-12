@@ -96,11 +96,14 @@ export function wakatimeUserTimeQueryoptions({
 
   return queryOptions({
     queryKey: ["wakatime-durations", selectedDate, wakatimeApiKey],
-    queryFn: async () => wakatimeUserTimeQueryFetcher({
-      selectedDate,
-      wakatimeApiKey,
-    }),
+    queryFn: async () =>
+      wakatimeUserTimeQueryFetcher({
+        selectedDate,
+        wakatimeApiKey,
+      }),
     enabled: !!wakatimeApiKey,
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    gcTime: 1000 * 60 * 60 * 24, // 24 hours
   });
 }
 

@@ -15,7 +15,6 @@ interface TodayDurationProps {
 export function TodayDuration({ todayHours }: TodayDurationProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const today = new Date();
     return date.toLocaleDateString("en-US", {
       weekday: "long",
       year: "numeric",
@@ -37,7 +36,6 @@ export function TodayDuration({ todayHours }: TodayDurationProps) {
     if (isToday(todayHours.date)) {
       updateWakatimeHoursWidget({
         currentProject: todayHours.currentProject,
-        lastSync: todayHours.date,
         totalTime: todayHours.todayHours,
       });
     }

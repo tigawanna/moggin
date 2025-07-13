@@ -22,6 +22,7 @@ function registerBackgroundTask() {
 
   BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
     minimumInterval: 15, // Run every 15 minutes
+    
   });
 }
 

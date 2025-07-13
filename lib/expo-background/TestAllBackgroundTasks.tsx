@@ -1,12 +1,14 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as TaskManager from "expo-task-manager";
-import { StyleSheet, View } from "react-native";
+import { RefreshControl, StyleSheet, View } from "react-native";
 import { Button, Surface, Text } from "react-native-paper";
 import { readKeyFromStorage, testAllBackgroundTasks, unregisterBackgroundTask } from "./tasks";
+import { ScrollView } from "react-native-gesture-handler";
+import { useRefresh } from "@/hooks/use-refresh";
 
 
 export function TestAllBackgroundTasks() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading,refetch } = useQuery({
     queryKey: ["registered-tasks"],
     queryFn: async () => {
       const tasks = await TaskManager.getRegisteredTasksAsync();
@@ -22,8 +24,17 @@ export function TestAllBackgroundTasks() {
   const { mutate: unregisterMutate, isPending: isUnregisterPending } = useMutation({
     mutationFn: unregisterBackgroundTask,
   });
+  const { isRefreshing, refresh } = useRefresh(() => {
+    refresh();
+  });
   return (
     <Surface style={{ ...styles.container }}>
+      <ScrollView
+        style={{ width: "100%" }}
+        contentContainerStyle={{ padding: 16 }}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}
+      >
+
       <Text variant="titleLarge">TestAllBackgroundTasks</Text>
       <View style={{ justifyContent: "space-between", width: "100%" }}>
         <Text variant="bodyMedium">AsyncStorage Key: {data?.asyncStorage}</Text>
@@ -45,6 +56,7 @@ export function TestAllBackgroundTasks() {
           {isUnregisterPending ? "Unregistering..." : "Unregister Background Task"}
         </Button>
       </View>
+      </ScrollView>
     </Surface>
   );
 }

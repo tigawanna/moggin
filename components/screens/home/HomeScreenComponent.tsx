@@ -32,15 +32,6 @@ export function HomeScreenComponent() {
 
   const onRefresh = async () => {
     await refetch();
-    // qc.invalidateQueries({
-    //   queryKey: ["wakatime-durations"],
-    // });
-    // qc.invalidateQueries({
-    //   queryKey: ["wakatime-leaderboard"],
-    // });
-    // qc.invalidateQueries({
-    //   queryKey: ["wakatime-current-user"],
-    // });
   };
   const { isRefreshing, refresh } = useRefresh(onRefresh);
 
@@ -102,7 +93,7 @@ export function HomeScreenComponent() {
 
       {/* Scrollable Content */}
       <ScrollView
-        style={styles.scrollView}
+        style={[styles.scrollView, { paddingTop: 50 }]}
         contentContainerStyle={styles.scrollContent}
         refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
         <TodayDuration todayHours={wakatimeData} />
@@ -129,12 +120,12 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    paddingBottom: 20,
-    paddingTop: 80, // Add padding to account for sticky header
+    // paddingBottom: 20,
+    // paddingTop: 80, // Add padding to account for sticky header
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 20,
+    // paddingBottom: 20,
   },
   bottomPadding: {
     height: 4,

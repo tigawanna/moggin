@@ -6,12 +6,14 @@ import Animated, {
   useSharedValue,
   withRepeat,
   withSequence,
-  withTiming
+  withTiming,
 } from "react-native-reanimated";
 import { AppLogo } from "../svg/AppLogo";
 import { LoadingIndicatorDots } from "./LoadingIndicatorDots";
-
-export function LoadingFallback() {
+interface LoadingFallbackProps {
+  initialScreen?: boolean;
+}
+export function LoadingFallback({ initialScreen }: LoadingFallbackProps) {
   const { colors } = useTheme();
   const pulseValue = useSharedValue(1);
   const fadeValue = useSharedValue(0.6);
@@ -19,20 +21,14 @@ export function LoadingFallback() {
   useEffect(() => {
     // Gentle pulse animation for the logo
     pulseValue.value = withRepeat(
-      withSequence(
-        withTiming(1.1, { duration: 1500 }),
-        withTiming(1, { duration: 1500 })
-      ),
+      withSequence(withTiming(1.1, { duration: 1500 }), withTiming(1, { duration: 1500 })),
       -1,
       false
     );
 
     // Fade animation for loading text
     fadeValue.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 2000 }),
-        withTiming(0.6, { duration: 2000 })
-      ),
+      withSequence(withTiming(1, { duration: 2000 }), withTiming(0.6, { duration: 2000 })),
       -1,
       false
     );
@@ -52,18 +48,19 @@ export function LoadingFallback() {
         <Animated.View style={[styles.logoContainer, animatedLogoStyle]}>
           <AppLogo />
         </Animated.View>
-        
+
         <View style={styles.loadingContainer}>
           <LoadingIndicatorDots />
-          
-          <Animated.View style={animatedTextStyle}>
-            <Text 
-              variant="bodyMedium" 
-              style={[styles.loadingText, { color: colors.onSurfaceVariant }]}
-            >
-              Getting things ready...
-            </Text>
-          </Animated.View>
+
+          {initialScreen && (
+            <Animated.View style={animatedTextStyle}>
+              <Text
+                variant="bodyMedium"
+                style={[styles.loadingText, { color: colors.onSurfaceVariant }]}>
+                Getting things ready...
+              </Text>
+            </Animated.View>
+          )}
         </View>
       </View>
     </Surface>
@@ -77,10 +74,10 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    padding: 24,
+    // padding: 24,
   },
   content: {
-    alignItems: "center",
+    // alignItems: "center",
   },
   logoContainer: {
     marginBottom: 32,

@@ -14,7 +14,7 @@ export default function ProtectedLayout() {
   } = useCurrentUser(wakatimeKey);
 
   if (isCurrentUserLoading && !currentUserData) {
-    return <LoadingFallback />;
+    return <LoadingFallback initialScreen/>;
   }
   // console.log("Current user data in layout:", currentUserData?.data?.data?.username);
 

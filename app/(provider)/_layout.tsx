@@ -16,10 +16,10 @@ export default function ProtectedLayout() {
   if (isCurrentUserLoading && !currentUserData) {
     return <LoadingFallback />;
   }
-  console.log("Current user data in layout:", currentUserData?.data?.data?.username);
+  // console.log("Current user data in layout:", currentUserData?.data?.data?.username);
 
   const hasValidUserData = currentUserData?.data?.data?.username;
-  console.log("Has valid user data:", hasValidUserData);
+  // console.log("Has valid user data:", hasValidUserData);
   const isAuthenticated = Boolean(hasValidUserData && !error);
   return (
     <Stack>

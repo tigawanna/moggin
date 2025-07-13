@@ -33,7 +33,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          animation: "none",
           title: "Home",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
@@ -41,7 +40,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="weekly"
         options={{
-          animation: "none",
           title: "weekly",
           tabBarIcon: ({ color }) => <MaterialIcon size={28} name="auto-graph" color={color} />,
         }}
@@ -49,7 +47,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="leaderboard"
         options={{
-          animation: "none",
           title: "Leaderboard",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcon size={28} name="trophy" color={color} />
@@ -59,11 +56,29 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          animation: "none",
           title: "Settings",
           tabBarIcon: ({ color }) => <MaterialIcon size={28} name="settings" color={color} />,
         }}
       />
+
+      {__DEV__ ? (
+        <Tabs.Screen
+          name="test"
+          options={{
+            title: "Test",
+            tabBarIcon: ({ color }) => <MaterialIcon size={28} name="11mp" color={color} />,
+          }}
+        />
+      ) : (
+        <Tabs.Screen
+          name="test"
+          options={{
+            href: null,
+            title: "Test",
+            tabBarIcon: ({ color }) => <MaterialIcon size={28} name="11mp" color={color} />,
+          }}
+        />
+      )}
     </Tabs>
   );
 }

@@ -15,7 +15,7 @@ export async function fetchData<T = any>(
       }
     });
   }
-  console.log(" 🌎 Fetching Wakatime data from: >> ", url.toString());
+  console.log("\n 🌎 Fetching data from : >> ", url.toString(),"\n");
   const response = await fetch(url.toString());
   if (!response.ok) {
     const errorMessage = await response

@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { StyleSheet, View } from "react-native";
-import { Button, Text, Surface } from "react-native-paper";
-import { readKeyFromStorage, testAllBackgroundTasks, unregisterBackgroundTask } from ".";
 import * as TaskManager from "expo-task-manager";
+import { StyleSheet, View } from "react-native";
+import { Button, Surface, Text } from "react-native-paper";
+import { readKeyFromStorage, testAllBackgroundTasks, unregisterBackgroundTask } from "./tasks";
 
 
 export function TestAllBackgroundTasks() {
@@ -37,7 +37,7 @@ export function TestAllBackgroundTasks() {
           </View>
         ))}
       </View>
-      <View style={{ flexDirection: "column" }}>
+      <View style={{ flexDirection: "column",gap: 8, width: "100%" }}>
         <Button mode="contained" onPress={() => mutate()}>
           {isPending ? "Testing..." : "Test Background Tasks"}
         </Button>
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: "100%",
+    padding: 16,
     gap: 16,
     width: "100%",
     justifyContent: "center",

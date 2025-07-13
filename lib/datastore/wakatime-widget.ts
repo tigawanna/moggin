@@ -5,18 +5,25 @@ import { dateToDayHoursMinutesSeconds } from "@/utils/date";
 
 export function updateWakatimeHoursWidget({
   currentProject,
-  lastSync,
   totalTime,
+  byWorker
 }: {
   currentProject: string;
-  lastSync: string;
+  byWorker?: boolean;
   totalTime: string;
 }) {
+  const lastSync = dateToDayHoursMinutesSeconds(new Date());
   WidgetUpdater.updateWakatimeWidget({
+    currentProject,
+    // The ⚡ prefix is used to indicate the that the update was triggerd by the background task
+    lastSync: byWorker ? `⚡${lastSync}` : lastSync,
+    totalTime,
+  });
+  return {
     currentProject,
     lastSync,
     totalTime,
-  });
+  }
 }
 
 export async function fetchHoursAndUpdateWakatimeWidget() {
@@ -32,17 +39,11 @@ export async function fetchHoursAndUpdateWakatimeWidget() {
     wakatimeApiKey: wakatimeKey,
   });
   if (res.type === "success") {
-    const lastSync = dateToDayHoursMinutesSeconds(new Date());
     const { currentProject, todayHours } = res;
-    updateWakatimeHoursWidget({
+    return updateWakatimeHoursWidget({
       currentProject,
-      lastSync,
-      // The ⚡ prefix is used to indicate the that the update was triggerd by the background task
-      totalTime: `⚡${todayHours}`,
-    });
-    return {
-      currentProject,
-      lastSync,
-      totalTime: `⚡${todayHours}`,
-    };  }
+      byWorker: true,
+      totalTime: todayHours,
+    })
+  }
 }

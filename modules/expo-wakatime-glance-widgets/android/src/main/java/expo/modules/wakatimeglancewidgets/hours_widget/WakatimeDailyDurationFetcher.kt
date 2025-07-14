@@ -178,7 +178,7 @@ object WakatimeDataFetcher {
     private fun formatTotalTime(totalSeconds: Double): String {
         val hours = (totalSeconds / 3600).toInt()
         val minutes = ((totalSeconds % 3600) / 60).toInt()
-        return String.format(Locale.US, "%02d hrs : %02d mins", hours, minutes)
+        return String.format(Locale.US, "%02dh %02dm", hours, minutes)
     }
 
     private fun getCurrentTimestamp(): String {

@@ -178,11 +178,6 @@ class WakatimeHoursWidget : GlanceAppWidget() {
                 "--:--"
             }
 
-            val wakatimeToken = try {
-                preferences[WidgetConstants.WAKATIME_API_KEY] ?: ""
-            } catch (e: Exception) {
-                ""
-            }
 
             val launchAppAction = actionRunCallback<LaunchMainActivityAction>()
 
@@ -213,7 +208,6 @@ class WakatimeHoursWidget : GlanceAppWidget() {
                     backgroundColor = GlanceTheme.colors.widgetBackground
                 ) {
                     WidgetContent(
-                        size=size,
                         totalTime = totalTime,
                         currentProject = currentProject,
                         lastSync = lastSync,
@@ -230,7 +224,6 @@ class WakatimeHoursWidget : GlanceAppWidget() {
 
     @Composable
     private fun WidgetContent(
-        size: DpSize,
         totalTime: String,
         currentProject: String,
         lastSync: String,

@@ -1,6 +1,7 @@
 import { useApiKeysStore } from "@/stores/app-settings-store";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getUserStats } from "./wakatime-sdk";
+import { wakatimeQueryQueryKeyPrefixes } from "./query-keys";
 
 export type WakatimeDetailStats = {
   todayStats: {
@@ -19,23 +20,23 @@ export type WakatimeDetailStats = {
 
 export const wakatimeStatsQueryOptions = (wakatimeApiKey: string | null) =>
   queryOptions({
-    queryKey: ["wakatime-stats", wakatimeApiKey],
+    queryKey: [wakatimeQueryQueryKeyPrefixes.stats, wakatimeApiKey],
     queryFn: async () => {
       if (!wakatimeApiKey) {
         throw new Error("No API key provided");
       }
 
-      const today = new Date().toISOString().split('T')[0];
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const today = new Date().toISOString().split("T")[0];
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
 
       const [todayResponse, weekResponse] = await Promise.all([
         getUserStats({ start: today, end: today, api_key: wakatimeApiKey }),
-        getUserStats({ start: weekAgo, end: today, api_key: wakatimeApiKey })
+        getUserStats({ start: weekAgo, end: today, api_key: wakatimeApiKey }),
       ]);
 
       return {
         todayStats: todayResponse.data,
-        weekStats: weekResponse.data
+        weekStats: weekResponse.data,
       } as WakatimeDetailStats;
     },
     enabled: !!wakatimeApiKey,

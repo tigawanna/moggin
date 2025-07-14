@@ -3,6 +3,7 @@ import { getUserDurations } from "@/lib/api/wakatime/wakatime-sdk";
 import { getLastFiveDates } from "@/utils/date";
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
 import { UserDailyDurationsData } from "./types/current-user-types";
+import { wakatimeQueryQueryKeyPrefixes } from "./query-keys";
 
 interface UseWakatimeDailyDurationProps {
   selectedDate: string;
@@ -95,7 +96,7 @@ export function wakatimeUserTimeQueryoptions({
 }: WakatimeUserTimeQueryOptions) {
 
   return queryOptions({
-    queryKey: ["wakatime-durations", selectedDate, wakatimeApiKey],
+    queryKey: [wakatimeQueryQueryKeyPrefixes.duration, selectedDate, wakatimeApiKey],
     queryFn: async () =>
       wakatimeUserTimeQueryFetcher({
         selectedDate,

@@ -1,12 +1,13 @@
 
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { fetchCurrentUser } from "./wakatime-sdk";
+import { wakatimeQueryQueryKeyPrefixes } from "./query-keys";
 
 
 
 export const wakatimeCurrentUserQueryOptions = (wakatimeApiKey: string | null) =>
   queryOptions({
-    queryKey: ["wakatime-current-user", wakatimeApiKey],
+    queryKey: [wakatimeQueryQueryKeyPrefixes.currentUser, wakatimeApiKey],
     queryFn: async () => {
       if (!wakatimeApiKey) {
         throw new Error("No API key provided");

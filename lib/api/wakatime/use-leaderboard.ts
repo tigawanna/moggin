@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { getLeaderboard } from "./wakatime-sdk";
+import { wakatimeQueryQueryKeyPrefixes } from "./query-keys";
 
 interface WakatimeLeaderboardQueryOptions {
   wakatimeApiKey: string | null;
@@ -64,7 +65,7 @@ export function wakatimeLeaderboardQueryOptions({
 }: WakatimeLeaderboardQueryOptions) {
 
   return queryOptions({
-    queryKey: ["wakatime-leaderboard", wakatimeApiKey, country, page],
+    queryKey: [wakatimeQueryQueryKeyPrefixes.leaderboard, wakatimeApiKey, country, page],
     queryFn: async () => {
       return await fetchLeaderboard({ wakatimeApiKey, country, page });
     },

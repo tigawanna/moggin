@@ -6,7 +6,7 @@ import { wakatimeUserTimeQueryFetcher } from "../api/wakatime/use-wakatime-durat
 export function updateWakatimeHoursWidget({
   currentProject,
   totalTime,
-  byWorker
+  byWorker,
 }: {
   currentProject: string;
   byWorker?: boolean;
@@ -23,7 +23,7 @@ export function updateWakatimeHoursWidget({
     currentProject,
     lastSync,
     totalTime,
-  }
+  };
 }
 
 export async function fetchHoursAndUpdateWakatimeWidget() {
@@ -48,8 +48,11 @@ export async function fetchHoursAndUpdateWakatimeWidget() {
   }
 }
 
-export function updateWakatimeKey(key: string) {
-  // settings$.wakatimeApiKey.set(key);
-  WidgetUpdater.updateApiKey(key);
+export function updateWakatimeKey(key?: string | null) {
+  if (key) {
+    WidgetUpdater.updateApiKey(key);
+  } else {
+    WidgetUpdater.removeApiKey();
+  }
   return key;
 }

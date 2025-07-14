@@ -1,4 +1,5 @@
 expo.modules.wakatimeglancewidgets
+drawable refresh
 drawable wakatime_hours_widget
 drawable widget_icon
 string app_name

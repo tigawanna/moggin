@@ -1,5 +1,6 @@
 R_DEF: Internal format may change without notice
 local
+drawable refresh
 drawable wakatime_hours_widget
 drawable widget_icon
 string app_name

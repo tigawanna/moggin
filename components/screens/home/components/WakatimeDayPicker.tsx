@@ -4,8 +4,13 @@ import { useCallback, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import { SegmentedButtons, Surface, Text } from "react-native-paper";
 
-export function WakatimeDayPicker() {
-  const { selectedDate, setSelectedDate } = useCurrentWakatimeDate();
+interface WakatimeDayPickerProps {
+  selectedDate: string;
+  setSelectedDate: (date: string) => void;
+}
+
+export function WakatimeDayPicker({ selectedDate, setSelectedDate }: WakatimeDayPickerProps) {
+  // const { selectedDate, setSelectedDate } = useCurrentWakatimeDate();
 
 
   const generateDateOptions = useCallback(() => generateLastFiveDates(4), []); // Empty dependency array since this only depends on current date

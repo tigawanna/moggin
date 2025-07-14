@@ -36,8 +36,7 @@ import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.layout.padding
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.height
-import androidx.glance.preview.ExperimentalGlancePreviewApi
-import androidx.glance.preview.Preview
+
 import expo.modules.wakatimeglancewidgets.R
 import expo.modules.wakatimeglancewidgets.shared_utils.WidgetConstants
 import kotlinx.coroutines.CoroutineScope

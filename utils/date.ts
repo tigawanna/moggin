@@ -76,3 +76,16 @@ export function dateToDayHoursMinutesSeconds(date: Date): string {
 
   return `${day}/${month} ${hours}:${minutes}`;
 }
+
+// Helper function to convert any date to ISO format (YYYY-MM-DD) using locale-aware date
+export function dateToISOFormat(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// Helper function to get current date in ISO format but using locale-aware date
+export function getCurrentDateISO(): string {
+  return dateToISOFormat(new Date());
+}

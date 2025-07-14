@@ -2,24 +2,38 @@ import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallba
 import { NoDataScreen } from "@/components/shared/state-screens/NoDataScreen";
 import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooManyRequestsScreen";
 import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
-import { useCurrentWakatimeDate } from "@/hooks/use-current-date";
 import { useRefresh } from "@/hooks/use-refresh";
 import { useWakatimeDailyDuration } from "@/lib/api/wakatime/use-wakatime-durations";
 import { useApiKeysStore } from "@/stores/app-settings-store";
+import { getCurrentDateISO } from "@/utils/date";
 import { Redirect, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
 import { CurrentUserLeaderboardStannnding } from "./components/CurrentUserLeaderboardStannnding";
 import { DailyProjectsDurations } from "./components/DailyProjectsDurations";
 import { TodayDuration } from "./components/TodayDuration";
 import { WakatimeDayPicker } from "./components/WakatimeDayPicker";
+import { useQueryClient } from "@tanstack/react-query";
+import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/use-leaderboard";
+import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
+// import { console } from "inspector";
 
 export function HomeScreenComponent() {
+  const qc = useQueryClient();
   const { wakatimeApiKey } = useApiKeysStore();
+  const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser(wakatimeApiKey);
   const { grouped } = useLocalSearchParams<{ grouped: "true" | "false" }>();
   const isGrouped = grouped === "true";
-  const { selectedDate } = useCurrentWakatimeDate();
 
+  const [selectedDate, setSelected] = useState(getCurrentDateISO());
+
+  qc.prefetchQuery(
+    wakatimeLeaderboardQueryOptions({
+      wakatimeApiKey,
+      country: currentUserData?.data?.data?.city?.country_code || undefined,
+    })
+  );
   const {
     data: wakatimeData,
     refetch,
@@ -84,10 +98,9 @@ export function HomeScreenComponent() {
 
   return (
     <Surface style={styles.container}>
-
       {/* Sticky Date Picker */}
       <Surface style={styles.stickyHeader} elevation={2}>
-        <WakatimeDayPicker />
+        <WakatimeDayPicker selectedDate={selectedDate} setSelectedDate={setSelected} />
       </Surface>
 
       {/* Scrollable Content */}

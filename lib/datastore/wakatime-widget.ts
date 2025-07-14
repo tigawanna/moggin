@@ -48,11 +48,3 @@ export async function fetchHoursAndUpdateWakatimeWidget() {
   }
 }
 
-export function updateWakatimeKey(key?: string | null) {
-  if (key) {
-    WidgetUpdater.updateApiKey(key);
-  } else {
-    WidgetUpdater.removeApiKey();
-  }
-  return key;
-}

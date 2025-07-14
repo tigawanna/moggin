@@ -1,5 +1,5 @@
 
-import { updateWakatimeKey } from "@/lib/datastore/wakatime-widget";
+import { updateWakatimeKey } from "@/lib/datastore/wakatime-widget-key";
 import { observable, syncState } from "@legendapp/state";
 import { observablePersistAsyncStorage } from "@legendapp/state/persist-plugins/async-storage";
 import { use$ } from "@legendapp/state/react";

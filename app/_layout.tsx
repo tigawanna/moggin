@@ -8,7 +8,7 @@ import { GlobalSnackbar } from "@/components/shared/snackbar/GlobalSnackbar";
 import { useThemeSetup } from "@/hooks/useThemeSetup";
 import { initializeBackgroundTask } from "@/lib/expo-background/tasks";
 import { useAppState, useOnlineManager } from "@/lib/tanstack/hooks";
-import { useSettingsStore } from "@/stores/use-app-settings";
+import { useSettingsStore } from "@/stores/app-settings-store";
 import { focusManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import React, { useEffect } from "react";

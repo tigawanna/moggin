@@ -8,8 +8,8 @@
 7-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:2:1-13:15
 8        <receiver
 8-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:3:5-12:16
-9            android:name="expo.modules.wakatimeglancewidgets.WakatimeHoursWidgetReceiver"
-9-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:4:9-52
+9            android:name="expo.modules.wakatimeglancewidgets.hours_widget.WakatimeHoursWidgetReceiver"
+9-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:4:9-65
 10            android:exported="true" >
 10-->/home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:5:9-32
 11            <intent-filter>

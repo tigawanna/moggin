@@ -5,7 +5,7 @@ import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthoriz
 import { useCurrentWakatimeDate } from "@/hooks/use-current-date";
 import { useRefresh } from "@/hooks/use-refresh";
 import { useWakatimeDailyDuration } from "@/lib/api/wakatime/use-wakatime-durations";
-import { useApiKeysStore } from "@/stores/use-app-settings";
+import { useApiKeysStore } from "@/stores/app-settings-store";
 import { Redirect, useLocalSearchParams } from "expo-router";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
@@ -13,7 +13,6 @@ import { CurrentUserLeaderboardStannnding } from "./components/CurrentUserLeader
 import { DailyProjectsDurations } from "./components/DailyProjectsDurations";
 import { TodayDuration } from "./components/TodayDuration";
 import { WakatimeDayPicker } from "./components/WakatimeDayPicker";
-import ApiKeysScreen from "@/app/(provider)/api-keys";
 
 export function HomeScreenComponent() {
   const { wakatimeApiKey } = useApiKeysStore();

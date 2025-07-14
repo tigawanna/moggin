@@ -87,5 +87,25 @@ class ExpoWakatimeGlanceWidgetsModule : Module() {
         }
       }
     }
+
+    AsyncFunction("removeApiKey") {
+      CoroutineScope(Dispatchers.IO).launch {
+        try {
+          // Remove API key from all available datastores
+          // Hours widget datastore
+          context.dataStore.edit { preferences ->
+            preferences.remove(WidgetConstants.WAKATIME_API_KEY)
+          }
+          
+          // Future datastores can be added here by importing them and replicating the logic
+          // Example: context.anotherDataStore.edit { preferences ->
+          //   preferences.remove(AnotherWidgetConstants.WAKATIME_API_KEY)
+          // }
+          
+        } catch (e: Exception) {
+          e.printStackTrace()
+        }
+      }
+    }
   }
 }

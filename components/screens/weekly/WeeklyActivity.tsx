@@ -4,7 +4,7 @@ import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooMany
 import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
 import { useRefresh } from "@/hooks/use-refresh";
 import { useWakatimeWeeklyStats } from "@/lib/api/wakatime/use-wakatime-durations";
-import { useSettingsStore } from "@/stores/use-app-settings";
+import { useSettingsStore } from "@/stores/app-settings-store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Redirect } from "expo-router";
 import { useState } from "react";

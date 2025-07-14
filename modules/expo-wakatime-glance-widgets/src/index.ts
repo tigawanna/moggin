@@ -9,6 +9,10 @@ export async function updateApiKey(apiKey: string): Promise<void> {
   return ExpoWakatimeGlanceWidgetsModule.updateApiKey(apiKey);
 }
 
+export async function removeApiKey(): Promise<void> {
+  return ExpoWakatimeGlanceWidgetsModule.removeApiKey();
+}
+
 export type { UpdateWidgetPayload } from './ExpoWakatimeGlanceWidgets.types';
 export { ExpoWakatimeGlanceWidgetsModule };
 

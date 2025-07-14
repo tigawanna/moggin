@@ -1,17 +1,17 @@
 import {
-  Colors,
-  defaultMaterial3PrimaryDarkTheme,
-  defaultMaterial3PrimaryLightTheme,
+    Colors,
+    defaultMaterial3PrimaryDarkTheme,
+    defaultMaterial3PrimaryLightTheme,
 } from "@/constants/Colors";
 import {
-  DarkTheme as NavigationDarkTheme,
-  DefaultTheme as NavigationDefaultTheme,
+    DarkTheme as NavigationDarkTheme,
+    DefaultTheme as NavigationDefaultTheme,
 } from "@react-navigation/native";
 
-import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme } from "react-native-paper";
-import { useMaterialDynamicColors,MaterialDynamicTheme } from "@/modules/expo-material-dynamic-colors/src/index";
+import { MaterialDynamicTheme, useMaterialDynamicColors } from "@/modules/expo-material-dynamic-colors/src/index";
+import { useThemeStore } from "@/stores/app-settings-store";
 import merge from "deepmerge";
-import { useThemeStore } from "@/stores/use-app-settings";
+import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme } from "react-native-paper";
 
 export function useThemeSetup(dynamicColors?: boolean) {
   // Get device-generated Material You theme

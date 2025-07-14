@@ -1,4 +1,4 @@
-import { useApiKeysStore } from "@/stores/use-app-settings";
+import { useApiKeysStore } from "@/stores/app-settings-store";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getUserStats } from "./wakatime-sdk";
 

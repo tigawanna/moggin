@@ -8,12 +8,12 @@ INJECTED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance
 		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:1:11-69
 application
 ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:2:1-13:15
-receiver#expo.modules.wakatimeglancewidgets.WakatimeHoursWidgetReceiver
+receiver#expo.modules.wakatimeglancewidgets.hours_widget.WakatimeHoursWidgetReceiver
 ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:3:5-12:16
 	android:exported
 		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:5:9-32
 	android:name
-		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:4:9-52
+		ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:4:9-65
 intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE
 ADDED from /home/dennis/Desktop/code/expo/moggin/modules/expo-wakatime-glance-widgets/android/src/main/AndroidManifest.xml:6:9-8:25
 action#android.appwidget.action.APPWIDGET_UPDATE

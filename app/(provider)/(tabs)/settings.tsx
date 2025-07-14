@@ -1,4 +1,4 @@
-import { useSettingsStore, useThemeStore } from "@/stores/use-app-settings";
+import { useSettingsStore, useThemeStore } from "@/stores/app-settings-store";
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet } from "react-native";
 import { Divider, List, Switch } from "react-native-paper";

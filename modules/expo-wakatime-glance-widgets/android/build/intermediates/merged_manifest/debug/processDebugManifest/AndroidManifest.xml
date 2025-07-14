@@ -6,7 +6,7 @@
 
     <application>
         <receiver
-            android:name="expo.modules.wakatimeglancewidgets.WakatimeHoursWidgetReceiver"
+            android:name="expo.modules.wakatimeglancewidgets.hours_widget.WakatimeHoursWidgetReceiver"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

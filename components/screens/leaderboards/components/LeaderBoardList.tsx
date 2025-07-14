@@ -5,7 +5,7 @@ import { UnAuthorizedScreen } from '@/components/shared/state-screens/UnAuthoriz
 import { LeaderboardEntry } from '@/lib/api/wakatime/types/leaderboard-types';
 import { useCurrentUser } from '@/lib/api/wakatime/use-current-user';
 import { wakatimeLeaderboardQueryOptions } from '@/lib/api/wakatime/use-leaderboard';
-import { useApiKeysStore } from '@/stores/use-app-settings';
+import { useApiKeysStore } from '@/stores/app-settings-store';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import { FlatList, ListRenderItem, RefreshControl, StyleSheet } from 'react-native';

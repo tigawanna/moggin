@@ -1,5 +1,5 @@
 import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
-import { useApiKeysStore } from "@/stores/use-app-settings";
+import { useApiKeysStore } from "@/stores/app-settings-store";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { LeaderBoardList } from "./components/LeaderBoardList";

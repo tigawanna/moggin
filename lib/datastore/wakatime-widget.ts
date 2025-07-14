@@ -1,5 +1,5 @@
 import WidgetUpdater from "@/modules/expo-wakatime-glance-widgets";
-import { settings$ } from "@/stores/use-app-settings";
+import { settings$ } from "@/stores/app-settings-store";
 import { dateToDayHoursMinutesSeconds } from "@/utils/date";
 import { wakatimeUserTimeQueryFetcher } from "../api/wakatime/use-wakatime-durations";
 
@@ -44,6 +44,12 @@ export async function fetchHoursAndUpdateWakatimeWidget() {
       currentProject,
       byWorker: true,
       totalTime: todayHours,
-    })
+    });
   }
+}
+
+export function updateWakatimeKey(key: string) {
+  // settings$.wakatimeApiKey.set(key);
+  WidgetUpdater.updateApiKey(key);
+  return key;
 }

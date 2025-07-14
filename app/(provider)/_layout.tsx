@@ -1,7 +1,7 @@
 import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallback";
 import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
 
-import { useSettingsStore } from "@/stores/use-app-settings";
+import { useSettingsStore } from "@/stores/app-settings-store";
 import { Stack } from "expo-router";
 
 export default function ProtectedLayout() {

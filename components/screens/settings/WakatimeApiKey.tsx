@@ -1,7 +1,7 @@
 import { useSnackbar } from "@/components/shared/snackbar/store";
 import { checkIfTokenIsValid } from "@/lib/api/wakatime/wakatime-sdk";
 
-import { useApiKeysStore } from "@/stores/use-app-settings";
+import { useApiKeysStore } from "@/stores/app-settings-store";
 import { EvilIcons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useRouter } from "expo-router";
@@ -52,6 +52,7 @@ export function WakatimeApiKey() {
       });
     },
     onError(error, variables, context) {
+      console.log("Error saving Wakatime API key:", error);
       showSnackbar("Error saving Wakatime API key", {
         duration: 5000, // 5 seconds
         action: {

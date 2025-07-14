@@ -63,6 +63,12 @@ dependencies {
   // For interop APIs with Material 2
   implementation("androidx.glance:glance-material:1.1.0")
 
+//  implementation("androidx.glance:glance-appwidget-preview:1.1.0")
+//  implementation("androidx.glance:glance-preview:1.1.0")
+
+  debugImplementation("androidx.glance:glance-appwidget-preview:1.1.0") // Or your version
+  debugImplementation("androidx.glance:glance-preview:1.1.0")
+
   // Compose BOM to ensure compatible versions
   implementation(platform("androidx.compose:compose-bom:2024.12.01"))
   

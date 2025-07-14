@@ -36,11 +36,16 @@ import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.layout.padding
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.height
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import expo.modules.wakatimeglancewidgets.R
 import expo.modules.wakatimeglancewidgets.shared_utils.WidgetConstants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
+
+
 
 class LaunchMainActivityAction : ActionCallback {
     override suspend fun onAction(
@@ -111,9 +116,9 @@ class WakatimeHoursWidget : GlanceAppWidget() {
         // Size-based styling
         fun getTimeTextSize(size: DpSize): androidx.compose.ui.unit.TextUnit {
             return when {
-                size.width >= BIG_SQUARE.width -> 32.sp
-                size.width >= HORIZONTAL_RECTANGLE.width -> 26.sp
-                else -> 22.sp
+                size.width >= BIG_SQUARE.width -> 38.sp
+                size.width >= HORIZONTAL_RECTANGLE.width -> 32.sp
+                else -> 28.sp
             }
         }
 
@@ -208,6 +213,7 @@ class WakatimeHoursWidget : GlanceAppWidget() {
                     backgroundColor = GlanceTheme.colors.widgetBackground
                 ) {
                     WidgetContent(
+                        size=size,
                         totalTime = totalTime,
                         currentProject = currentProject,
                         lastSync = lastSync,
@@ -224,6 +230,7 @@ class WakatimeHoursWidget : GlanceAppWidget() {
 
     @Composable
     private fun WidgetContent(
+        size: DpSize,
         totalTime: String,
         currentProject: String,
         lastSync: String,
@@ -322,3 +329,56 @@ class WakatimeHoursWidget : GlanceAppWidget() {
 class WakatimeHoursWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = WakatimeHoursWidget()
 }
+
+
+
+// --- Start of Preview Code (add this at the bottom of your file) ---
+//
+//// 1. Create a State Provider for the Preview
+//@OptIn(ExperimentalGlancePreviewApi::class) // Opt-in for experimental API
+//object SimpleHoursWidgetPreviewStateProvider : GlancePreview.StateProvider<Preferences> {
+//    override val state: Preferences
+//        get() {
+//            // Create a sample Preferences object for your preview
+//            val mutablePreferences = androidx.datastore.preferences.core.emptyPreferences().toMutablePreferences()
+//            // Use the exact keys your widget expects from WidgetConstants
+//            mutablePreferences[WidgetConstants.WAKATIME_TOTAL_TIME_KEY] = "03 hrs : 45 mins"
+//            mutablePreferences[WidgetConstants.WAKATIME_CURRENT_PROJECT_KEY] = "Preview Project"
+//            mutablePreferences[WidgetConstants.WAKATIME_LAST_SYNC_KEY] = "Just Now"
+//            mutablePreferences[WidgetConstants.WAKATIME_API_KEY] = "preview-api-key" // If read by widget
+//            return mutablePreferences.toPreferences()
+//        }
+//}
+//
+//// 2. Create the Preview Composable
+//@OptIn(ExperimentalGlancePreviewApi::class) // Opt-in for experimental API
+//@GlancePreview(
+//    state = SimpleHoursWidgetPreviewStateProvider::class,
+//    size = [200, 90] // Corresponds to your HORIZONTAL_RECTANGLE DpSize(200.dp, 90.dp)
+//)
+//@Composable
+//fun WakatimeHoursWidgetHorizontalRectPreview() {
+//    WakatimeHoursWidget().Content() // This renders your widget's UI
+//}
+//
+//@OptIn(ExperimentalGlancePreviewApi::class)
+//@GlancePreview(
+//    state = SimpleHoursWidgetPreviewStateProvider::class,
+//    size = [150, 90] // Corresponds to your SMALL_SQUARE DpSize(150.dp, 90.dp)
+//)
+//@Composable
+//fun WakatimeHoursWidgetSmallSquarePreview() {
+//    WakatimeHoursWidget().Content()
+//}
+//
+//@OptIn(ExperimentalGlancePreviewApi::class)
+//@GlancePreview(
+//    state = SimpleHoursWidgetPreviewStateProvider::class,
+//    size = [250, 180] // Corresponds to your BIG_SQUARE DpSize(250.dp, 180.dp)
+//)
+//@Composable
+//fun WakatimeHoursWidgetBigSquarePreview() {
+//    WakatimeHoursWidget().Content()
+//}
+
+// --- End of Preview Code ---

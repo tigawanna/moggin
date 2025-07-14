@@ -15,12 +15,14 @@ import kotlinx.serialization.json.Json
 
 class WakatimeApiClient(private val apiKey: String) {
     
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
+    
     private val httpClient = HttpClient(Android) {
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                coerceInputValues = true
-            })
+            json(json)
         }
         
         install(Logging) {
@@ -44,7 +46,7 @@ class WakatimeApiClient(private val apiKey: String) {
             
             if (response.status.value in 200..299) {
                 val jsonString = response.bodyAsText()
-                val durationResponse = Json.decodeFromString<DurationResponse>(jsonString)
+                val durationResponse = json.decodeFromString<DurationResponse>(jsonString)
                 Result.success(durationResponse)
             } else {
                 val errorBody = response.bodyAsText()

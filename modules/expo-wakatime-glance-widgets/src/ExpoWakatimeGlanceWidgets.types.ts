@@ -1,5 +1,6 @@
 export type ExpoWakatimeGlanceWidgetsModuleEvents = {
-  updateWakatimeWidget: (params: UpdateWidgetPayload) => void;
+  updateWakatimeDailyDurationWidget: (params: UpdateWidgetPayload) => void;
+  updateApiKey: (apiKey: string) => void;
 };
 
 export type UpdateWidgetPayload = {

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: "org.jetbrains.kotlin.plugin.compose"
+//apply plugin: 'org.jetbrains.kotlin:kotlin-serialization:2.0.0'
 
 group = 'expo.modules.wakatimeglancewidgets'
 version = '0.7.2'
@@ -52,7 +53,7 @@ android {
 
 dependencies {
   // Required for WorkManager
-//  implementation("androidx.work:work-runtime-ktx:2.9.0")
+  implementation("androidx.work:work-runtime-ktx:2.9.0")
   
   // jetpack glance dependencies - Updated to latest stable versions
   // For AppWidgets support
@@ -71,10 +72,10 @@ dependencies {
   implementation("androidx.compose.runtime:runtime")
 
   // Ktor for networking
-//  implementation("io.ktor:ktor-client-android:2.3.8")
-//  implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
-//  implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8")
-//  implementation("io.ktor:ktor-client-logging:2.3.8")
+  implementation("io.ktor:ktor-client-android:2.3.8")
+  implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
+  implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8")
+  implementation("io.ktor:ktor-client-logging:2.3.8")
 
   // Kotlinx Serialization for JSON parsing
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")

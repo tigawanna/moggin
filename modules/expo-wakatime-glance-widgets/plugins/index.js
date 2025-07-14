@@ -62,9 +62,68 @@ var withComposeProjectLevelDependancyPlugin = (config, options) => {
 };
 var withComposeProjectLevelDependancyPlugin_default = withComposeProjectLevelDependancyPlugin;
 
+// modules/expo-wakatime-glance-widgets/plugins/withInitializeWorkManger.ts
+var import_config_plugins2 = require("expo/config-plugins");
+var withInitializeWorkManager = (config, userOptions = {}) => {
+  return (0, import_config_plugins2.withMainActivity)(config, (config2) => {
+    if (config2.modResults.language === "java") {
+      config2.modResults.contents = addWorkManagerToJavaActivity(config2.modResults.contents);
+    } else if (config2.modResults.language === "kt") {
+      config2.modResults.contents = addWorkManagerToKotlinActivity(config2.modResults.contents);
+    }
+    return config2;
+  });
+};
+function addWorkManagerToJavaActivity(mainActivity) {
+  const importToAdd = "import expo.modules.wakatimeglancewidgets.hours_widget.WakatimeWidgetWorker;";
+  if (!mainActivity.includes(importToAdd)) {
+    const importRegex = /import\s+.*?;/g;
+    const matches = [...mainActivity.matchAll(importRegex)];
+    if (matches.length > 0) {
+      const lastImport = matches[matches.length - 1];
+      const insertPosition = lastImport.index + lastImport[0].length;
+      mainActivity = mainActivity.slice(0, insertPosition) + "\n" + importToAdd + mainActivity.slice(insertPosition);
+    }
+  }
+  const onCreateCall = "WakatimeWidgetWorker.setupPeriodicWork(this);";
+  if (!mainActivity.includes(onCreateCall)) {
+    const onCreateRegex = /(onCreate\([^)]*\)\s*\{[^}]*super\.onCreate[^;]*;)/;
+    const match = mainActivity.match(onCreateRegex);
+    if (match) {
+      const insertPosition = match.index + match[0].length;
+      mainActivity = mainActivity.slice(0, insertPosition) + "\n    " + onCreateCall + mainActivity.slice(insertPosition);
+    }
+  }
+  return mainActivity;
+}
+function addWorkManagerToKotlinActivity(mainActivity) {
+  const importToAdd = "import expo.modules.wakatimeglancewidgets.hours_widget.WakatimeWidgetWorker";
+  if (!mainActivity.includes(importToAdd)) {
+    const importRegex = /import\s+.*$/gm;
+    const matches = [...mainActivity.matchAll(importRegex)];
+    if (matches.length > 0) {
+      const lastImport = matches[matches.length - 1];
+      const insertPosition = lastImport.index + lastImport[0].length;
+      mainActivity = mainActivity.slice(0, insertPosition) + "\n" + importToAdd + mainActivity.slice(insertPosition);
+    }
+  }
+  const onCreateCall = "WakatimeWidgetWorker.setupPeriodicWork(this)";
+  if (!mainActivity.includes(onCreateCall)) {
+    const onCreateRegex = /(override\s+fun\s+onCreate\([^)]*\)\s*\{[^}]*super\.onCreate[^}]*)/;
+    const match = mainActivity.match(onCreateRegex);
+    if (match) {
+      const insertPosition = match.index + match[0].length;
+      mainActivity = mainActivity.slice(0, insertPosition) + "\n        " + onCreateCall + mainActivity.slice(insertPosition);
+    }
+  }
+  return mainActivity;
+}
+var withInitializeWorkManger_default = withInitializeWorkManager;
+
 // modules/expo-wakatime-glance-widgets/plugins/withPlugins.ts
 var withExpoWakatimeGlanceWidgets = (config, userOptions = {}) => {
   config = withComposeProjectLevelDependancyPlugin_default(config, userOptions);
+  config = withInitializeWorkManger_default(config, userOptions);
   return config;
 };
 var withPlugins_default = withExpoWakatimeGlanceWidgets;

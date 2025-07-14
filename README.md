@@ -87,19 +87,23 @@ Custom native module providing Android Glance widgets that display WakaTime stat
 
 ```typescript
 // Update widget with latest data
-await updateWakatimeWidget({
+await updateWakatimeDailyDurationWidget({
   totalTime: "8h 45m",
   currentProject: "moggin",
   lastSync: new Date().toISOString()
 });
+
+// Update API key across all widget datastores
+await updateApiKey("your-wakatime-api-key");
 ```
 
 **Features:**
 - 📱 Native Android Glance widgets
-- ⏱️ Real-time coding hours display
+- ⏱️ Real-time coding hours display  
 - 🔄 Background updates via Expo Background Tasks
 - 🎨 Material Design 3 widget styling
 - 📊 Shows daily coding statistics
+- 🔑 Direct datastore API key management
 
 ![Widget Preview](./docs/images/wakatime_hours_widget-preview.jpg)
 
@@ -293,7 +297,7 @@ The app uses Expo Background Tasks to update widgets:
 // Background task for widget updates
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
   const data = await fetchWakatimeData();
-  await updateWakatimeWidget(data);
+  await updateWakatimeDailyDurationWidget(data);
   return BackgroundFetch.BackgroundFetchResult.NewData;
 });
 ```

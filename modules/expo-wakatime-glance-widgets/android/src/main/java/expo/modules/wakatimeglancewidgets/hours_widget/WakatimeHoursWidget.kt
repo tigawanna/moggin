@@ -1,4 +1,4 @@
-package expo.modules.wakatimeglancewidgets
+package expo.modules.wakatimeglancewidgets.hours_widget
 
 import android.content.Context
 import android.content.Intent
@@ -34,6 +34,8 @@ import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.layout.padding
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.height
+import expo.modules.wakatimeglancewidgets.R
+import expo.modules.wakatimeglancewidgets.shared_utils.WidgetConstants
 
 class LaunchMainActivityAction : ActionCallback {
     override suspend fun onAction(
@@ -195,11 +197,9 @@ class WakatimeHoursWidget : GlanceAppWidget() {
                     backgroundColor = GlanceTheme.colors.widgetBackground
                 ) {
                     WidgetContent(
-                        size = size,
                         totalTime = totalTime,
                         currentProject = currentProject,
                         lastSync = lastSync,
-                        wakatimeToken = wakatimeToken,
                         timeTextSize = timeTextSize,
                         descriptorTextSize = descriptorTextSize,
                         isWideWidget = isWideWidget,
@@ -213,11 +213,9 @@ class WakatimeHoursWidget : GlanceAppWidget() {
 
     @Composable
     private fun WidgetContent(
-        size: DpSize,
         totalTime: String,
         currentProject: String,
         lastSync: String,
-        wakatimeToken: String,
         timeTextSize: androidx.compose.ui.unit.TextUnit,
         descriptorTextSize: androidx.compose.ui.unit.TextUnit,
         isWideWidget: Boolean,

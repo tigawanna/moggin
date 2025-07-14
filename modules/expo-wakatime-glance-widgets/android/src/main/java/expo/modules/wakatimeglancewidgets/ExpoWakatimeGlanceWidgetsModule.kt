@@ -2,16 +2,20 @@ package expo.modules.wakatimeglancewidgets
 
 import android.content.Context
 import android.content.Intent
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Record
 import expo.modules.kotlin.records.Field
+import expo.modules.wakatimeglancewidgets.hours_widget.WakatimeHoursWidget
+import expo.modules.wakatimeglancewidgets.shared_utils.WidgetConstants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+// datastore for the wakatime duration widget , directly update it to affect the hours widget
+import expo.modules.wakatimeglancewidgets.hours_widget.dataStore
+import androidx.datastore.preferences.core.edit
 
 data class UpdateWidgetPayload(
     @Field val totalTime: String,
@@ -28,7 +32,7 @@ class ExpoWakatimeGlanceWidgetsModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("ExpoWakatimeGlanceWidgets")
 
-    AsyncFunction("updateWakatimeWidget") { payload: UpdateWidgetPayload ->
+    AsyncFunction("updateWakatimeDailyDurationWidget") { payload: UpdateWidgetPayload ->
       CoroutineScope(Dispatchers.IO).launch {
         try {
           val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(WakatimeHoursWidget::class.java)
@@ -61,6 +65,26 @@ class ExpoWakatimeGlanceWidgetsModule : Module() {
         return@Function true
       } catch (e: Exception) {
         return@Function false
+      }
+    }
+
+    AsyncFunction("updateApiKey") { apiKey: String ->
+      CoroutineScope(Dispatchers.IO).launch {
+        try {
+          // Update all available datastores with the API key
+          // Hours widget datastore
+          context.dataStore.edit { preferences ->
+            preferences[WidgetConstants.WAKATIME_API_KEY] = apiKey
+          }
+          
+          // Future datastores can be added here by importing them and replicating the logic
+          // Example: context.anotherDataStore.edit { preferences ->
+          //   preferences[AnotherWidgetConstants.WAKATIME_API_KEY] = apiKey
+          // }
+          
+        } catch (e: Exception) {
+          e.printStackTrace()
+        }
       }
     }
   }

@@ -1,7 +1,7 @@
 import WidgetUpdater from "@/modules/expo-wakatime-glance-widgets";
-import { wakatimeUserTimeQueryFetcher } from "../api/wakatime/use-wakatime-durations";
 import { settings$ } from "@/stores/use-app-settings";
 import { dateToDayHoursMinutesSeconds } from "@/utils/date";
+import { wakatimeUserTimeQueryFetcher } from "../api/wakatime/use-wakatime-durations";
 
 export function updateWakatimeHoursWidget({
   currentProject,
@@ -13,7 +13,7 @@ export function updateWakatimeHoursWidget({
   totalTime: string;
 }) {
   const lastSync = dateToDayHoursMinutesSeconds(new Date());
-  WidgetUpdater.updateWakatimeWidget({
+  WidgetUpdater.updateWakatimeDailyDurationWidget({
     currentProject,
     // The ⚡ prefix is used to indicate the that the update was triggerd by the background task
     lastSync: byWorker ? `⚡${lastSync}` : lastSync,

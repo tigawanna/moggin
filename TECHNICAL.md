@@ -220,7 +220,7 @@ private fun WakatimeWidgetContent() {
 
 #### Widget Data Management
 ```kotlin
-// WidgetData.kt
+// ExpoWakatimeGlanceWidgetsModule.kt
 @Entity(tableName = "widget_data")
 data class WidgetData(
     @PrimaryKey val id: String = "wakatime_widget",
@@ -236,6 +236,25 @@ data class WidgetData(
         }
     }
 }
+
+AsyncFunction("updateApiKey") { apiKey: String ->
+  CoroutineScope(Dispatchers.IO).launch {
+    try {
+      // Update all available datastores with the API key
+      context.dataStore.edit { preferences ->
+        preferences[WidgetConstants.WAKATIME_API_KEY] = apiKey
+      }
+      
+      // Future datastores can be added here by importing them and replicating the logic
+      // Example: context.anotherDataStore.edit { preferences ->
+      //   preferences[AnotherWidgetConstants.WAKATIME_API_KEY] = apiKey
+      // }
+      
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
+  }
+}
 ```
 
 #### Module Interface
@@ -245,7 +264,7 @@ class ExpoWakatimeGlanceWidgetsModule : Module() {
     override fun definition() = ModuleDefinition {
         Name("ExpoWakatimeGlanceWidgets")
         
-        AsyncFunction("updateWakatimeWidget") { payload: Map<String, String> ->
+        AsyncFunction("updateWakatimeDailyDurationWidget") { payload: Map<String, String> ->
             val widgetData = WidgetData(
                 totalTime = payload["totalTime"] ?: "0h 0m",
                 currentProject = payload["currentProject"] ?: "Unknown",
@@ -273,6 +292,27 @@ class ExpoWakatimeGlanceWidgetsModule : Module() {
     }
 }
 ```
+
+#### Expo Config Plugin for WorkManager
+The module includes a custom config plugin that automatically initializes WorkManager in the MainActivity:
+
+```typescript
+// plugins/withInitializeWorkManager.ts
+const withInitializeWorkManager: ConfigPlugin = (config) => {
+  return withMainActivity(config, (config) => {
+    if (config.modResults.language === "java") {
+      config.modResults.contents = addWorkManagerToJavaActivity(config.modResults.contents);
+    } else if (config.modResults.language === "kt") {
+      config.modResults.contents = addWorkManagerToKotlinActivity(config.modResults.contents);
+    }
+    return config;
+  });
+};
+```
+
+The plugin automatically adds:
+- Import statement: `import expo.modules.wakatimeglancewidgets.hours_widget.WakatimeWidgetWorker`
+- Initialization call: `WakatimeWidgetWorker.setupPeriodicWork(this)` in onCreate
 
 ### Expo Config Plugin
 The module includes a custom Expo config plugin to configure Gradle for Jetpack Compose:
@@ -316,7 +356,7 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     const data = await fetchTodayWakatimeData();
     
     // Update widget
-    await updateWakatimeWidget({
+    await updateWakatimeDailyDurationWidget({
       totalTime: data.todayHours,
       currentProject: data.currentProject,
       lastSync: new Date().toISOString()

@@ -26,23 +26,23 @@ function onAppStateChange(status: AppStateStatus) {
     focusManager.setFocused(status === "active");
   }
 }
-let resolver: (() => void) | null = null;
+// let resolver: (() => void) | null = null;
 
-const promiseResolveWhenAppMounted = new Promise<void>((resolve) => {
-  // Resolve the promise when the app is fully mounted
-  resolver = resolve;
-});
+// const promiseResolveWhenAppMounted = new Promise<void>((resolve) => {
+//   // Resolve the promise when the app is fully mounted
+//   resolver = resolve;
+// });
 
-initializeBackgroundTask(promiseResolveWhenAppMounted);
+// initializeBackgroundTask(promiseResolveWhenAppMounted);
 
 export default function RootLayout() {
   
-  useEffect(() => {
-    if (resolver) {
-      resolver();
-      console.log("App mounted, resolver called");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (resolver) {
+  //     resolver();
+  //     console.log("App mounted, resolver called");
+  //   }
+  // }, []);
 
 
   useOnlineManager();

@@ -84,7 +84,7 @@ object WakatimeDataFetcher {
                 ) // Assuming totalHours is in decimal format
                 val freshTotalTimeFormatted = formatTotalTime(totalSeconds)
                 val freshCurrentProject = getLatestProject(response.data.data) ?: "Unknown"
-                val freshLastSyncTimestamp = getCurrentTimestamp()
+                val freshLastSyncTimestamp = "${getCurrentTimestamp()} ⚡"
 
                 WakatimeDataResult(
                     widgetHours = currentlyDisplayedTotalTime, // This is what was on the widget before this fetch

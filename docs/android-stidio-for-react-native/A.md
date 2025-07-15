@@ -182,7 +182,7 @@ Android Studio provides excellent debugging tools for React Native/Expo developm
 
 The Logcat window displays real-time logs from your device/emulator:
 
-![Android Studio Logcat View](https://github.com/tigawanna/moggin/blob/master/docs/android-stidio-for-react-native/images/android-studio-logcat-view.png)
+![Android Studio Logcat View](https://github.com/tigawanna/moggin/raw/master/docs/android-stidio-for-react-native/images/android-studio-logcat-view.png)
 
 **How to access**:
 - **View → Tool Windows → Logcat**
@@ -203,7 +203,7 @@ For advanced debugging of background tasks, network requests, and databases:
 
 View and modify files on your device/emulator:
 
-![File Structure Android View](./images/file-structure-android-view.png)
+![File Structure Android View](https://github.com/tigawanna/moggin/raw/4c7bf3e94cea4a3eaf91d259342e11a46781ef96/docs/android-stidio-for-react-native/images/file-structure-android-view.png)
 
 **How to access**:
 - **View → Tool Windows → Device File Explorer**

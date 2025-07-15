@@ -72,6 +72,79 @@ export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tool
 > Remember to confirm your `ANDROID_SDK` and `JAVA_HOME` exist in nadroid stuio open tools >
 
 >[!TIP]
-> debigging work manager and background tasks
+> use the app inspection tool for debugging background tasks, network requests and built-in databases
 
-Select View > Tool Windows > App Inspection from the menu bar. Select the Background Task Inspector tab. Select the running app process from the menu. 
+In Android Studio, select `View > Tool Windows > App Inspection` from the menu bar
+
+Right below it is the `Logcat` tool window, which is useful for viewing logs and debugging output from your React Native app.
+
+if you encounter the issue `Autolinking is not set up in settings.gradle: expo modules won't be autolinked.`, you can try the following steps:
+
+1. Try reopening android studio and reloading the project.
+2. Try deldeleting the node_modules and reinstalling them:
+
+3. Open the `android/settings.gradle` file in your React Native project.
+4. Ensure that the `include` statements for the Expo modules are present and correctly configured.
+
+```kotlin
+pluginManagement {
+  def reactNativeGradlePlugin = new File(
+    providers.exec {
+      workingDir(rootDir)
+      commandLine("node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })")
+    }.standardOutput.asText.get().trim()
+  ).getParentFile().absolutePath
+  includeBuild(reactNativeGradlePlugin)
+  
+  def expoPluginsPath = new File(
+    providers.exec {
+      workingDir(rootDir)
+      commandLine("node", "--print", "require.resolve('expo-modules-autolinking/package.json', { paths: [require.resolve('expo/package.json')] })")
+    }.standardOutput.asText.get().trim(),
+    "../android/expo-gradle-plugin"
+  ).absolutePath
+  includeBuild(expoPluginsPath)
+}
+
+plugins {
+  id("com.facebook.react.settings")
+  id("expo-autolinking-settings")
+}
+
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+  if (System.getenv('EXPO_USE_COMMUNITY_AUTOLINKING') == '1') {
+    ex.autolinkLibrariesFromCommand()
+  } else {
+    ex.autolinkLibrariesFromCommand(expoAutolinking.rnConfigCommand)
+  }
+}
+expoAutolinking.useExpoModules()
+
+rootProject.name = 'moggin'
+
+expoAutolinking.useExpoVersionCatalog()
+
+include ':app'
+includeBuild(expoAutolinking.reactNativeGradlePlugin)
+
+```
+>[!NOTE]
+> You shouldn't directly edit the android folder in an expo project and if it's necessary, you should use `expo config plugins` with the `expo prebuild` command to regenerate the native code.
+
+5. If anything seems off consider doing a fresh prebuild to regenerate the native code:
+6. A config option that can affect this folder is the `autolinking` configuration in your `app.json` or `app.config.js` file. It is recommended to leave the default settings unless you have specific requirements.
+
+
+```json
+{  "expo": {
+    "name": "moggin",
+    //..... rest of the config file
+    "autolinking": {
+      "searchPaths": [
+        "../../packages"
+      ],
+      "nativeModulesDir": "../../packages"
+    }
+  }
+}
+```

@@ -11,6 +11,7 @@
     "android": "expo run:android",
     "prebuild:android": " npm run plugins:bundle && expo prebuild -p android --clean",
     "build:android": "expo run:android",
+    "build-apk":"eas build --platform android --profile preview --local",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"

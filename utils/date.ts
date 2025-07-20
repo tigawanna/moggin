@@ -3,7 +3,7 @@ export function getLastFiveDates(startingFrom: Date): string[] {
   for (let i = 0; i < 5; i++) {
     const date = new Date(startingFrom);
     date.setDate(startingFrom.getDate() - i);
-    lastFiveDates.push(date.toISOString().split("T")[0]);
+    lastFiveDates.push(dateToISOFormat(date));
   }
   return lastFiveDates;
 }
@@ -41,7 +41,7 @@ export function generateLastFiveDates(count: number = 5) {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
 
-    const dateString = date.toISOString().split("T")[0];
+    const dateString = dateToISOFormat(date);
     const isToday = i === 0;
     const isYesterday = i === 1;
 

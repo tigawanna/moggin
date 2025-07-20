@@ -2,8 +2,8 @@
 import { getUserDurations } from "@/lib/api/wakatime/wakatime-sdk";
 import { getLastFiveDates } from "@/utils/date";
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
-import { UserDailyDurationsData } from "./types/current-user-types";
 import { wakatimeQueryQueryKeyPrefixes } from "./query-keys";
+import { UserDailyDurationsData } from "./types/current-user-types";
 
 interface UseWakatimeDailyDurationProps {
   selectedDate: string;
@@ -72,19 +72,37 @@ export async function wakatimeUserTimeQueryFetcher({
         const existingProject = acc.find((item) => item.project === curr.project);
         if (existingProject) {
           existingProject.duration += curr.duration;
+          // Update to the latest time - ensure we're comparing timestamps correctly
+          // Convert to numbers if they're strings, or use direct comparison for timestamps
+          const currTime = typeof curr.time === 'string' ? new Date(curr.time * 1000).getTime() : curr.time;
+          const existingTime = typeof existingProject.time === 'string' ? new Date(existingProject.time * 1000).getTime() : existingProject.time;
+          
+          if (currTime > existingTime) {
+            existingProject.time = curr.time;
+          }
         }
       }
       return acc;
     },
     []
   );
+
+  // Sort grouped projects by latest time to get the most recent project
+  const sortedGroupedProjects = groupedProjects
+    .filter(project => project.duration >= 120) // Filter out projects with less than 2 minutes (120 seconds)
+    .sort((a, b) => {
+      const timeA = typeof a.time === 'string' ? new Date(a.time * 1000).getTime() : a.time;
+      const timeB = typeof b.time === 'string' ? new Date(b.time * 1000).getTime() : b.time;
+      return timeB - timeA; // Sort in descending order (latest first)
+    });
+
   return {
     type: "success",
     date: selectedDate,
     todayHours: `${hours}h ${minutes}m`,
     totalDurations: result.data.data.length,
-    currentProject: result.data.data[0]?.project || "No project",
-    groupedProjects,
+    currentProject: sortedGroupedProjects[0]?.project || "No project",
+    groupedProjects: sortedGroupedProjects,
     allProjects: result.data.data,
   } as const;
 }

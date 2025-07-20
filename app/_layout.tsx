@@ -6,7 +6,6 @@ import "react-native-reanimated";
 
 import { GlobalSnackbar } from "@/components/shared/snackbar/GlobalSnackbar";
 import { useThemeSetup } from "@/hooks/useThemeSetup";
-import { initializeBackgroundTask } from "@/lib/expo-background/tasks";
 import { useAppState, useOnlineManager } from "@/lib/tanstack/hooks";
 import { useSettingsStore } from "@/stores/app-settings-store";
 import { focusManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,37 +14,23 @@ import React, { useEffect } from "react";
 import { AppStateStatus, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
+import { queryClient } from "@/lib/tanstack/client";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const queryClient = new QueryClient();
+
 function onAppStateChange(status: AppStateStatus) {
   // React Query already supports in web browser refetch on window focus by default
   if (Platform.OS !== "web") {
     focusManager.setFocused(status === "active");
   }
 }
-// let resolver: (() => void) | null = null;
 
-// const promiseResolveWhenAppMounted = new Promise<void>((resolve) => {
-//   // Resolve the promise when the app is fully mounted
-//   resolver = resolve;
-// });
 
-// initializeBackgroundTask(promiseResolveWhenAppMounted);
 
 export default function RootLayout() {
-  
-  // useEffect(() => {
-  //   if (resolver) {
-  //     resolver();
-  //     console.log("App mounted, resolver called");
-  //   }
-  // }, []);
-
-
-  useOnlineManager();
+useOnlineManager();
   useAppState(onAppStateChange);
 
   const [loaded] = useFonts({
@@ -58,13 +43,9 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  const { settings } = useSettingsStore();
-  const { colorScheme, paperTheme } = useThemeSetup(settings.dynamicColors);
-  // const wakatimeApiKey = use$(() => settings$.wakatimeApiKey.get());
+  const dynamicColors = useSettingsStore((state) => state.dynamicColors);
+  const { colorScheme, paperTheme } = useThemeSetup(dynamicColors);
 
-  // if (wakatimeApiKey) {
-  //   queryClient.prefetchQuery(wakatimeCurrentUserQueryOptions(wakatimeApiKey));
-  // }
 
   if (!loaded) {
     return null;

@@ -1,5 +1,5 @@
 import WidgetUpdater from "@/modules/expo-wakatime-glance-widgets";
-import { settings$ } from "@/stores/app-settings-store";
+import { useSettingsStore } from "@/stores/app-settings-store";
 import { dateToDayHoursMinutesSeconds } from "@/utils/date";
 import { wakatimeUserTimeQueryFetcher } from "../api/wakatime/use-wakatime-durations";
 
@@ -28,7 +28,7 @@ export function updateWakatimeHoursWidget({
 
 export async function fetchHoursAndUpdateWakatimeWidget() {
   const date = new Date().toISOString().split("T")[0];
-  const wakatimeKey = settings$.wakatimeApiKey.get();
+  const wakatimeKey = useSettingsStore.getState().wakatimeApiKey;
   console.log("Fetching Wakatime data for widget update  ::: ", date, wakatimeKey);
   if (!wakatimeKey) {
     console.warn("No Wakatime API key configured, cannot update widget");

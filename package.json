@@ -11,7 +11,7 @@
     "android": "expo run:android",
     "prebuild:android": " npm run plugins:bundle && expo prebuild -p android --clean",
     "build:android": "expo run:android",
-    "build-apk":"eas build --platform android --profile preview --local",
+    "build-apk": "eas build --platform android --profile preview --local",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
@@ -64,7 +64,8 @@
     "react-native-webview": "13.13.5",
     "ts-node": "^10.9.2",
     "victory-native": "^41.17.4",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

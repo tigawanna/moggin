@@ -1,22 +1,6 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
-import {withExpoGlanceWidgets} from "./.1-old-widgets/expo-glance-widget/plugins";
 import {withExpoWakatimeGlanceWidgets} from "./modules/expo-wakatime-glance-widgets/plugins/index"
-const defaultWidgetSources = {
-  widgetFilesPath:
-    "widgets/android",
-  manifestPath:
-    "widgets/android/AndroidManifest.xml",
-  resPath: "widgets/android/res",
-};
-const externalWidgetSources = {
-  widgetFilesPath:
-    "/home/dennis/AndroidStudioProjects/Bidii-kotlin-widget/app/src/main/java/com/tigawanna/bidii",
-  manifestPath: "/home/dennis/AndroidStudioProjects/Bidii-kotlin-widget/app/src/main/AndroidManifest.xml",
-  resPath: "/home/dennis/AndroidStudioProjects/Bidii-kotlin-widget/app/src/main/res",
-};
-const isDev = process.env.NODE_ENV === "development"
 
-const widgetSources = isDev ? externalWidgetSources : defaultWidgetSources;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
@@ -52,7 +36,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: [
       "expo-router",
-      "expo-background-task",
       [
         "expo-splash-screen",
         {

@@ -5,9 +5,7 @@ import { Divider, List, Switch } from "react-native-paper";
 
 export default function Settings() {
   const { isDarkMode, toggleTheme } = useThemeStore();
-  const {
-    settings: { dynamicColors, toggleDynamicColors },
-  } = useSettingsStore();
+  const { dynamicColors, toggleDynamicColors } = useSettingsStore();
   const router = useRouter();
 
   return (

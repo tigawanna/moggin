@@ -14,8 +14,7 @@ import { WakatimeWeeklyChart } from "./components/WakatimeWeeklyChart";
 
 export function WeeklyActivity() {
   const { colors } = useTheme();
-  const { settings } = useSettingsStore();
-  const { wakatimeApiKey } = settings;
+  const wakatimeApiKey = useSettingsStore((state) => state.wakatimeApiKey);
   const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
 
   const {

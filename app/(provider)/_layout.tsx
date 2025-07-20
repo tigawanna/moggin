@@ -5,13 +5,12 @@ import { useSettingsStore } from "@/stores/app-settings-store";
 import { Stack } from "expo-router";
 
 export default function ProtectedLayout() {
-  const { settings } = useSettingsStore();
-  const wakatimeKey = settings.wakatimeApiKey;
+  const wakatimeApiKey = useSettingsStore((state) => state.wakatimeApiKey);
   const {
     data: currentUserData,
     isLoading: isCurrentUserLoading,
     error,
-  } = useCurrentUser(wakatimeKey);
+  } = useCurrentUser(wakatimeApiKey);
 
   if (isCurrentUserLoading && !currentUserData) {
     return <LoadingFallback initialScreen/>;

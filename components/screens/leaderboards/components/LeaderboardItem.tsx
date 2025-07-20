@@ -27,7 +27,7 @@ export function LeaderboardItem({ entry, index, currentUser, getRankIcon, getRan
         styles.leaderboardCard,
         isCurrentUser && { borderColor: colors.primary, borderWidth: 2 },
       ]}
-      mode="elevated">
+      elevation={4}>
       <Card.Content>
         <View style={styles.cardContainer}>
           <View style={styles.mainContent}>
@@ -60,11 +60,19 @@ export function LeaderboardItem({ entry, index, currentUser, getRankIcon, getRan
                 <Text variant="headlineSmall" style={styles.timeValue}>
                   {entry.running_total.human_readable_total}
                 </Text>
+                <View style={{flexDirection: 'row', gap: 4  }}>
+                {(entry.user?.city?.ascii_name) && (
+                  <Text variant="bodySmall" style={styles.country}>
+                    {entry.user?.city?.ascii_name}
+                  </Text>
+                )}
                 {(entry.user?.city?.country || entry.user?.location) && (
                   <Text variant="bodySmall" style={styles.country}>
                     {entry.user?.city?.country || entry.user?.location}
                   </Text>
                 )}
+
+                </View>
               </View>
             </View>
           </View>

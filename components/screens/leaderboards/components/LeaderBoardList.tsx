@@ -8,7 +8,7 @@ import { wakatimeLeaderboardQueryOptions } from '@/lib/api/wakatime/use-leaderbo
 import { useApiKeysStore } from '@/stores/app-settings-store';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
-import { FlatList, ListRenderItem, RefreshControl, StyleSheet } from 'react-native';
+import { FlatList, ListRenderItem, RefreshControl, StyleSheet, View } from 'react-native';
 import { Surface, useTheme } from 'react-native-paper';
 import { LeaderboardItem } from './LeaderboardItem';
 import { getRankColor, getRankIcon } from './leaderboard-utils';
@@ -138,6 +138,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
     <Surface style={styles.container}>
       <FlatList
         style={styles.container}
+        windowSize={5}
         data={actualData}
         renderItem={renderLeaderboardItem}
         keyExtractor={keyExtractor}
@@ -151,6 +152,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
         }
         contentContainerStyle={styles.flatListContent}
         showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
     </Surface>
   );
@@ -159,9 +161,14 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   flatListContent: {
-    padding: 16,
-    paddingBottom: 24,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 32,
+  },
+  separator: {
+    height: 8,
   },
 });

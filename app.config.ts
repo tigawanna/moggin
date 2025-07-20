@@ -65,7 +65,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ],
     experiments: {
       typedRoutes: true,
-      // reactCompiler: true,
+      reactCompiler: true,
     },
     extra: {
       ...config.extra,

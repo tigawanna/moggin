@@ -1,5 +1,6 @@
 import { UserDailyDurations, WakatimeUser, WakatimeUserResponse } from "./types/current-user-types";
 import { WakatimeLeaderboard } from "./types/leaderboard-types";
+import { WakatimeRandomUserResponse } from "./types/random-user";
 
 const baseUrl = "https://wakatime.com" as const;
 
@@ -157,6 +158,16 @@ export async function getLeaderboard(params: {
   language?: string;
 }) {
   return fetchData<WakatimeLeaderboard>("/api/v1/leaders", { ...params });
+}
+
+// Get specific user details
+export async function getUserDetails(params: {
+  api_key: string;
+  username: string;
+}) {
+  return fetchData<WakatimeRandomUserResponse>(`/api/v1/users/${params.username}`, {
+    api_key: params.api_key,
+  });
 }
 
 

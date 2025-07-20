@@ -1,7 +1,9 @@
 import { useApiKeysStore } from "@/stores/app-settings-store";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getUserStats } from "./wakatime-sdk";
-import { wakatimeQueryQueryKeyPrefixes } from "./query-keys";
+import { wakatimeQueryQueryKeyPrefixes } from "@/lib/tanstack/client";
+
+
 
 export type WakatimeDetailStats = {
   todayStats: {

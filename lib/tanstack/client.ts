@@ -1,15 +1,16 @@
 import { MutationCache, QueryClient } from "@tanstack/react-query";
 
-
-
-export const queryKeyPrefixes = {
-  "wakatime-current-user": "wakatime-current-user",
-  "wakatime-leaderboard": "wakatime-leaderboard",
-  "wakatime-duration": "wakatime-duration",
-    "wakatime-stats": "wakatime-stats",
+export const wakatimeQueryQueryKeyPrefixes = {
+  currentUser: "wakatime-current-user",
+  duration: "wakatime-duration",
+  leaderboard: "wakatime-leaderboard",
+  stats: "wakatime-stats",
+  randomUser: "wakatime-random-user",
 } as const;
 
-type QueryKey = [keyof typeof queryKeyPrefixes, ...(readonly unknown[])];
+
+
+type QueryKey = [typeof wakatimeQueryQueryKeyPrefixes[keyof typeof wakatimeQueryQueryKeyPrefixes], ...(readonly unknown[])];
 
 interface MyMeta extends Record<string, unknown> {
   invalidates?: [QueryKey[0], ...(readonly unknown[])][];

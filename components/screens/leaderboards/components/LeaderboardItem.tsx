@@ -1,6 +1,7 @@
 import { LeaderboardEntry } from "@/lib/api/wakatime/types/leaderboard-types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, View } from "react-native";
+import { router } from "expo-router";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Avatar, Card, Text, useTheme } from "react-native-paper";
 import { ExpandableLanguages } from "./ExpandableLanguages";
 
@@ -21,68 +22,76 @@ export function LeaderboardItem({ entry, index, currentUser, getRankIcon, getRan
     entry.user?.display_name === currentUser.display_name
   );
 
+  const handleUserPress = () => {
+    if (entry.user?.id) {
+      router.push(`/${entry.user.id}`);
+    }
+  };
+
   return (
-    <Card
-      style={[
-        styles.leaderboardCard,
-        isCurrentUser && { borderColor: colors.primary, borderWidth: 2 },
-      ]}
-      elevation={4}>
-      <Card.Content>
-        <View style={styles.cardContainer}>
-          <View style={styles.mainContent}>
-            <View style={styles.headerRow}>
-              <View style={styles.rankContainer}>
-                <MaterialCommunityIcons
-                  name={getRankIcon(entry.rank)}
-                  size={32}
-                  color={getRankColor(entry.rank)}
+    <Pressable onPress={handleUserPress}>
+      <Card
+        style={[
+          styles.leaderboardCard,
+          isCurrentUser && { borderColor: colors.primary, borderWidth: 2 },
+        ]}
+        elevation={4}>
+        <Card.Content>
+          <View style={styles.cardContainer}>
+            <View style={styles.mainContent}>
+              <View style={styles.headerRow}>
+                <View style={styles.rankContainer}>
+                  <MaterialCommunityIcons
+                    name={getRankIcon(entry.rank)}
+                    size={32}
+                    color={getRankColor(entry.rank)}
+                  />
+                  <Text variant="titleMedium" style={styles.rankText}>
+                    #{entry.rank}
+                  </Text>
+                </View>
+                <Avatar.Image
+                  size={48}
+                  source={{
+                    uri: entry.user?.photo || "https://github.com/github.png",
+                  }}
                 />
-                <Text variant="titleMedium" style={styles.rankText}>
-                  #{entry.rank}
+                <Text variant="titleMedium" style={styles.username}>
+                  {entry.user?.display_name || entry.user?.username}
+                  {isCurrentUser && (
+                    <Text style={{ color: colors.primary, fontWeight: "bold" }}> (You)</Text>
+                  )}
                 </Text>
               </View>
-              <Avatar.Image
-                size={48}
-                source={{
-                  uri: entry.user?.photo || "https://github.com/github.png",
-                }}
-              />
-              <Text variant="titleMedium" style={styles.username}>
-                {entry.user?.display_name || entry.user?.username}
-                {isCurrentUser && (
-                  <Text style={{ color: colors.primary, fontWeight: "bold" }}> (You)</Text>
-                )}
-              </Text>
-            </View>
-            <View style={styles.timeRow}>
-              <View style={styles.userDetails}>
-                <Text variant="headlineSmall" style={styles.timeValue}>
-                  {entry.running_total.human_readable_total}
-                </Text>
-                <View style={{flexDirection: 'row', gap: 4  }}>
-                {(entry.user?.city?.ascii_name) && (
-                  <Text variant="bodySmall" style={styles.country}>
-                    {entry.user?.city?.ascii_name}
+              <View style={styles.timeRow}>
+                <View style={styles.userDetails}>
+                  <Text variant="headlineSmall" style={styles.timeValue}>
+                    {entry.running_total.human_readable_total}
                   </Text>
-                )}
-                {(entry.user?.city?.country || entry.user?.location) && (
-                  <Text variant="bodySmall" style={styles.country}>
-                    {entry.user?.city?.country || entry.user?.location}
-                  </Text>
-                )}
+                  <View style={{flexDirection: 'row', gap: 4  }}>
+                  {(entry.user?.city?.ascii_name) && (
+                    <Text variant="bodySmall" style={styles.country}>
+                      {entry.user?.city?.ascii_name}
+                    </Text>
+                  )}
+                  {(entry.user?.city?.country || entry.user?.location) && (
+                    <Text variant="bodySmall" style={styles.country}>
+                      {entry.user?.city?.country || entry.user?.location}
+                    </Text>
+                  )}
 
+                  </View>
                 </View>
               </View>
             </View>
           </View>
-        </View>
 
-        <ExpandableLanguages 
-          languages={entry.running_total.languages || []} 
-        />
-      </Card.Content>
-    </Card>
+          <ExpandableLanguages 
+            languages={entry.running_total.languages || []} 
+          />
+        </Card.Content>
+      </Card>
+    </Pressable>
   );
 }
 

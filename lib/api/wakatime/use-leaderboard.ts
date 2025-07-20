@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { getLeaderboard } from "./wakatime-sdk";
-import { wakatimeQueryQueryKeyPrefixes } from "./query-keys";
+import { wakatimeQueryQueryKeyPrefixes } from "@/lib/tanstack/client";
+
 
 interface WakatimeLeaderboardQueryOptions {
   wakatimeApiKey: string | null;
@@ -88,3 +89,5 @@ export function useWakatimeLeaderboard({
   
   return queryOpts;
 }
+
+

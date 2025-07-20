@@ -2,8 +2,8 @@
 import { getUserDurations } from "@/lib/api/wakatime/wakatime-sdk";
 import { getLastFiveDates } from "@/utils/date";
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
-import { wakatimeQueryQueryKeyPrefixes } from "./query-keys";
 import { UserDailyDurationsData } from "./types/current-user-types";
+import { wakatimeQueryQueryKeyPrefixes } from "@/lib/tanstack/client";
 
 interface UseWakatimeDailyDurationProps {
   selectedDate: string;

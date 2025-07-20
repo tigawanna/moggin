@@ -112,7 +112,7 @@ export default function UserDetailsScreen() {
           },
         }}
       />
-      <Surface style={styles.container}>
+      <View style={styles.container}>
         {/* Header Section */}
         <Card style={styles.headerCard} elevation={4}>
           <Card.Content style={styles.headerContent}>
@@ -267,7 +267,7 @@ export default function UserDetailsScreen() {
             )}
           </Card.Content>
         </Card>
-      </Surface>
+      </View>
     </ScrollView>
   );
 }
@@ -275,11 +275,12 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
     flexGrow: 1,
+    padding: 4,
   },
   container: {
     flex: 1,
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 26,
   },
   headerCard: {
     marginBottom: 16,

@@ -1,5 +1,5 @@
 import { useSettingsStore, useThemeStore } from "@/stores/app-settings-store";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { ScrollView, StyleSheet } from "react-native";
 import { Divider, List, Switch } from "react-native-paper";
 
@@ -47,12 +47,12 @@ export default function Settings() {
         <List.Item
           title="Terms of Service"
           left={(props) => <List.Icon {...props} icon="file-document" />}
-          onPress={() => {}}
+          onPress={() => router.push("/terms-of-service")}
         />
         <List.Item
           title="Privacy Policy"
           left={(props) => <List.Icon {...props} icon="shield-account" />}
-          onPress={() => {}}
+          onPress={() => router.push("/privacy-policy")}
         />
       </List.Section>
     </ScrollView>

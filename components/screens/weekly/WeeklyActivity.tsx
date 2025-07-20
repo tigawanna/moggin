@@ -11,6 +11,7 @@ import { useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 import { WakatimeWeeklyChart } from "./components/WakatimeWeeklyChart";
+import { WeeklyStatsCards } from "./components/WeeklyStatsCards";
 
 export function WeeklyActivity() {
   const { colors } = useTheme();
@@ -81,10 +82,11 @@ export function WeeklyActivity() {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={styles.scrollView}
       contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={true}
       refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
-      <Card style={styles.card} mode="elevated">
+      <Card style={styles.card} >
         <Card.Content>
           <View style={styles.header}>
             <MaterialCommunityIcons name="chart-line" size={24} color={colors.primary} />
@@ -99,16 +101,17 @@ export function WeeklyActivity() {
           <WakatimeWeeklyChart wakatimeData={wakatimeData} />
         </Card.Content>
       </Card>
+      <WeeklyStatsCards wakatimeData={wakatimeData} />
     </ScrollView>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
   },
   card: {
     marginBottom: 16,
+    minHeight: 400,
   },
   header: {
     flexDirection: "row",
@@ -128,11 +131,11 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    paddingBottom: 20,
-    paddingTop: 80, // Add padding to account for sticky header
   },
   scrollContent: {
-    flex: 1,
+    paddingBottom: 40,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   bottomPadding: {
     height: 4,

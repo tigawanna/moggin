@@ -24,7 +24,7 @@ export function HomeScreenComponent() {
   const { wakatimeApiKey } = useApiKeysStore();
   const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser(wakatimeApiKey);
   const { grouped } = useLocalSearchParams<{ grouped: "true" | "false" }>();
-  const isGrouped = grouped === "true";
+  const isGrouped = grouped ? grouped === "true" : true;
 
   const [selectedDate, setSelected] = useState(getCurrentDateISO());
 

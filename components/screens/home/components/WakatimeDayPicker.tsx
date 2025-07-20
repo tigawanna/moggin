@@ -1,8 +1,8 @@
-import { useCurrentWakatimeDate } from "@/hooks/use-current-date";
 import { generateLastFiveDates } from "@/utils/date";
+import { router } from "expo-router";
 import { useCallback, useMemo } from "react";
 import { StyleSheet } from "react-native";
-import { SegmentedButtons, Surface, Text } from "react-native-paper";
+import { SegmentedButtons,} from "react-native-paper";
 
 interface WakatimeDayPickerProps {
   selectedDate: string;
@@ -22,6 +22,7 @@ export function WakatimeDayPicker({ selectedDate, setSelectedDate }: WakatimeDay
       value={selectedDate}
       onValueChange={(date)=>{
         setSelectedDate(date);
+              router.setParams({ grouped:"true" });
         }}
       buttons={dateOptions}
       style={styles.segmentedButtons}

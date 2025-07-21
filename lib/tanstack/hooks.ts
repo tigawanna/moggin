@@ -12,9 +12,7 @@ export function useOnlineManager() {
     // React Query already supports in web browser refetch on window focus by default 
  onlineManager.setEventListener((setOnline) => {
    const eventSubscription = Network.addNetworkStateListener((state) => {
-    console.log("Network state changed:", state.isConnected);
-    //  setOnline(!!state.isConnected);
-     setOnline(false);
+     setOnline(!!state.isConnected);
    });
    return eventSubscription.remove;
  });

@@ -120,13 +120,14 @@ export function HomeScreenComponent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
   },
   stickyHeader: {
     position: "absolute",
-    maxWidth: "97%",
+    maxWidth: "95%",
     top: 0,
-    left: 0,
-    right: 0,
+    left: 15,
+    right: 5,
     zIndex: 1,
     backgroundColor: "transparent",
   },

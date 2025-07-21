@@ -147,6 +147,30 @@ export function ExpandableLanguages({ languages }: ExpandableLanguagesProps) {
     }
   };
 
+  // Helper function to convert color to rgba with opacity
+  const colorToRgba = (color: string, opacity: number) => {
+    // If it's already a hex color, convert it
+    if (color.startsWith('#')) {
+      const hex = color.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+    
+    // If it's already an rgb/rgba color, extract values and apply new opacity
+    if (color.startsWith('rgb')) {
+      const matches = color.match(/\d+/g);
+      if (matches && matches.length >= 3) {
+        const [r, g, b] = matches;
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+      }
+    }
+    
+    // Fallback: use the color as is with reduced opacity (not ideal but prevents crashes)
+    return color;
+  };
+
   return (
     <View style={styles.languagesContainer}>
       <Text variant="labelMedium" style={[styles.sectionTitle, { color: colors.onSurfaceVariant }]}>
@@ -164,7 +188,7 @@ export function ExpandableLanguages({ languages }: ExpandableLanguagesProps) {
               style={[
                 styles.languageChip, 
                 { 
-                  backgroundColor: `${langColor}20`, // 20% opacity
+                  backgroundColor: colorToRgba(langColor, 0.2), // 20% opacity
                   borderColor: langColor,
                   borderWidth: 1,
                 }
@@ -197,7 +221,7 @@ export function ExpandableLanguages({ languages }: ExpandableLanguagesProps) {
                   style={[
                     styles.languageChip, 
                     { 
-                      backgroundColor: `${langColor}20`, // 20% opacity
+                      backgroundColor: colorToRgba(langColor, 0.2), // 20% opacity
                       borderColor: langColor,
                       borderWidth: 1,
                     }

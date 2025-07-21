@@ -3,10 +3,11 @@ import { useApiKeysStore } from "@/stores/app-settings-store";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { LeaderBoardList } from "./components/LeaderBoardList";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export function WakatimeLeaderboardScreen() {
   const { wakatimeApiKey } = useApiKeysStore();
-
+  const { top } = useSafeAreaInsets();
   // Get current user data for default country
   const { data: currentUserData } = useCurrentUser(wakatimeApiKey);
 
@@ -15,7 +16,7 @@ export function WakatimeLeaderboardScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: top }]}>
       {/* <CurrentUserLeaderboardStannnding /> */}
       <LeaderBoardList selectedCountry={selectedCountry} />
     </View>

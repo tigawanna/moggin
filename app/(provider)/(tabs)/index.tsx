@@ -1,11 +1,13 @@
-
 import { HomeScreenComponent } from "@/components/screens/home/HomeScreenComponent";
 import { StyleSheet } from "react-native";
-import { Surface } from "react-native-paper";
+import { Surface,Text } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const { top } = useSafeAreaInsets();
   return (
-    <Surface style={styles.container}>
+    <Surface style={[styles.container, { paddingTop: top + 10 }]}>
+      <Text variant="headlineLarge" style={{ marginBottom: 6 }}>Moggin</Text>
       <HomeScreenComponent />
     </Surface>
   );
@@ -15,42 +17,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  header: {
-    alignItems: "center",
-    marginVertical: 24,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  subtitle: {
-    marginTop: 4,
-    opacity: 0.7,
-  },
-  card: {
-    marginVertical: 8,
-    borderRadius: 12,
-  },
-  cardContent: {
-    gap: 8,
-  },
-  cardTitle: {
-    fontWeight: "bold",
-    marginTop: 4,
-  },
-  divider: {
-    marginVertical: 24,
-  },
-  footer: {
-    marginTop: "auto",
-    alignItems: "center",
-  },
-  button: {
-    width: "80%",
-    borderRadius: 8,
-  },
-  buttonContent: {
-    height: 48,
-  },
+    paddingHorizontal: 20,
+  }
 });

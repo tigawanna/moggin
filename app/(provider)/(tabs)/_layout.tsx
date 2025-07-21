@@ -33,6 +33,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          headerShown: false,
           title: "Home",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
@@ -40,6 +41,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="weekly"
         options={{
+          headerShown: false,
           title: "Weekly",
           tabBarIcon: ({ color }) => <MaterialIcon size={28} name="auto-graph" color={color} />,
         }}
@@ -47,6 +49,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="leaderboard"
         options={{
+          headerShown: false,
           title: "Leaderboard",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcon size={28} name="trophy" color={color} />

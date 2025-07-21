@@ -4,10 +4,8 @@ import { Surface,Text } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { top } = useSafeAreaInsets();
   return (
-    <Surface style={[styles.container, { paddingTop: top + 10 }]}>
-      <Text variant="headlineLarge" style={{ marginBottom: 6 , paddingHorizontal: 20 }}>Moggin</Text>
+    <Surface style={styles.container}>
       <HomeScreenComponent />
     </Surface>
   );

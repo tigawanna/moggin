@@ -3,6 +3,8 @@ import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
 import { useSettingsStore } from "@/stores/app-settings-store";
 import { Stack } from "expo-router";
 import { useTheme } from "react-native-paper";
+import * as Network from "expo-network";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ProtectedLayout() {
   const { colors } = useTheme();
@@ -13,8 +15,13 @@ export default function ProtectedLayout() {
     error,
   } = useCurrentUser(wakatimeApiKey);
 
-  if (isCurrentUserLoading && !currentUserData) {
-    return <LoadingFallback initialScreen/>;
+  const { data: isOnline, isPending: isOnlineLoading } = useQuery({
+    queryKey: ["network-status"],
+    queryFn: () => Network.getNetworkStateAsync().then((state) => state.isConnected),
+  });
+
+  if ((isCurrentUserLoading && !currentUserData) || isOnlineLoading) {
+    return <LoadingFallback initialScreen />;
   }
   // console.log("Current user data in layout:", currentUserData?.data?.data?.username);
 
@@ -28,7 +35,7 @@ export default function ProtectedLayout() {
         <Stack.Screen
           name="[user]"
           options={{
-            title:"",
+            title: "",
             headerStyle: {
               backgroundColor: colors.surface,
             },

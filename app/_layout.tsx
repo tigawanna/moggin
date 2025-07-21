@@ -8,13 +8,14 @@ import { GlobalSnackbar } from "@/components/shared/snackbar/GlobalSnackbar";
 import { useThemeSetup } from "@/hooks/useThemeSetup";
 import { useAppState, useOnlineManager } from "@/lib/tanstack/hooks";
 import { useSettingsStore } from "@/stores/app-settings-store";
-import { focusManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { focusManager} from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import React, { useEffect } from "react";
 import { AppStateStatus, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
-import { queryClient } from "@/lib/tanstack/client";
+import { asyncStoragePersister, queryClient } from "@/lib/tanstack/client";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -52,7 +53,9 @@ useOnlineManager();
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: asyncStoragePersister }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <PaperProvider theme={paperTheme}>
@@ -70,6 +73,6 @@ useOnlineManager();
           </PaperProvider>
         </GestureHandlerRootView>
       </ThemeProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }

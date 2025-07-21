@@ -1,4 +1,6 @@
 import { MutationCache, QueryClient } from "@tanstack/react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 
 export const wakatimeQueryQueryKeyPrefixes = {
   currentUser: "wakatime-current-user",
@@ -6,8 +8,12 @@ export const wakatimeQueryQueryKeyPrefixes = {
   leaderboard: "wakatime-leaderboard",
   stats: "wakatime-stats",
   randomUser: "wakatime-random-user",
+  networkStatus: "network-status",
 } as const;
 
+export const asyncStoragePersister = createAsyncStoragePersister({
+  storage: AsyncStorage,
+});
 
 
 type QueryKey = [typeof wakatimeQueryQueryKeyPrefixes[keyof typeof wakatimeQueryQueryKeyPrefixes], ...(readonly unknown[])];
@@ -44,6 +50,7 @@ export const queryClient = new QueryClient({
       staleTime: 1000 * 60 * 60,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours
     },
   },
 });

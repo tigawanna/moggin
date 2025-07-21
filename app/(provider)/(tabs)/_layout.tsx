@@ -40,7 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="weekly"
         options={{
-          title: "weekly",
+          title: "Weekly",
           tabBarIcon: ({ color }) => <MaterialIcon size={28} name="auto-graph" color={color} />,
         }}
       />

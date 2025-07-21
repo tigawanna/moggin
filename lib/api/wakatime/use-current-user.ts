@@ -16,10 +16,10 @@ export const wakatimeCurrentUserQueryOptions = (wakatimeApiKey: string | null) =
       return await fetchCurrentUser(wakatimeApiKey);
     },
     enabled: !!wakatimeApiKey,
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    gcTime: 1000 * 60 * 60, // 1 hour
-    retry: 1, // Only retry once on failure
-    // placeholderData: (previousData) => previousData, // Keep previous data during refetch
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: 1,
+    placeholderData: (previousData) => previousData,
   });
 
 export function useCurrentUser(apikey: string | null = null) {

@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import { Button, Surface, Text, TextInput, useTheme } from "react-native-paper";
+import { Button, Chip, Text, TextInput, useTheme } from "react-native-paper";
 
 export function WakatimeApiKey() {
   const { colors } = useTheme();
@@ -35,21 +35,7 @@ export function WakatimeApiKey() {
         });
         return;
       }
-      showSnackbar("Wakatime API key saved successfully!", {
-        duration: 3000,
-        action: {
-          label: "Go Home",
-          onPress: () => {
-            router.push("/");
-          },
-        },
-        onDismiss: () => {
-          // Auto redirect to home after 3 seconds
-          setTimeout(() => {
-            router.push("/");
-          }, 500);
-        },
-      });
+
     },
     onError(error, variables, context) {
       console.log("Error saving Wakatime API key:", error);
@@ -74,56 +60,39 @@ export function WakatimeApiKey() {
   };
 
   return (
-    <Surface style={{ ...styles.container }}>
+    <View style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 20}>
-        <View style={{ marginBottom: 24 }}>
-          <Text
-            variant="titleMedium"
-            style={{
-              fontWeight: "bold",
-            }}>
-            Wakatime
-          </Text>
-          <Text 
-            variant="bodySmall" 
-            style={{
-              fontSize: 12,
-              paddingVertical: 4,
-              paddingHorizontal: 12,
-              opacity: 0.7,
-              color: colors.onSurfaceVariant
-            }}>
-            Used to track your coding activity and statistics
-          </Text>
+        <View>
+          {wakatimeApiKey && (
+            <Chip 
+              icon="check-circle" 
+              style={styles.statusChip}
+              textStyle={styles.statusChipText}>
+              API Key Connected
+            </Chip>
+          )}
+          
           <Link
             target="_blank"
             href={"https://wakatime.com/settings/api-key"}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-              gap: 8,
-              paddingVertical: 8,
-              textDecorationLine: "underline",
-              textDecorationColor: colors.inversePrimary,
-            }}>
-            <Text variant="bodySmall">• Wakatime: Go to Settings → API Key</Text>
-            <EvilIcons name="external-link" size={20} color={colors.primary} />
+            style={styles.linkContainer}>
+            <Text variant="bodySmall" style={styles.linkText}>
+              📋 Get your API key from WakaTime Settings
+            </Text>
+            <EvilIcons name="external-link" size={18} color={colors.primary} />
           </Link>
+          
           <TextInput
             mode="outlined"
-            label="Wakatime API Key"
+            label="WakaTime API Key"
+            placeholder="waka_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             value={wakatimeKey}
             onChangeText={setWakatimeKey}
             secureTextEntry={wakatimeSecure}
-            style={{
-              marginTop: 8,
-              marginBottom: 16,
-            }}
+            style={styles.textInput}
             right={
               <TextInput.Icon
                 icon={wakatimeSecure ? "eye" : "eye-off"}
@@ -131,28 +100,51 @@ export function WakatimeApiKey() {
               />
             }
           />
+          
           <Button
             mode="contained"
             onPress={handleSaveWakatime}
             disabled={isPending || wakatimeKey?.trim() === ""}
-            style={{
-              marginVertical: 8,
-            }}
+            style={styles.saveButton}
             icon="content-save">
-            {isPending ? "Saving..." : "Save Wakatime API Key"}
+            {isPending ? "Validating..." : "Save & Validate Key"}
           </Button>
         </View>
       </KeyboardAvoidingView>
-    </Surface>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    height: "100%",
     width: "100%",
-    justifyContent: "center",
+  },
+  statusChip: {
+    alignSelf: 'flex-start',
+    marginBottom: 16,
+  },
+  statusChipText: {
+    fontSize: 12,
+  },
+  linkContainer: {
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  linkText: {
+    opacity: 0.8,
+    textDecorationLine: "underline",
+  },
+  textInput: {
+    marginBottom: 16,
+  },
+  saveButton: {
+    marginTop: 8,
   },
 });

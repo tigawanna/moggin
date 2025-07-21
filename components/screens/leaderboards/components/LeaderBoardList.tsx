@@ -7,7 +7,7 @@ import { useCurrentUser } from '@/lib/api/wakatime/use-current-user';
 import { wakatimeLeaderboardQueryOptions } from '@/lib/api/wakatime/use-leaderboard';
 import { useApiKeysStore } from '@/stores/app-settings-store';
 import { useQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useTransition } from 'react';
 import { FlatList, ListRenderItem, RefreshControl, StyleSheet, View } from 'react-native';
 import { DataTable, Searchbar, Surface, Text, useTheme } from 'react-native-paper';
 import { LeaderboardItem } from './LeaderboardItem';
@@ -23,6 +23,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0); // 0-based for React Native Paper
+  const [isPending, startTransition] = useTransition();
 
   // Get current user data (for country fallback and current user info)
   const { 
@@ -106,7 +107,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
   }, [refetch]);
 
   const handlePageChange = useCallback((newPage: number) => {
-    setPage(newPage);
+    startTransition(() => setPage(newPage));
   }, []);
 
   const handleSearchChange = useCallback((query: string) => {

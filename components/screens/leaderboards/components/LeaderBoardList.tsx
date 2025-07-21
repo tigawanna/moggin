@@ -8,10 +8,12 @@ import { wakatimeLeaderboardQueryOptions } from '@/lib/api/wakatime/use-leaderbo
 import { useApiKeysStore } from '@/stores/app-settings-store';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react';
-import { FlatList, ListRenderItem, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, ListRenderItem, RefreshControl, StyleSheet, View } from 'react-native';
 import { DataTable, Searchbar, Surface, Text, useTheme } from 'react-native-paper';
 import { LeaderboardItem } from './LeaderboardItem';
 import { getRankColor, getRankIcon } from './leaderboard-utils';
+
+
 
 interface LeaderBoardListProps {
   selectedCountry?: string | null;
@@ -23,7 +25,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0); // 0-based for React Native Paper
-  const [isPending, startTransition] = useTransition();
+  const [isNextPageTransitionPending, startTransition] = useTransition();
 
   // Get current user data (for country fallback and current user info)
   const { 
@@ -31,7 +33,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
     isLoading: isCurrentUserLoading,
     error: currentUserError 
   } = useCurrentUser(wakatimeApiKey);
-
+ 
   // Use user's default country if no country is provided
   const effectiveCountry = selectedCountry || currentUserData?.data?.data?.city?.country_code || 'KE';
 
@@ -48,6 +50,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
       page: page + 1, // Convert to 1-based for API
     })
   );
+
 
   // Extract the actual data and pagination info - handle both old and new response formats
   const { actualData, totalPages, currentPage } = useMemo(() => {
@@ -192,6 +195,13 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
 
   return (
     <Surface style={styles.container}>
+      {isNextPageTransitionPending && <ActivityIndicator style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        zIndex: 1000,
+        transform: [{ translateX: -20 }, { translateY: -20 }],
+      }} />}
       <View style={styles.searchContainer}>
         <Searchbar
           placeholder="username, name, or email..."
@@ -214,7 +224,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
             No Results Found
           </Text>
           <Text variant="bodyMedium" style={styles.noResultsText}>
-            No users match "{searchQuery}". Try a different search term.
+            No users match "{searchQuery}". Try a different search term or check the next page
           </Text>
         </View>
       ) : (
@@ -238,7 +248,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
         />
       )}
       {/* Show pagination only when not searching */}
-      {!searchQuery.trim() && totalPages > 1 && (
+      {totalPages > 1 && (
         <DataTable.Pagination
           page={page}
           numberOfPages={totalPages}

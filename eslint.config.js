@@ -11,4 +11,11 @@ module.exports = defineConfig([
       'react-compiler/react-compiler': 'error',
     },
   },
+  {
+    files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+    plugins: ['testing-library'],
+    rules: {
+      ...require('eslint-plugin-testing-library/configs/react').rules,
+    },
+  },
 ]);

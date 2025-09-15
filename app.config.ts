@@ -1,16 +1,43 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
-import {withExpoWakatimeGlanceWidgets} from "./modules/expo-wakatime-glance-widgets/plugins/index"
+import { withExpoWakatimeGlanceWidgets } from "./modules/expo-wakatime-glance-widgets/plugins/index";
 
+const IS_DEV = process.env.APP_VARIANT === "development";
+const IS_PREVIEW = process.env.APP_VARIANT === "preview";
+
+const getUniqueIdentifier = () => {
+  if (IS_DEV) {
+    return "com.tigawanna.moggin.dev";
+  }
+
+  if (IS_PREVIEW) {
+    return "com.tigawanna.moggin.preview";
+  }
+
+  return "com.tigawanna.moggin";
+};
+
+const getAppName = () => {
+  if (IS_DEV) {
+    return { name: "Moggin (Dev)", slug: "moggin-dev" };
+  }
+
+  if (IS_PREVIEW) {
+    return { name: "Moggin (Preview)", slug: "moggin-preview" };
+  }
+
+  return { name: "Moggin", slug: "moggin" };
+};
 
 export default ({ config }: ConfigContext): ExpoConfig => {
+  const { name, slug } = getAppName();
   return {
     ...config,
-    name: "moggin",
-    slug: "moggin",
+    name,
+    slug,
+    scheme:slug,
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/splash-icon.png",
-    scheme: "moggin",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     ios: {
@@ -27,7 +54,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         backgroundColor: "#ffffff",
       },
       edgeToEdgeEnabled: true,
-      package: "com.tigawanna.moggin",
+      package: getUniqueIdentifier(),
     },
     web: {
       bundler: "metro",
@@ -77,4 +104,5 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         projectId: "bef58162-7beb-4614-9e99-06ac846b57e1",
       },
     },
-  };};
+  };
+};

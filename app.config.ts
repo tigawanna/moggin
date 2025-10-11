@@ -34,7 +34,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name,
     slug,
-    scheme:slug,
+    scheme: slug,
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/splash-icon.png",
@@ -55,6 +55,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
       edgeToEdgeEnabled: true,
       package: getUniqueIdentifier(),
+      googleServicesFile: "./google-services.json",
     },
     web: {
       bundler: "metro",
@@ -63,18 +64,33 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: [
       "expo-router",
+      "expo-background-task",
+      "expo-build-properties",
+      "expo-font",
+      "expo-web-browser",
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
       [
         "expo-splash-screen",
         {
           image: "./assets/icons/splash-icon-light.png",
           imageWidth: 200,
           resizeMode: "contain",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#d7d6d2ff",
           dark: {
             image: "./assets/icons/splash-icon-dark.png",
             imageWidth: 200,
             resizeMode: "contain",
-            backgroundColor: "#000000",
+            backgroundColor: "#282a05ff",
+          },
+        },
+      ],
+      [
+        "expo-build-properties",
+        {
+          android: {
+            enableMinifyInReleaseBuilds: true,
+            allowBackup: false,
           },
         },
       ],
@@ -93,6 +109,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     experiments: {
       typedRoutes: true,
       reactCompiler: true,
+    },
+    updates: {
+      url: "https://u.expo.dev/bef58162-7beb-4614-9e99-06ac846b57e1",
+    },
+    runtimeVersion: {
+      policy: "appVersion",
     },
     extra: {
       ...config.extra,

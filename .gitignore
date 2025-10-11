@@ -45,3 +45,4 @@ app-example
 *.apk
 *.tar.gz
 *.zip
+google-services.json

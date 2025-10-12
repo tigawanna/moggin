@@ -1,5 +1,1 @@
-onlyBuiltDependencies:
-  - '@firebase/util'
-  - esbuild
-  - protobufjs
-  - unrs-resolver
+nodeLinker: hoisted

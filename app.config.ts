@@ -1,35 +1,72 @@
+import "tsx/cjs";
+
 import { ConfigContext, ExpoConfig } from "expo/config";
-import { withExpoWakatimeGlanceWidgets } from "./modules/expo-wakatime-glance-widgets/plugins/index";
 
 const IS_DEV = process.env.APP_VARIANT === "development";
 const IS_PREVIEW = process.env.APP_VARIANT === "preview";
 
 const getUniqueIdentifier = () => {
   if (IS_DEV) {
-    return "com.tigawanna.moggin.dev";
+    return "com.tigawanna.moggin.dev" as const
   }
 
   if (IS_PREVIEW) {
-    return "com.tigawanna.moggin.preview";
+    return "com.tigawanna.moggin.preview" as const
   }
 
-  return "com.tigawanna.moggin";
+  return "com.tigawanna.moggin" as const
 };
 
 const getAppName = () => {
   if (IS_DEV) {
-    return { name: "Moggin (Dev)", slug: "moggin-dev" };
+    return { name: "Moggin (Dev)", slug: "moggin" };
   }
 
   if (IS_PREVIEW) {
-    return { name: "Moggin (Preview)", slug: "moggin-preview" };
+    return { name: "Moggin (Preview)", slug: "moggin" };
   }
 
   return { name: "Moggin", slug: "moggin" };
 };
 
+
+const plugins: ConfigContext["config"]["plugins"] = [
+  "expo-router",
+  "expo-build-properties",
+  "expo-font",
+  "expo-web-browser",
+  [
+    "expo-splash-screen",
+    {
+      image: "./assets/icons/splash-icon-light.png",
+      resizeMode: "contain",
+      backgroundColor: "#fff",
+      dark: {
+        image: "./assets/icons/splash-icon-dark.png",
+        resizeMode: "contain",
+        backgroundColor: "#000",
+      },
+    },
+  ],
+  [
+    "expo-build-properties",
+    {
+      android: {
+        enableMinifyInReleaseBuilds: true,
+        allowBackup: false,
+      },
+    },
+  ],
+  "./modules/expo-wakatime-glance-widgets/plugins/withPlugins.ts",
+];
+
 export default ({ config }: ConfigContext): ExpoConfig => {
+  const appIdentifier = getUniqueIdentifier();
   const { name, slug } = getAppName();
+  if(appIdentifier === "com.tigawanna.moggin") {
+    plugins.push("@react-native-firebase/app");
+    plugins.push("@react-native-firebase/crashlytics");
+  }
   return {
     ...config,
     name,
@@ -54,58 +91,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         backgroundColor: "#ffffff",
       },
       edgeToEdgeEnabled: true,
-      package: getUniqueIdentifier(),
-      googleServicesFile: "./google-services.json",
+      package: appIdentifier,
+      googleServicesFile: appIdentifier === "com.tigawanna.moggin" ? "./google-services.json" : undefined,
     },
     web: {
       bundler: "metro",
       output: "static",
       favicon: "./assets/images/favicon.png",
     },
-    plugins: [
-      "expo-router",
-      "expo-background-task",
-      "expo-build-properties",
-      "expo-font",
-      "expo-web-browser",
-      "@react-native-firebase/app",
-      "@react-native-firebase/crashlytics",
-      [
-        "expo-splash-screen",
-        {
-          image: "./assets/icons/splash-icon-light.png",
-          imageWidth: 200,
-          resizeMode: "contain",
-          backgroundColor: "#d7d6d2ff",
-          dark: {
-            image: "./assets/icons/splash-icon-dark.png",
-            imageWidth: 200,
-            resizeMode: "contain",
-            backgroundColor: "#282a05ff",
-          },
-        },
-      ],
-      [
-        "expo-build-properties",
-        {
-          android: {
-            enableMinifyInReleaseBuilds: true,
-            allowBackup: false,
-          },
-        },
-      ],
-      [withExpoWakatimeGlanceWidgets as any],
-      //Expo Glance Widgets plugin for Android widget support
-      // [
-      //   withExpoGlanceWidgets as any,
-      //   {
-      //     ...widgetSources,
-      //     // Only copy from these specific directories
-      //     includeDirectories: ["wakatime"],
-      //     enableWorkManager: true, // Enable WorkManager for background updates
-      //   },
-      // ],
-    ],
+    plugins,
     experiments: {
       typedRoutes: true,
       reactCompiler: true,
@@ -118,10 +112,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       ...config.extra,
-      router: {
-        routeConvention: "expo-router",
-        root: "./app",
-      },
       eas: {
         projectId: "bef58162-7beb-4614-9e99-06ac846b57e1",
       },

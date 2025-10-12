@@ -2,15 +2,14 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "noErrorTruncation": true,
+    "allowJs": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/assets/*": ["./assets/*"],
+      "@/modules/*": ["./modules/*"],
+      "@/drizzle/*": ["./drizzle/*"],
+      "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "app.config.js", "tsconfig.plugins.json", ".1-old-widgets-implementation/expo-glance-widget/plugins/withAndroidPlugin.mts", "app/index.js"  ]
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"],
+  "include": ["**/*.ts", "**/*.tsx", "drizzle", "./lib", ".expo/types/**/*.ts", "expo-env.d.ts", "modules/expo-wakatime-glance-widgets/app.plugin.js"]
 }

@@ -2,9 +2,9 @@ import { LoadingFallback } from '@/components/shared/state-screens/LoadingFallba
 import { NoDataScreen } from '@/components/shared/state-screens/NoDataScreen';
 import { TooManyRequestsScreen } from '@/components/shared/state-screens/TooManyRequestsScreen';
 import { UnAuthorizedScreen } from '@/components/shared/state-screens/UnAuthorizedScreen';
-import { LeaderboardEntry } from '@/lib/api/wakatime/types/leaderboard-types';
-import { useCurrentUser } from '@/lib/api/wakatime/use-current-user';
-import { wakatimeLeaderboardQueryOptions } from '@/lib/api/wakatime/use-leaderboard';
+import { LeaderboardEntry } from '@/data-access-layer/wakatime/types/leaderboard-types';
+import { useCurrentUser } from '@/data-access-layer/wakatime/use-current-user';
+import { wakatimeLeaderboardQueryOptions } from '@/data-access-layer/wakatime/use-leaderboard';
 import { useApiKeysStore } from '@/stores/app-settings-store';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react';

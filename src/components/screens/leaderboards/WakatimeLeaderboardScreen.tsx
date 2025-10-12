@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
+import { useCurrentUser } from "@/data-access-layer/wakatime/use-current-user";
 import { useApiKeysStore } from "@/stores/app-settings-store";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";

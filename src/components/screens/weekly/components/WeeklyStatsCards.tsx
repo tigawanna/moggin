@@ -1,4 +1,4 @@
-import { UserDailyDurationsData } from '@/lib/api/wakatime/types/current-user-types';
+import { UserDailyDurationsData } from '@/data-access-layer/wakatime/types/current-user-types';
 import { formatWakatimeDuration } from '@/utils/date';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';

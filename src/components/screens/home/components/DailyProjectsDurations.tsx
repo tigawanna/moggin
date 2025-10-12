@@ -1,4 +1,4 @@
-import { UserDailyDurationsData } from "@/lib/api/wakatime/types/current-user-types";
+import { UserDailyDurationsData } from "@/data-access-layer/wakatime/types/current-user-types";
 import { formatWakatimeDuration, formatWakatimeMsToHumanReadable } from "@/utils/date";
 import { router } from "expo-router";
 import React from "react";

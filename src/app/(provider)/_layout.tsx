@@ -1,5 +1,5 @@
 import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallback";
-import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
+import { useCurrentUser } from "@/data-access-layer/wakatime/use-current-user";
 import { useSettingsStore } from "@/stores/app-settings-store";
 import { Stack } from "expo-router";
 import { useTheme } from "react-native-paper";

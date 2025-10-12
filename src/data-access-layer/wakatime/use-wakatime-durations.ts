@@ -1,5 +1,5 @@
 
-import { getUserDurations } from "@/lib/api/wakatime/wakatime-sdk";
+import { getUserDurations } from "@/data-access-layer/wakatime/wakatime-sdk";
 import { getLastFiveDates } from "@/utils/date";
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
 import { UserDailyDurationsData } from "./types/current-user-types";

@@ -45,8 +45,8 @@ useOnlineManager();
     }
   }, [loaded]);
 
-  const dynamicColors = useSettingsStore((state) => state.dynamicColors);
-  const { colorScheme, paperTheme } = useThemeSetup(dynamicColors);
+
+  const { colorScheme, paperTheme } = useThemeSetup();
 
 
   if (!loaded) {

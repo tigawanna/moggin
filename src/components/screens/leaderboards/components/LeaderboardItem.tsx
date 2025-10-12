@@ -1,4 +1,4 @@
-import { LeaderboardEntry } from "@/lib/api/wakatime/types/leaderboard-types";
+import { LeaderboardEntry } from "@/data-access-layer/wakatime/types/leaderboard-types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Pressable, StyleSheet, View } from "react-native";

@@ -1,4 +1,4 @@
-import { checkIfTokenIsValid } from "@/lib/api/wakatime/wakatime-sdk";
+import { checkIfTokenIsValid } from "@/data-access-layer/wakatime/wakatime-sdk";
 import { useSnackbar } from "@/lib/react-native-paper/snackbar/global-snackbar-store";
 
 import { useApiKeysStore } from "@/stores/app-settings-store";

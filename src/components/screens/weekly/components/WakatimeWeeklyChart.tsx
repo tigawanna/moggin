@@ -1,4 +1,4 @@
-import { WakatimeWeeklyStats } from "@/lib/api/wakatime/use-wakatime-durations";
+import { WakatimeWeeklyStats } from "@/data-access-layer/wakatime/use-wakatime-durations";
 import { useFont } from "@shopify/react-native-skia";
 import { StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";

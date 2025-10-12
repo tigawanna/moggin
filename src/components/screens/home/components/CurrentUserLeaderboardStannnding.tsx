@@ -1,6 +1,6 @@
 import { LoadingIndicatorDots } from "@/components/shared/state-screens/LoadingIndicatorDots";
-import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
-import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/use-leaderboard";
+import { useCurrentUser } from "@/data-access-layer/wakatime/use-current-user";
+import { wakatimeLeaderboardQueryOptions } from "@/data-access-layer/wakatime/use-leaderboard";
 import { useApiKeysStore } from "@/stores/app-settings-store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";

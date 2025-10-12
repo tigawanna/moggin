@@ -3,7 +3,7 @@ import { NoDataScreen } from "@/components/shared/state-screens/NoDataScreen";
 import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooManyRequestsScreen";
 import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
 import { useRefresh } from "@/hooks/use-refresh";
-import { useWakatimeDailyDuration } from "@/lib/api/wakatime/use-wakatime-durations";
+import { useWakatimeDailyDuration } from "@/data-access-layer/wakatime/use-wakatime-durations";
 import { useApiKeysStore } from "@/stores/app-settings-store";
 import { getCurrentDateISO } from "@/utils/date";
 import { Redirect, useLocalSearchParams } from "expo-router";
@@ -15,8 +15,8 @@ import { DailyProjectsDurations } from "./components/DailyProjectsDurations";
 import { TodayDuration } from "./components/TodayDuration";
 import { WakatimeDayPicker } from "./components/WakatimeDayPicker";
 import { useQueryClient } from "@tanstack/react-query";
-import { wakatimeLeaderboardQueryOptions } from "@/lib/api/wakatime/use-leaderboard";
-import { useCurrentUser } from "@/lib/api/wakatime/use-current-user";
+import { wakatimeLeaderboardQueryOptions } from "@/data-access-layer/wakatime/use-leaderboard";
+import { useCurrentUser } from "@/data-access-layer/wakatime/use-current-user";
 // import { console } from "inspector";
 
 export function HomeScreenComponent() {

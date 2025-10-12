@@ -2,7 +2,7 @@ import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallba
 import { NoDataScreen } from "@/components/shared/state-screens/NoDataScreen";
 import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooManyRequestsScreen";
 import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
-import { useRandomUser } from "@/lib/api/wakatime/use-current-user";
+import { useRandomUser } from "@/data-access-layer/wakatime/use-current-user";
 import { useApiKeysStore } from "@/stores/app-settings-store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import EvilIcons from "@expo/vector-icons/EvilIcons";

@@ -1,7 +1,8 @@
+import { wakatimeUserTimeQueryFetcher } from "@/data-access-layer/wakatime/use-wakatime-durations";
 import WidgetUpdater from "@/modules/expo-wakatime-glance-widgets";
 import { useSettingsStore } from "@/stores/app-settings-store";
 import { dateToDayHoursMinutesSeconds } from "@/utils/date";
-import { wakatimeUserTimeQueryFetcher } from "../api/wakatime/use-wakatime-durations";
+
 
 export function updateWakatimeHoursWidget({
   currentProject,

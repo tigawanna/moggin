@@ -20,7 +20,7 @@ export function updateWakatimeHoursWidget({
     lastSync: byWorker ? `⚡${lastSync}` : lastSync,
     totalTime,
   }).catch((e) => {
-    console.log("Failed to update Wakatime widget", e);
+    console.log("\n\nFailed to update Wakatime widget", e,"\n\n");
   });
   return {
     currentProject,

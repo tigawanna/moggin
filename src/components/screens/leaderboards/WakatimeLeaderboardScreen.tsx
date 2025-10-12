@@ -17,7 +17,6 @@ export function WakatimeLeaderboardScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: top }]}>
-      {/* <CurrentUserLeaderboardStannnding /> */}
       <LeaderBoardList selectedCountry={selectedCountry} />
     </View>
   );

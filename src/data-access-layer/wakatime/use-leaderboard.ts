@@ -1,7 +1,7 @@
+import { wakatimeQueryQueryKeyPrefixes } from "@/lib/tanstack/client";
+import { logger } from "@/utils/logger";
 import { queryOptions } from "@tanstack/react-query";
 import { getLeaderboard } from "./wakatime-sdk";
-import { wakatimeQueryQueryKeyPrefixes } from "@/lib/tanstack/client";
-
 
 interface WakatimeLeaderboardQueryOptions {
   wakatimeApiKey: string | null;
@@ -12,8 +12,9 @@ interface WakatimeLeaderboardQueryOptions {
 export async function fetchLeaderboard({
   wakatimeApiKey,
   country,
-  page = 1,
+  page,
 }: WakatimeLeaderboardQueryOptions) {
+  logger.log("fetchLeaderboard params ", { wakatimeApiKey, country, page });
   if (!wakatimeApiKey) {
     console.warn("No Wakatime API key provided");
     return {
@@ -22,30 +23,30 @@ export async function fetchLeaderboard({
     } as const;
   }
 
-  const params: { country_code?: string; page?: number } = { };
+  const params: { country_code?: string; page?: number } = {};
   if (country) {
     params.country_code = country;
   }
   if (page) {
     params.page = page;
   }
-  
+
   const result = await getLeaderboard({ api_key: wakatimeApiKey, ...params });
-  
+
   if (result.type === "unauthorized") {
     return {
       type: "unauthorized",
       message: "Unauthorized access. Please check your API key.",
     } as const;
   }
-  
+
   if (result.type === "rate_limit_exceeded") {
     return {
       type: "rate_limit_exceeded",
       message: "Rate limit exceeded. Please try again later.",
     } as const;
   }
-  
+
   if (result.type !== "success" || !result.data) {
     return {
       type: "no_data",
@@ -62,13 +63,29 @@ export async function fetchLeaderboard({
 export function wakatimeLeaderboardQueryOptions({
   wakatimeApiKey,
   country,
-  page = 1,
+  page,
 }: WakatimeLeaderboardQueryOptions) {
-
+  // logger.log("wakatimeLeaderboardQueryOptions params ", { wakatimeApiKey, country, page });
   return queryOptions({
     queryKey: [wakatimeQueryQueryKeyPrefixes.leaderboard, wakatimeApiKey, country, page],
     queryFn: async () => {
       return await fetchLeaderboard({ wakatimeApiKey, country, page });
+    },
+    enabled: !!wakatimeApiKey,
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    gcTime: 1000 * 60 * 60 * 24, // 24 hours
+    placeholderData: (previousData) => previousData,
+  });
+}
+
+export function wakatimeVieewerLeaderboardQueryOptions({
+  wakatimeApiKey,
+  country,
+}: WakatimeLeaderboardQueryOptions) {
+  return queryOptions({
+    queryKey: [wakatimeQueryQueryKeyPrefixes.currentUserLeaderboard, wakatimeApiKey, country],
+    queryFn: async () => {
+      return await fetchLeaderboard({ wakatimeApiKey, country });
     },
     enabled: !!wakatimeApiKey,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
@@ -87,8 +104,6 @@ export function useWakatimeLeaderboard({
     country,
     page,
   });
-  
+
   return queryOpts;
 }
-
-

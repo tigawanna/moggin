@@ -1,19 +1,26 @@
-import { LoadingFallback } from '@/components/shared/state-screens/LoadingFallback';
-import { NoDataScreen } from '@/components/shared/state-screens/NoDataScreen';
-import { TooManyRequestsScreen } from '@/components/shared/state-screens/TooManyRequestsScreen';
-import { UnAuthorizedScreen } from '@/components/shared/state-screens/UnAuthorizedScreen';
-import { LeaderboardEntry } from '@/data-access-layer/wakatime/types/leaderboard-types';
-import { useCurrentUser } from '@/data-access-layer/wakatime/use-current-user';
-import { wakatimeLeaderboardQueryOptions } from '@/data-access-layer/wakatime/use-leaderboard';
-import { useApiKeysStore } from '@/stores/app-settings-store';
-import { useQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useState, useTransition } from 'react';
-import { ActivityIndicator, FlatList, ListRenderItem, RefreshControl, StyleSheet, View } from 'react-native';
-import { DataTable, Searchbar, Surface, Text, useTheme } from 'react-native-paper';
-import { LeaderboardItem } from './LeaderboardItem';
-import { getRankColor, getRankIcon } from './leaderboard-utils';
-
-
+import { LoadingFallback } from "@/components/shared/state-screens/LoadingFallback";
+import { NoDataScreen } from "@/components/shared/state-screens/NoDataScreen";
+import { TooManyRequestsScreen } from "@/components/shared/state-screens/TooManyRequestsScreen";
+import { UnAuthorizedScreen } from "@/components/shared/state-screens/UnAuthorizedScreen";
+import { LeaderboardEntry } from "@/data-access-layer/wakatime/types/leaderboard-types";
+import { useCurrentUser } from "@/data-access-layer/wakatime/use-current-user";
+import { wakatimeLeaderboardQueryOptions } from "@/data-access-layer/wakatime/use-leaderboard";
+import { useApiKeysStore } from "@/stores/app-settings-store";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import {
+  ActivityIndicator,
+  FlatList,
+  ListRenderItem,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from "react-native";
+import { DataTable, Searchbar, Surface, Text, useTheme } from "react-native-paper";
+import { LeaderboardItem } from "./LeaderboardItem";
+import { getRankColor, getRankIcon } from "./leaderboard-utils";
+import { logger } from "@/utils/logger";
 
 interface LeaderBoardListProps {
   selectedCountry?: string | null;
@@ -23,26 +30,38 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
   const { colors } = useTheme();
   const { wakatimeApiKey } = useApiKeysStore();
   const [refreshing, setRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(0); // 0-based for React Native Paper
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const { page: pageParam, number: numberParam } = useLocalSearchParams<{
+    page?: string;
+    number?: string;
+  }>();
+
+  const page = pageParam ? parseInt(pageParam, 10) - 1 : 0; // Convert to 0-based
+  const scrollToNumber = numberParam ? parseInt(numberParam, 10) : null;
+  const flatListRef = useRef<FlatList>(null);
   const [isNextPageTransitionPending, startTransition] = useTransition();
 
+  logger.log("serach params  == ", { page, numberParam });
+
   // Get current user data (for country fallback and current user info)
-  const { 
-    data: currentUserData, 
+  const {
+    data: currentUserData,
     isLoading: isCurrentUserLoading,
-    error: currentUserError 
+    error: currentUserError,
   } = useCurrentUser(wakatimeApiKey);
- 
+
   // Use user's default country if no country is provided
-  const effectiveCountry = selectedCountry || currentUserData?.data?.data?.city?.country_code || 'KE';
+  const effectiveCountry =
+    selectedCountry || currentUserData?.data?.data?.city?.country_code || "KE";
 
   // Get leaderboard data
-  const { 
-    data: leaderboardData, 
+  const {
+    data: leaderboardData,
     isLoading: isLeaderboardLoading,
     error: leaderboardError,
-    refetch 
+    refetch,
   } = useQuery(
     wakatimeLeaderboardQueryOptions({
       wakatimeApiKey,
@@ -51,12 +70,11 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
     })
   );
 
-
   // Extract the actual data and pagination info - handle both old and new response formats
-  const { actualData, totalPages, currentPage } = useMemo(() => {
+  const { actualData, totalPages } = useMemo(() => {
     if (!leaderboardData) return { actualData: null, totalPages: 0, currentPage: 0 };
-    
-    if ('type' in leaderboardData) {
+
+    if ("type" in leaderboardData) {
       // New format with error handling
       if (leaderboardData.type === "success" && leaderboardData.data?.data) {
         return {
@@ -86,12 +104,12 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
     const query = searchQuery.toLowerCase().trim();
     return actualData.filter((entry: LeaderboardEntry) => {
       const user = entry.user;
-      
+
       // Helper function to safely check if a string contains the query
       const containsQuery = (str: string | null | undefined): boolean => {
         return str ? str.toLowerCase().includes(query) : false;
       };
-      
+
       // Search in various fields
       return (
         containsQuery(user.username) ||
@@ -109,29 +127,40 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
     setRefreshing(false);
   }, [refetch]);
 
-  const handlePageChange = useCallback((newPage: number) => {
-    startTransition(() => setPage(newPage));
-  }, []);
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      startTransition(() => {
+        router.setParams({ page: (newPage + 1).toString() });
+      });
+    },
+    [router]
+  );
 
-  const handleSearchChange = useCallback((query: string) => {
-    setSearchQuery(query);
-    // Reset to first page when search changes
-    if (query.trim() !== searchQuery.trim()) {
-      setPage(0);
-    }
-  }, [searchQuery]);
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      // Reset to first page when search changes
+      if (query.trim() !== searchQuery.trim()) {
+        router.setParams({ page: "1" });
+      }
+    },
+    [router, searchQuery]
+  );
 
-  const renderLeaderboardItem: ListRenderItem<LeaderboardEntry> = useCallback(({ item: entry, index }) => {
-    return (
-      <LeaderboardItem
-        entry={entry}
-        index={index}
-        currentUser={currentUserData?.data}
-        getRankIcon={getRankIcon}
-        getRankColor={(rank) => getRankColor(rank, colors.primary)}
-      />
-    );
-  }, [currentUserData?.data, colors.primary]);
+  const renderLeaderboardItem: ListRenderItem<LeaderboardEntry> = useCallback(
+    ({ item: entry, index }) => {
+      return (
+        <LeaderboardItem
+          entry={entry}
+          index={index}
+          currentUser={currentUserData?.data}
+          getRankIcon={getRankIcon}
+          getRankColor={(rank) => getRankColor(rank, colors.primary)}
+        />
+      );
+    },
+    [currentUserData?.data, colors.primary]
+  );
 
   const keyExtractor = useCallback((item: LeaderboardEntry, index: number) => {
     return `${item.user.username}-${item.rank}-${index}`;
@@ -139,8 +168,20 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
 
   // Reset page when country changes
   useEffect(() => {
-    setPage(0);
-  }, [effectiveCountry]);
+    router.setParams({ page: "1" });
+  }, [effectiveCountry, router]);
+
+  // Scroll to specific number when numberParam changes
+  useEffect(() => {
+    if (scrollToNumber && filteredData.length > 0 && flatListRef.current) {
+      const index = filteredData.findIndex(
+        (entry: LeaderboardEntry) => entry.rank === scrollToNumber
+      );
+      if (index !== -1) {
+        flatListRef.current.scrollToIndex({ index, animated: true,viewOffset:20 });
+      }
+    }
+  }, [scrollToNumber, filteredData]);
 
   // All hooks are called above this point - now we can have conditional returns
 
@@ -150,7 +191,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
   }
 
   // Error handling for specific data response types
-  if (leaderboardData && 'type' in leaderboardData) {
+  if (leaderboardData && "type" in leaderboardData) {
     if (leaderboardData.type === "unauthorized") {
       return <UnAuthorizedScreen />;
     }
@@ -165,24 +206,24 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
   // Error handling for query errors
   if (leaderboardError || currentUserError) {
     const error = leaderboardError || currentUserError;
-    
+
     // Check for 401 Unauthorized
-    if (error && 'status' in error && error.status === 401) {
+    if (error && "status" in error && error.status === 401) {
       return <UnAuthorizedScreen />;
     }
-    
+
     // Check for 429 Rate Limit
-    if (error && 'status' in error && error.status === 429) {
+    if (error && "status" in error && error.status === 429) {
       return <TooManyRequestsScreen />;
     }
-    
+
     // Check for string-based error messages
-    if (error && typeof error === 'object' && 'message' in error) {
+    if (error && typeof error === "object" && "message" in error) {
       const message = error.message as string;
-      if (message.toLowerCase().includes('unauthorized') || message.toLowerCase().includes('401')) {
+      if (message.toLowerCase().includes("unauthorized") || message.toLowerCase().includes("401")) {
         return <UnAuthorizedScreen />;
       }
-      if (message.toLowerCase().includes('rate limit') || message.toLowerCase().includes('429')) {
+      if (message.toLowerCase().includes("rate limit") || message.toLowerCase().includes("429")) {
         return <TooManyRequestsScreen />;
       }
     }
@@ -195,13 +236,17 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
 
   return (
     <Surface style={styles.container}>
-      {isNextPageTransitionPending && <ActivityIndicator style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        zIndex: 1000,
-        transform: [{ translateX: -20 }, { translateY: -20 }],
-      }} />}
+      {isNextPageTransitionPending && (
+        <ActivityIndicator
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            zIndex: 1000,
+            transform: [{ translateX: -20 }, { translateY: -20 }],
+          }}
+        />
+      )}
       <View style={styles.searchContainer}>
         <Searchbar
           placeholder="username, name, or email..."
@@ -224,16 +269,24 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
             No Results Found
           </Text>
           <Text variant="bodyMedium" style={styles.noResultsText}>
-            No users match "{searchQuery}". Try a different search term or check the next page
+            No users match &quot;{searchQuery}&quot;. Try a different search term or check the next
+            page
           </Text>
         </View>
       ) : (
         <FlatList
+          ref={flatListRef}
           style={styles.flatList}
           windowSize={5}
           data={filteredData}
           renderItem={renderLeaderboardItem}
           keyExtractor={keyExtractor}
+          onScrollToIndexFailed={(info) => {
+            const wait = new Promise((resolve) => setTimeout(resolve, 500));
+            wait.then(() => {
+              flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+            });
+          }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -253,7 +306,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
           page={page}
           numberOfPages={totalPages}
           onPageChange={handlePageChange}
-          label={isLeaderboardLoading ? 'Loading...' : `Page ${page + 1} of ${totalPages}`}
+          label={isLeaderboardLoading ? "Loading..." : `Page ${page + 1} of ${totalPages}`}
           showFastPaginationControls
           style={styles.pagination}
         />
@@ -265,7 +318,7 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   searchContainer: {
     paddingHorizontal: 16,
@@ -286,22 +339,22 @@ const styles = StyleSheet.create({
   },
   noResultsContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 32,
     paddingVertical: 64,
   },
   noResultsTitle: {
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   noResultsText: {
-    textAlign: 'center',
+    textAlign: "center",
     opacity: 0.7,
   },
   flatList: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   flatListContent: {
     paddingHorizontal: 16,
@@ -312,7 +365,7 @@ const styles = StyleSheet.create({
     height: 8,
   },
   pagination: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     paddingHorizontal: 16,
   },
 });

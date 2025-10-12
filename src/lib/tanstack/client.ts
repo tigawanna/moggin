@@ -4,6 +4,7 @@ import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persi
 
 export const wakatimeQueryQueryKeyPrefixes = {
   currentUser: "wakatime-current-user",
+  currentUserLeaderboard: "wakatime-current-user-leaderboard",
   duration: "wakatime-duration",
   leaderboard: "wakatime-leaderboard",
   stats: "wakatime-stats",

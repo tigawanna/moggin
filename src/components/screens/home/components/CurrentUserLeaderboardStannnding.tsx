@@ -1,10 +1,12 @@
 import { LoadingIndicatorDots } from "@/components/shared/state-screens/LoadingIndicatorDots";
 import { useCurrentUser } from "@/data-access-layer/wakatime/use-current-user";
-import { wakatimeLeaderboardQueryOptions } from "@/data-access-layer/wakatime/use-leaderboard";
+import { wakatimeVieewerLeaderboardQueryOptions } from "@/data-access-layer/wakatime/use-leaderboard";
+import { wakatimeQueryQueryKeyPrefixes } from "@/lib/tanstack/client";
 import { useApiKeysStore } from "@/stores/app-settings-store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "expo-router";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar, Card, Surface, Text, useTheme } from "react-native-paper";
 import { ExpandableLanguages } from "../../leaderboards/components/ExpandableLanguages";
@@ -12,24 +14,40 @@ import { ExpandableLanguages } from "../../leaderboards/components/ExpandableLan
 export function CurrentUserLeaderboardStannnding() {
   const { colors } = useTheme();
   const { wakatimeApiKey } = useApiKeysStore();
+  const qc = useQueryClient();
 
   const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser(wakatimeApiKey);
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(
+  const [selectedCountry] = useState<string | null>(
     currentUserData?.data?.data?.city?.country_code ?? "KE"
   );
-
+  const country = selectedCountry || undefined;
   const { data: leaderboardData, isLoading: isLeaderboardLoading } = useQuery(
-    wakatimeLeaderboardQueryOptions({
+    wakatimeVieewerLeaderboardQueryOptions({
       wakatimeApiKey,
-      country: selectedCountry || undefined,
+      country,
     })
   );
+  const currentUserLeaderboardpage = leaderboardData?.data?.page;
+  // set the current user's leaderboard page inot the general leaderboard
+  useEffect(() => {
+    if (currentUserLeaderboardpage) {
+      qc.setQueryData(
+        [
+          wakatimeQueryQueryKeyPrefixes.leaderboard,
+          wakatimeApiKey,
+          country,
+          currentUserLeaderboardpage,
+        ],
+        () => leaderboardData
+      );
+    }
+  }, [country, currentUserLeaderboardpage, leaderboardData, qc, wakatimeApiKey]);
 
   const currentUserInLeaderboard = (() => {
     if (!leaderboardData) return null;
-    
+
     // Handle new response format with error handling
-    if ('type' in leaderboardData) {
+    if ("type" in leaderboardData) {
       if (leaderboardData.type === "success" && leaderboardData.data?.data) {
         return leaderboardData.data.data.find(
           (entry: any) => entry.user.username === currentUserData?.data?.data?.username
@@ -37,7 +55,7 @@ export function CurrentUserLeaderboardStannnding() {
       }
       return null;
     }
-    
+
     // Handle old response format
     const data = (leaderboardData as any)?.data;
     if (data && Array.isArray(data)) {
@@ -45,7 +63,7 @@ export function CurrentUserLeaderboardStannnding() {
         (entry: any) => entry.user.username === currentUserData?.data?.data?.username
       );
     }
-    
+
     return null;
   })();
 
@@ -98,7 +116,8 @@ export function CurrentUserLeaderboardStannnding() {
                 Not in Leaderboard
               </Text>
               <Text variant="bodyMedium" style={styles.notFoundText}>
-                You're not currently ranked in the {selectedCountry ? `${selectedCountry} ` : ""}
+                You&apos;re not currently ranked in the{" "}
+                {selectedCountry ? `${selectedCountry} ` : ""}
                 leaderboard. Start coding more to appear here!
               </Text>
             </View>
@@ -110,8 +129,24 @@ export function CurrentUserLeaderboardStannnding() {
 
   return (
     <Surface style={styles.container}>
-      <Card style={[styles.card ]} elevation={4}>
-        <Card.Title title="# Leaderboard rank this week" />
+      <Card style={[styles.card]} elevation={4}>
+        <Card.Title
+          title="# Leaderboard rank this week"
+          // subtitle={currentUserLeaderboardpage ? `Page ${currentUserLeaderboardpage}` : undefined}
+          right={(props) => (
+            <Link
+              href={`/(provider)/(tabs)/leaderboard?page=${currentUserLeaderboardpage}&number=${currentUserInLeaderboard.rank}`}
+              style={{ paddingHorizontal: 8 }}
+              asChild>
+              <MaterialCommunityIcons
+                {...props}
+                name="open-in-new"
+                size={20}
+                color={colors.primary}
+              />
+            </Link>
+          )}
+        />
         <Card.Content>
           <View style={styles.cardContainer}>
             <View style={styles.mainContent}>
@@ -135,7 +170,6 @@ export function CurrentUserLeaderboardStannnding() {
                 />
 
                 <View style={styles.userInfo}>
-        
                   <Text variant="titleMedium" style={styles.username}>
                     {currentUserInLeaderboard.user?.display_name ||
                       currentUserInLeaderboard.user?.username}

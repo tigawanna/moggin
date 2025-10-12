@@ -35,11 +35,14 @@ export default function Settings() {
           title="Color Scheme"
           left={(props) => <List.Icon {...props} icon="palette-swatch" />}
         />
+
         <View style={styles.colorContainer}>
           {colorSchemeOptions.map((option) => (
             <TouchableOpacity
               key={option.key || "system"}
-              onPress={() => setColorScheme(option.key)}
+              onPress={() => {
+                setColorScheme(option.key);
+              }}
               style={styles.colorDot}>
               <View
                 style={[

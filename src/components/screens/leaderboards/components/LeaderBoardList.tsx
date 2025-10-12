@@ -7,8 +7,8 @@ import { useCurrentUser } from "@/data-access-layer/wakatime/use-current-user";
 import { wakatimeLeaderboardQueryOptions } from "@/data-access-layer/wakatime/use-leaderboard";
 import { useApiKeysStore } from "@/stores/app-settings-store";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -20,7 +20,6 @@ import {
 import { DataTable, Searchbar, Surface, Text, useTheme } from "react-native-paper";
 import { LeaderboardItem } from "./LeaderboardItem";
 import { getRankColor, getRankIcon } from "./leaderboard-utils";
-import { logger } from "@/utils/logger";
 
 interface LeaderBoardListProps {
   selectedCountry?: string | null;
@@ -42,8 +41,6 @@ export function LeaderBoardList({ selectedCountry }: LeaderBoardListProps) {
   const scrollToNumber = numberParam ? parseInt(numberParam, 10) : null;
   const flatListRef = useRef<FlatList>(null);
   const [isNextPageTransitionPending, startTransition] = useTransition();
-
-  logger.log("serach params  == ", { page, numberParam });
 
   // Get current user data (for country fallback and current user info)
   const {

@@ -15,7 +15,7 @@ export default function ProtectedLayout() {
     error,
   } = useCurrentUser(wakatimeApiKey);
 
-  const { data: isOnline, isPending: isOnlineLoading } = useQuery({
+  const { isPending: isOnlineLoading } = useQuery({
     queryKey: ["network-status"],
     queryFn: () => Network.getNetworkStateAsync().then((state) => state.isConnected),
   });
@@ -33,7 +33,7 @@ export default function ProtectedLayout() {
       <Stack.Protected guard={isAuthenticated}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
-          name="[user]"
+          name="user/[user_id]"
           options={{
             title: "",
             headerStyle: {

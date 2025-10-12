@@ -22,7 +22,7 @@ import { useCurrentUser } from "@/data-access-layer/wakatime/use-current-user";
 export function HomeScreenComponent() {
   const qc = useQueryClient();
   const { wakatimeApiKey } = useApiKeysStore();
-  const { data: currentUserData, isLoading: isCurrentUserLoading } = useCurrentUser(wakatimeApiKey);
+  const { data: currentUserData } = useCurrentUser(wakatimeApiKey);
   const { grouped } = useLocalSearchParams<{ grouped: "true" | "false" }>();
   const isGrouped = grouped ? grouped === "true" : true;
 

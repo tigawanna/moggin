@@ -136,6 +136,7 @@ export function CurrentUserLeaderboardStannnding() {
           right={(props) => (
             <Link
               href={`/(provider)/(tabs)/leaderboard?page=${currentUserLeaderboardpage}&number=${currentUserInLeaderboard.rank}`}
+              // href="/invelid"
               style={{ paddingHorizontal: 8 }}
               asChild>
               <MaterialCommunityIcons

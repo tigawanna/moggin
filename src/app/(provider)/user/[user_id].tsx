@@ -12,7 +12,7 @@ import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Avatar, Card, Chip, Surface, Text, useTheme } from "react-native-paper";
 
 export default function UserDetailsScreen() {
-  const { user } = useLocalSearchParams() as { user: string };
+  const { user_id } = useLocalSearchParams() as { user_id: string };
   const { wakatimeApiKey } = useApiKeysStore();
   const { colors } = useTheme();
 
@@ -22,7 +22,7 @@ export default function UserDetailsScreen() {
     error,
   } = useRandomUser({
     wakatimeApiKey,
-    username: user,
+    username: user_id,
   });
 
   // Loading state
@@ -84,7 +84,7 @@ export default function UserDetailsScreen() {
       } else {
         Alert.alert("Error", `Cannot open ${platform} link`);
       }
-    } catch (error) {
+    } catch (_) {
       Alert.alert("Error", `Failed to open ${platform} link`);
     }
   };

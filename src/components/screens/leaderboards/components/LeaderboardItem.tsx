@@ -24,7 +24,7 @@ export function LeaderboardItem({ entry, index, currentUser, getRankIcon, getRan
 
   const handleUserPress = () => {
     if (entry.user?.id) {
-      router.push(`/${entry.user.id}`);
+      router.push(`/user/${entry.user.id}`);
     }
   };
 

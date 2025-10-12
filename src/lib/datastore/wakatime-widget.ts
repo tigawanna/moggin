@@ -18,6 +18,8 @@ export function updateWakatimeHoursWidget({
     // The ⚡ prefix is used to indicate the that the update was triggerd by the background task
     lastSync: byWorker ? `⚡${lastSync}` : lastSync,
     totalTime,
+  }).catch((e) => {
+    console.log("Failed to update Wakatime widget", e);
   });
   return {
     currentProject,
@@ -47,4 +49,3 @@ export async function fetchHoursAndUpdateWakatimeWidget() {
     });
   }
 }
-

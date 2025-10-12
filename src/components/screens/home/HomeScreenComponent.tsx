@@ -99,9 +99,9 @@ export function HomeScreenComponent() {
   return (
     <Surface style={styles.container}>
       {/* Sticky Date Picker */}
-      <Surface style={styles.stickyHeader} elevation={2}>
+      <View style={styles.stickyHeader}>
         <WakatimeDayPicker selectedDate={selectedDate} setSelectedDate={setSelected} />
-      </Surface>
+      </View>
 
       {/* Scrollable Content */}
       <ScrollView

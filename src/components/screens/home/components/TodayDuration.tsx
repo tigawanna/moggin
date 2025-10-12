@@ -43,7 +43,7 @@ export function TodayDuration({ todayHours }: TodayDurationProps) {
 
 
   return (
-    <Surface style={styles.container}>
+    <View style={styles.container}>
       <Card style={styles.card} elevation={4}>
         <Card.Content style={styles.cardContent}>
           {/* Main duration display */}
@@ -52,7 +52,7 @@ export function TodayDuration({ todayHours }: TodayDurationProps) {
               {todayHours.todayHours}
             </Text>
             <Text variant="bodyLarge" style={styles.mainLabel}>
-              Today's Total
+              Today&apos;s Total
             </Text>
           </View>
 
@@ -89,7 +89,7 @@ export function TodayDuration({ todayHours }: TodayDurationProps) {
           </View>
         </Card.Content>
       </Card>
-    </Surface>
+    </View>
   );
 }
 const styles = StyleSheet.create({

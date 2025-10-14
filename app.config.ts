@@ -7,15 +7,17 @@ const IS_PREVIEW = process.env.APP_VARIANT === "preview";
 
 const getUniqueIdentifier = () => {
   if (IS_DEV) {
-    return "com.tigawanna.moggin.dev" as const
+    return "com.tigawanna.moggin.dev" as const;
   }
 
   if (IS_PREVIEW) {
-    return "com.tigawanna.moggin.preview" as const
+    return "com.tigawanna.moggin.preview" as const;
   }
 
-  return "com.tigawanna.moggin" as const
+  return "com.tigawanna.moggin" as const;
 };
+
+type UniqueIDT = ReturnType<typeof getUniqueIdentifier>;
 
 const getAppName = () => {
   if (IS_DEV) {
@@ -29,41 +31,46 @@ const getAppName = () => {
   return { name: "Moggin", slug: "moggin" };
 };
 
-
-const plugins: ConfigContext["config"]["plugins"] = [
-  "expo-router",
-  "expo-build-properties",
-  "expo-font",
-  "expo-web-browser",
-  [
-    "expo-splash-screen",
-    {
-      image: "./assets/icons/splash-icon-light.png",
-      resizeMode: "contain",
-      backgroundColor: "#fff",
-      dark: {
-        image: "./assets/icons/splash-icon-dark.png",
-        resizeMode: "contain",
-        backgroundColor: "#000",
-      },
-    },
-  ],
-  [
+const getPlugins = (idt: UniqueIDT) => {
+  const plugins: ConfigContext["config"]["plugins"] = [
+    "expo-router",
     "expo-build-properties",
-    {
-      android: {
-        enableMinifyInReleaseBuilds: true,
-        allowBackup: false,
+    "expo-font",
+    "expo-web-browser",
+    [
+      "expo-splash-screen",
+      {
+        image: "./assets/icons/splash-icon-light.png",
+        resizeMode: "contain",
+        backgroundColor: "#fff",
+        dark: {
+          image: "./assets/icons/splash-icon-dark.png",
+          resizeMode: "contain",
+          backgroundColor: "#000",
+        },
       },
-    },
-  ],
-  "./modules/expo-wakatime-glance-widgets/plugins/withPlugins.ts",
-];
+    ],
+    [
+      "expo-build-properties",
+      {
+        android: {
+          enableMinifyInReleaseBuilds: idt === "com.tigawanna.moggin" ? true : false,
+          allowBackup: false,
+        },
+      },
+    ],
+    // "./modules/expo-wakatime-glance-widgets/plugins/withPlugins.ts",
+  ];
+  return plugins;
+};
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const appIdentifier = getUniqueIdentifier();
   const { name, slug } = getAppName();
-  if(appIdentifier === "com.tigawanna.moggin") {
+  const plugins = getPlugins(appIdentifier);
+  const is_production = appIdentifier === "com.tigawanna.moggin";
+
+  if (is_production) {
     plugins.push("@react-native-firebase/app");
     plugins.push("@react-native-firebase/crashlytics");
   }
@@ -92,7 +99,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
       edgeToEdgeEnabled: true,
       package: appIdentifier,
-      googleServicesFile: appIdentifier === "com.tigawanna.moggin" ? "./google-services.json" : undefined,
+      googleServicesFile:is_production ? "./google-services.json" : undefined,
     },
     web: {
       bundler: "metro",

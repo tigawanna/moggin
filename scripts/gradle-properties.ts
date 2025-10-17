@@ -1,8 +1,7 @@
 #!/usr/bin/env tsx
 /**
  * fix-gradle-memory.ts
- * Runs from repo root.  If android/gradle.properties contains the default
- * -XX:MaxMetaspaceSize=512m line, it bumps it to 1g (and heap to 4g).
+ * Runs from repo root. Increases Gradle memory settings to fix Metaspace OOM errors.
  * Exits 0 on success, 1 on error.
  */
 
@@ -10,28 +9,28 @@ import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 
 const GRADLE_PROP = resolve("android", "gradle.properties");
+const xmxSize = "4g";
+const metaspaceSize = "2g";
 
 try {
   let content = readFileSync(GRADLE_PROP, "utf-8");
 
-  const ORIGINAL = /^(org\.gradle\.jvmargs=.*-XX:MaxMetaspaceSize=)512m(.*)$/gm;
-  const REPLACEMENT = "$11g$2"; // 512m -> 3g
-  const NEW_ARGS = "org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g";
+  // Match existing jvmargs line
+  const jvmArgsPattern = /^org\.gradle\.jvmargs=.*$/m;
+  const newJvmArgs = `org.gradle.jvmargs=-Xmx${xmxSize} -XX:MaxMetaspaceSize=${metaspaceSize}`;
 
-  if (ORIGINAL.test(content)) {
-    // replace in-place
-    content = content.replace(ORIGINAL, REPLACEMENT);
+  if (jvmArgsPattern.test(content)) {
+    // Replace existing line
+    content = content.replace(jvmArgsPattern, newJvmArgs);
     writeFileSync(GRADLE_PROP, content, "utf-8");
-    console.log("✅  Bumped Metaspace to 1g in android/gradle.properties");
-  } else if (!content.includes("-XX:MaxMetaspaceSize=1g")) {
-    // no recognised line at all – append our own
-    const nl = content.endsWith("\n") ? "" : "\n";
-    writeFileSync(GRADLE_PROP, `${content}${nl}${NEW_ARGS}\n`, "utf-8");
-    console.log("✅  Added memory settings to android/gradle.properties");
+    console.log(`\n✅ Updated Gradle memory: Heap=${xmxSize}, Metaspace=${metaspaceSize}\n`);
   } else {
-    console.log("ℹ️   Metaspace already 1g – nothing to do.");
+    // Append new line
+    const nl = content.endsWith("\n") ? "" : "\n";
+    writeFileSync(GRADLE_PROP, `${content}${nl}${newJvmArgs}\n`, "utf-8");
+    console.log(`\n✅ Added Gradle memory settings: Heap=${xmxSize}, Metaspace=${metaspaceSize}\n`);
   }
 } catch (err: any) {
-  console.error("❌  Could not patch gradle.properties:", err.message);
+  console.error("\n❌ Could not patch gradle.properties:", err.message, "\n");
   process.exit(1);
 }

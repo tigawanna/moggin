@@ -5,10 +5,9 @@ import { useColorScheme } from "react-native";
 import { MMKV } from "react-native-mmkv";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Initialize MMKV
-// export const mmkvStorage = new MMKV();
+export const mmkvStorage = new MMKV();
 
 type SettingsStoreType = {
   theme: "dark" | "light" | null;
@@ -77,7 +76,23 @@ export const useSettingsStore = create<SettingsStoreType>()(
     }),
     {
       name: "app-settings",
-      storage: createJSONStorage(() => AsyncStorage),
+      // storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => {
+        return {
+          setItem: (name, value) => {
+            mmkvStorage.set(name, value);
+            return Promise.resolve();
+          },
+          getItem: (name) => {
+            const value = mmkvStorage.getString(name);
+            return Promise.resolve(value ?? null);
+          },
+          removeItem: (name: string): Promise<void> => {
+            mmkvStorage.delete(name);
+            return Promise.resolve();
+          },
+        };
+      }),
       // storage: {
       //   setItem: (name, value) => {
       //     return mmkvStorage.set(name, value as any);

@@ -59,7 +59,7 @@ const getPlugins = (idt: UniqueIDT) => {
         },
       },
     ],
-    // "./modules/expo-wakatime-glance-widgets/plugins/withPlugins.ts",
+    "./modules/expo-wakatime-glance-widgets/plugins/withPlugins.ts",
   ];
   return plugins;
 };

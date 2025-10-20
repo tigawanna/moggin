@@ -4,12 +4,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useColorScheme } from "react-native";
 import { MMKV } from "react-native-mmkv";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Initialize MMKV
-export const mmkvStorage = new MMKV();
-
-
+// export const mmkvStorage = new MMKV();
 
 type SettingsStoreType = {
   theme: "dark" | "light" | null;
@@ -78,24 +77,23 @@ export const useSettingsStore = create<SettingsStoreType>()(
     }),
     {
       name: "app-settings",
-      storage: {
-        setItem: (name, value) => {
-          return mmkvStorage.set(name, value as any);
-        },
-        // @ts-expect-error // this is fine
-        getItem: (name) => {
-          const value = mmkvStorage.getString(name);
-          return value ?? null;
-        },
-        removeItem: (name) => {
-          return mmkvStorage.delete(name);
-        },
-      },
+      storage: createJSONStorage(() => AsyncStorage),
+      // storage: {
+      //   setItem: (name, value) => {
+      //     return mmkvStorage.set(name, value as any);
+      //   },
+      //   // @ts-expect-error // this is fine
+      //   getItem: (name) => {
+      //     const value = mmkvStorage.getString(name);
+      //     return value ?? null;
+      //   },
+      //   removeItem: (name) => {
+      //     return mmkvStorage.delete(name);
+      //   },
+      // },
     }
   )
 );
-
-
 
 // If you want to use the simpler approach, replace the storage config with:
 // storage: createMmkvStorage<SettingsStoreType>(),

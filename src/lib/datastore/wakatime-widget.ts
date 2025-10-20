@@ -1,5 +1,5 @@
 import { wakatimeUserTimeQueryFetcher } from "@/data-access-layer/wakatime/use-wakatime-durations";
-// import WidgetUpdater from "@/modules/expo-wakatime-glance-widgets";
+import WidgetUpdater from "@/modules/expo-wakatime-glance-widgets";
 import { useSettingsStore } from "@/stores/app-settings-store";
 import { dateToDayHoursMinutesSeconds } from "@/utils/date";
 
@@ -14,16 +14,16 @@ export function updateWakatimeHoursWidget({
   totalTime: string;
 }) {
   const lastSync = dateToDayHoursMinutesSeconds(new Date());
-  console.warn("⚠️⚠️⚠️ Implenent updateWakatimeHoursWidget fisrt ⚠️⚠️⚠️");
-  // WidgetUpdater.updateWakatimeDailyDurationWidget({
-  //   currentProject,
-  //   // The ⚡ prefix is used to indicate the that the update was triggerd by the background task
-  //   lastSync: byWorker ? `⚡${lastSync}` : lastSync,
-  //   totalTime,
-  // })
-  // .catch((e) => {
-  //   console.log("\n\nFailed to update Wakatime widget", e,"\n\n");
-  // });
+  // console.warn("⚠️⚠️⚠️ Implenent updateWakatimeHoursWidget fisrt ⚠️⚠️⚠️");
+  WidgetUpdater.updateWakatimeDailyDurationWidget({
+    currentProject,
+    // The ⚡ prefix is used to indicate the that the update was triggerd by the background task
+    lastSync: byWorker ? `⚡${lastSync}` : lastSync,
+    totalTime,
+  })
+  .catch((e) => {
+    console.log("\n\nFailed to update Wakatime widget", e,"\n\n");
+  });
   return {
     currentProject,
     lastSync,

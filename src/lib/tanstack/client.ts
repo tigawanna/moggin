@@ -1,9 +1,7 @@
-import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { MutationCache, QueryClient } from "@tanstack/react-query";
-import { MMKV } from "react-native-mmkv";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 
-// Initialize MMKV
-export const mmkvStorage = new MMKV();
 export const wakatimeQueryQueryKeyPrefixes = {
   currentUser: "wakatime-current-user",
   currentUserLeaderboard: "wakatime-current-user-leaderboard",
@@ -15,18 +13,7 @@ export const wakatimeQueryQueryKeyPrefixes = {
 } as const;
 
 export const asyncStoragePersister = createAsyncStoragePersister({
-  storage: {
-    setItem: (name, value) => {
-      return mmkvStorage.set(name, value as any);
-    },
-    getItem: (name) => {
-      const value = mmkvStorage.getString(name);
-      return value ?? null;
-    },
-    removeItem: (name) => {
-      return mmkvStorage.delete(name);
-    },
-  },
+  storage: AsyncStorage,
 });
 
 type QueryKey = [

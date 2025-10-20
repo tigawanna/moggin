@@ -1,11 +1,15 @@
-
+import type { CustomThemeKey } from "@/constants/Colors";
 import { updateWakatimeKey } from "@/lib/datastore/wakatime-widget-key";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryClient } from "@tanstack/react-query";
 import { useColorScheme } from "react-native";
+import { MMKV } from "react-native-mmkv";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import type { CustomThemeKey } from "@/constants/Colors";
+import { persist } from "zustand/middleware";
+
+// Initialize MMKV
+export const mmkvStorage = new MMKV();
+
+
 
 type SettingsStoreType = {
   theme: "dark" | "light" | null;
@@ -34,64 +38,81 @@ export const useSettingsStore = create<SettingsStoreType>()(
       dynamicColors: true,
       wakatimeApiKey: null,
       lastBackup: null,
-      
+
       // Actions
       toggleDynamicColors: () => {
-        set((state) => ({ 
+        set((state) => ({
           dynamicColors: !state.dynamicColors,
-          colorScheme: !state.dynamicColors ? null : state.colorScheme
+          colorScheme: !state.dynamicColors ? null : state.colorScheme,
         }));
       },
-      
+
       toggleTheme: () => {
         const currentTheme = get().theme;
         set({ theme: currentTheme === "light" ? "dark" : "light" });
       },
-      
+
       setTheme: (theme) => {
         set({ theme });
       },
-      
+
       setColorScheme: (scheme) => {
-        set({ 
+        set({
           colorScheme: scheme,
-          dynamicColors: scheme === null
+          dynamicColors: scheme === null,
         });
       },
-      
+
       setWakatimeApiKey: (key) => {
         set({ wakatimeApiKey: key });
         updateWakatimeKey(key);
       },
-      
+
       setLocalBackupPath: (path) => {
         set({ localBackupPath: path });
       },
-      
+
       setLastBackup: (date) => {
         set({ lastBackup: date });
       },
     }),
     {
       name: "app-settings",
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: {
+        setItem: (name, value) => {
+          return mmkvStorage.set(name, value as any);
+        },
+        // @ts-expect-error // this is fine
+        getItem: (name) => {
+          const value = mmkvStorage.getString(name);
+          return value ?? null;
+        },
+        removeItem: (name) => {
+          return mmkvStorage.delete(name);
+        },
+      },
     }
   )
 );
+
+
+
+// If you want to use the simpler approach, replace the storage config with:
+// storage: createMmkvStorage<SettingsStoreType>(),
 
 // Hook for theme-specific functionality
 export function useThemeStore() {
   const colorScheme = useColorScheme();
   const { theme, setTheme, toggleTheme } = useSettingsStore();
-  
+
   const resolvedTheme = theme ?? colorScheme;
   const isDarkMode = resolvedTheme === "dark";
-  
-  return { 
-    theme: resolvedTheme, 
-    setTheme, 
-    toggleTheme, 
-    isDarkMode 
+
+  return {
+    theme: resolvedTheme,
+    setTheme,
+    toggleTheme,
+    isDarkMode,
   };
 }
 
@@ -102,7 +123,7 @@ export function useApiKeysStore() {
 
   const setWakatimeApiKey = (value: string | null) => {
     setKey(value);
-    
+
     // Invalidate all wakatime queries when API key changes
     queryClient.invalidateQueries({
       queryKey: ["wakatime-current-user"],
@@ -121,11 +142,8 @@ export function useApiKeysStore() {
   };
 }
 
-
-// Hook for persistence status (Zustand doesn't have direct equivalent, but this provides compatibility)
+// Hook for persistence status
 export function usePersistenceLoaded() {
-  // In Zustand, we can consider persistence loaded when the store has been rehydrated
-  // This is a simplified version - you might want to add more sophisticated tracking if needed
   const hasHydrated = useSettingsStore.persist?.hasHydrated?.() ?? true;
   return hasHydrated;
 }

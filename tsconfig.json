@@ -11,5 +11,5 @@
     }
   },
   "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"],
-  "include": ["**/*.ts", "**/*.tsx", "drizzle", "./lib", ".expo/types/**/*.ts", "expo-env.d.ts", "modules/expo-wakatime-glance-widgets/app.plugin.js"]
+  "include": ["**/*.ts", "**/*.tsx", "drizzle", "./lib", ".expo/types/**/*.ts", "expo-env.d.ts", ".stash/expo-wakatime-glance-widgets/app.plugin.js"]
 }

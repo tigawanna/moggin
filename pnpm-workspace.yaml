@@ -2,6 +2,7 @@ nodeLinker: hoisted
 
 onlyBuiltDependencies:
   - '@firebase/util'
+  - '@shopify/react-native-skia'
   - esbuild
   - protobufjs
   - unrs-resolver

@@ -45,4 +45,6 @@ app-example
 *.apk
 *.tar.gz
 *.zip
+.stash
+*.google-services.json
 google-services.json

@@ -91,14 +91,11 @@ class RefreshWidgetAction : ActionCallback {
     ) {
         Log.d("RefreshWidgetAction", "Refresh button clicked")
 
-        // Launch coroutine to fetch and update widget data
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val result = WakatimeDataFetcher.fetchAndUpdateWidget(context)
-                Log.d("RefreshWidgetAction", "Widget refresh completed: success=${result.success}")
-            } catch (e: Exception) {
-                Log.e("RefreshWidgetAction", "Error refreshing widget", e)
-            }
+        try {
+            val result = WakatimeDataFetcher.fetchAndUpdateWidget(context)
+            Log.d("RefreshWidgetAction", "Widget refresh completed: success=${result.success}")
+        } catch (e: Exception) {
+            Log.e("RefreshWidgetAction", "Error refreshing widget", e)
         }
     }
 }

@@ -33,21 +33,23 @@ class ExpoWakatimeGlanceWidgetsModule : Module() {
     Name("ExpoWakatimeGlanceWidgets")
 
     AsyncFunction("updateWakatimeDailyDurationWidget") { payload: UpdateWidgetPayload ->
-      CoroutineScope(Dispatchers.IO).launch {
-        try {
+      try {
+        CoroutineScope(Dispatchers.IO).launch {
           val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(WakatimeHoursWidget::class.java)
-          glanceIds.forEach { id ->
-            updateAppWidgetState(context, id) { prefs ->
-              // Save all the payload data to respective DataStore keys
-              prefs[WidgetConstants.WAKATIME_TOTAL_TIME_KEY] = payload.totalTime
-              prefs[WidgetConstants.WAKATIME_CURRENT_PROJECT_KEY] = payload.currentProject
-              prefs[WidgetConstants.WAKATIME_LAST_SYNC_KEY] = payload.lastSync
-            }
-            WakatimeHoursWidget().update(context, id)
+        glanceIds.forEach { id ->
+          updateAppWidgetState(context, id) { prefs ->
+            // Save all the payload data to respective DataStore keys
+            prefs[WidgetConstants.WAKATIME_TOTAL_TIME_KEY] = payload.totalTime
+            prefs[WidgetConstants.WAKATIME_CURRENT_PROJECT_KEY] = payload.currentProject
+            prefs[WidgetConstants.WAKATIME_LAST_SYNC_KEY] = payload.lastSync
           }
-        } catch (e: Exception) {
-          e.printStackTrace()
+          WakatimeHoursWidget().update(context, id)
         }
+        }
+      } catch (e: Exception) {
+        e.printStackTrace()
+        // Re-throw to properly handle the error in the async function
+        throw e
       }
     }
 
@@ -69,42 +71,44 @@ class ExpoWakatimeGlanceWidgetsModule : Module() {
     }
 
     AsyncFunction("updateApiKey") { apiKey: String ->
-      CoroutineScope(Dispatchers.IO).launch {
-        try {
-          // Update all available datastores with the API key
-          // Hours widget datastore
+      try {
+        // Update all available datastores with the API key
+        // Hours widget datastore
+        CoroutineScope(Dispatchers.IO).launch {
           context.dataStore.edit { preferences ->
-            preferences[WidgetConstants.WAKATIME_API_KEY] = apiKey
-          }
-          
-          // Future datastores can be added here by importing them and replicating the logic
-          // Example: context.anotherDataStore.edit { preferences ->
-          //   preferences[AnotherWidgetConstants.WAKATIME_API_KEY] = apiKey
-          // }
-          
-        } catch (e: Exception) {
-          e.printStackTrace()
+          preferences[WidgetConstants.WAKATIME_API_KEY] = apiKey
         }
+        
+        // Future datastores can be added here by importing them and replicating the logic
+        // Example: context.anotherDataStore.edit { preferences ->
+        //   preferences[AnotherWidgetConstants.WAKATIME_API_KEY] = apiKey
+        // }
+        }
+      } catch (e: Exception) {
+        e.printStackTrace()
+        // Re-throw to properly handle the error in the async function
+        throw e
       }
     }
 
     AsyncFunction("removeApiKey") {
-      CoroutineScope(Dispatchers.IO).launch {
-        try {
-          // Remove API key from all available datastores
-          // Hours widget datastore
+      try {
+        // Remove API key from all available datastores
+        // Hours widget datastore
+        CoroutineScope(Dispatchers.IO).launch {
           context.dataStore.edit { preferences ->
-            preferences.remove(WidgetConstants.WAKATIME_API_KEY)
-          }
-          
-          // Future datastores can be added here by importing them and replicating the logic
-          // Example: context.anotherDataStore.edit { preferences ->
-          //   preferences.remove(AnotherWidgetConstants.WAKATIME_API_KEY)
-          // }
-          
-        } catch (e: Exception) {
-          e.printStackTrace()
+          preferences.remove(WidgetConstants.WAKATIME_API_KEY)
         }
+        
+        // Future datastores can be added here by importing them and replicating the logic
+        // Example: context.anotherDataStore.edit { preferences ->
+        //   preferences.remove(AnotherWidgetConstants.WAKATIME_API_KEY)
+        // }
+        }
+      } catch (e: Exception) {
+        e.printStackTrace()
+        // Re-throw to properly handle the error in the async function
+        throw e
       }
     }
   }

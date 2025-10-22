@@ -202,32 +202,30 @@ object WakatimeDataFetcher {
      * with this primary piece of information immediately after a fetch.
      */
     suspend fun updateWidget(context: Context, totalTime: String) {
-        withContext(Dispatchers.IO) {
-            try {
-                val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(WakatimeHoursWidget::class.java)
-                if (glanceIds.isEmpty()) {
-                    Log.d("WakatimeDataFetcher", "No glance IDs found for WakatimeHoursWidget. Skipping widget update.")
-                    return@withContext
-                }
-                glanceIds.forEach { id ->
-                    updateAppWidgetState(context, id) { prefs ->
-                        // Get the latest full data from DataStore
-                        val currentDataStorePrefs = context.dataStore.data.first()
-
-                        prefs[WidgetConstants.WAKATIME_TOTAL_TIME_KEY] = totalTime // Use the freshly fetched totalTime
-                        prefs[WidgetConstants.WAKATIME_CURRENT_PROJECT_KEY] =
-                            currentDataStorePrefs[WidgetConstants.WAKATIME_CURRENT_PROJECT_KEY] ?: "No project"
-                        prefs[WidgetConstants.WAKATIME_LAST_SYNC_KEY] =
-                            currentDataStorePrefs[WidgetConstants.WAKATIME_LAST_SYNC_KEY] ?: "Never"
-                        prefs[WidgetConstants.WAKATIME_API_KEY] = // This is likely for display/debug in widget
-                            currentDataStorePrefs[WidgetConstants.WAKATIME_API_KEY] ?: "🔑 N/A"
-                    }
-                    WakatimeHoursWidget().update(context, id)
-                }
-                Log.d("WakatimeDataFetcher", "Successfully triggered widget update for all instances with totalTime: $totalTime")
-            } catch (e: Exception) {
-                Log.e("WakatimeDataFetcher", "Error updating widget", e)
+        try {
+            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(WakatimeHoursWidget::class.java)
+            if (glanceIds.isEmpty()) {
+                Log.d("WakatimeDataFetcher", "No glance IDs found for WakatimeHoursWidget. Skipping widget update.")
+                return
             }
+            glanceIds.forEach { id ->
+                updateAppWidgetState(context, id) { prefs ->
+                    // Get the latest full data from DataStore
+                    val currentDataStorePrefs = context.dataStore.data.first()
+
+                    prefs[WidgetConstants.WAKATIME_TOTAL_TIME_KEY] = totalTime // Use the freshly fetched totalTime
+                    prefs[WidgetConstants.WAKATIME_CURRENT_PROJECT_KEY] =
+                        currentDataStorePrefs[WidgetConstants.WAKATIME_CURRENT_PROJECT_KEY] ?: "No project"
+                    prefs[WidgetConstants.WAKATIME_LAST_SYNC_KEY] =
+                        currentDataStorePrefs[WidgetConstants.WAKATIME_LAST_SYNC_KEY] ?: "Never"
+                    prefs[WidgetConstants.WAKATIME_API_KEY] = // This is likely for display/debug in widget
+                        currentDataStorePrefs[WidgetConstants.WAKATIME_API_KEY] ?: "🔑 N/A"
+                }
+                WakatimeHoursWidget().update(context, id)
+            }
+            Log.d("WakatimeDataFetcher", "Successfully triggered widget update for all instances with totalTime: $totalTime")
+        } catch (e: Exception) {
+            Log.e("WakatimeDataFetcher", "Error updating widget", e)
         }
     }
 }

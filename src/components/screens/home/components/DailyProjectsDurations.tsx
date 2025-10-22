@@ -1,18 +1,32 @@
 import { UserDailyDurationsData } from "@/data-access-layer/wakatime/types/current-user-types";
 import { formatWakatimeDuration, formatWakatimeMsToHumanReadable } from "@/utils/date";
-import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Card, Surface, Switch, Text } from "react-native-paper";
+import Animated, { FadeIn, FadeOut, Layout } from "react-native-reanimated";
 
 interface DailyProjectsDurationsProps {
   grouped?: boolean;
   projects: UserDailyDurationsData[];
+  handleToggleGrouped?: () => void;
 }
 
-export function DailyProjectsDurations({ grouped, projects }: DailyProjectsDurationsProps) {
+const AnimatedCard = Animated.createAnimatedComponent(Card);
+const AnimatedSurface = Animated.createAnimatedComponent(Surface);
+
+export function DailyProjectsDurations({
+  grouped,
+  projects,
+  handleToggleGrouped,
+}: DailyProjectsDurationsProps) {
   const renderProjectItem = (item: UserDailyDurationsData, index: number) => (
-    <Card key={`${item.project}-${index}`} style={styles.projectCard} elevation={2}>
+    <AnimatedCard
+      key={`${item.project}-${index}`}
+      style={styles.projectCard}
+      elevation={2}
+      entering={FadeIn.delay(index * 100).duration(500)}
+      exiting={FadeOut.duration(500)}
+      layout={Layout.springify()}>
       <Card.Title title={item.project} />
       <Card.Content style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text variant="bodyMedium" style={styles.duration}>
@@ -23,12 +37,14 @@ export function DailyProjectsDurations({ grouped, projects }: DailyProjectsDurat
         </Text>
         {item.color && <View style={[styles.colorIndicator, { backgroundColor: item.color }]} />}
       </Card.Content>
-    </Card>
+    </AnimatedCard>
   );
 
   return (
-    <Surface style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+    <AnimatedSurface style={styles.container} entering={FadeIn.duration(600)}>
+      <Animated.View
+        style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+        entering={FadeIn.delay(100).duration(500)}>
         <Text variant="titleLarge" style={styles.title}>
           Projects
         </Text>
@@ -39,18 +55,19 @@ export function DailyProjectsDurations({ grouped, projects }: DailyProjectsDurat
           <Switch
             value={grouped}
             onValueChange={() => {
-              router.setParams({ grouped: grouped ? "false" : "true" });
+              handleToggleGrouped?.();
             }}
           />
         </View>
-      </View>
+      </Animated.View>
 
-      <View style={styles.projectsList}>
+      <Animated.View style={styles.projectsList} layout={Layout.springify()}>
         {projects.map((item, index) => renderProjectItem(item, index))}
-      </View>
-    </Surface>
+      </Animated.View>
+    </AnimatedSurface>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -67,9 +84,6 @@ const styles = StyleSheet.create({
   },
   projectCard: {
     marginBottom: 8,
-  },
-  projectName: {
-    fontWeight: "bold",
   },
   duration: {
     marginTop: 4,
